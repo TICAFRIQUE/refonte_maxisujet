@@ -3,10 +3,10 @@
    Login
 @endsection
 @section('content')
-    @if ($setting != null)
+    @if ($parametre != null)
         <style>
             .auth-one-bg {
-                background-image: url('{{ $setting->getFirstMediaUrl('cover') }}');
+                background-image: url('{{ $parametre->getFirstMediaUrl('cover') }}');
                 background-position: center;
                 background-size: cover;
             }
@@ -44,18 +44,18 @@
                         <div class="text-center mt-sm-5 mb-4 text-white-50">
                             <div>
 
-                                @if ($setting != null)
+                                @if ($parametre != null)
                                     <a href="index" class="d-inline-block auth-logo">
-                                        <img src="{{ URL::asset($setting->getFirstMediaUrl('logo_header')) }}"
+                                        <img src="{{ URL::asset($parametre->getFirstMediaUrl('logo_header')) }}"
                                             alt=""  width="50" class="rounded-circle">
                                     </a>
-                                    <p class="mt-3 fs-15 fw-medium"> {{ $setting['projet_title'] ?? '' }} </p>
+                                    <p class="mt-3 fs-15 fw-medium"> {{ $parametre['nom_projet'] ?? '' }} </p>
                                 @else
-                                    <h3>PROJET NAME</h3>
+                                    <h3>Nom du projet</h3>
                                 @endif
 
                             </div>
-                            <p class="mt-3 fs-15 fw-medium"> {{ $setting['projet_description'] ?? '' }} </p>
+                            <p class="mt-3 fs-15 fw-medium"> {{ $parametre['description_projet'] ?? '' }} </p>
                         </div>
                     </div>
                 </div>
@@ -77,7 +77,7 @@
                                         <div class="mb-3">
                                             <label for="username" class="form-label">Email</label>
                                             <input type="email" name="email" class="form-control" id="username"
-                                                placeholder="Enter username" required>
+                                                placeholder="Entrer votre email" required>
                                         </div>
 
                                         <div class="mb-3">
@@ -88,7 +88,7 @@
                                             <label class="form-label" for="password-input">Mot de passe</label>
                                             <div class="position-relative auth-pass-inputgroup mb-3">
                                                 <input type="password" name="password"
-                                                    class="form-control pe-5 password-input" placeholder="Enter password"
+                                                    class="form-control pe-5 password-input" placeholder="Entrer votre mot de passe"
                                                     id="password-input" required>
                                                 <button
                                                     class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon material-shadow-none"

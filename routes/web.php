@@ -8,30 +8,34 @@ use App\Http\Controllers\backend\RoleController;
 use App\Http\Controllers\backend\ParametreController;
 use App\Http\Controllers\backend\PermissionController;
 
-// Route::get('/', function () {
-//     return view('backend.pages.index');
-// });
+
 
 Route::fallback(function () {
     return view('backend.utility.auth-404-basic');
 });
 
-Route::prefix('admin')->group(function () {
-
-    // dashboard admin
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
-    // information application
-    Route::get('/parametre', [ParametreController::class, 'index'])->name('parametre.index');
+Route::middleware(['admin'])->prefix('admin')->group(function () {
 
     // login and logout
-    Route::controller(AdminController::class)->prefix('admin')->group(function () {
-        route::get('/login', 'login')->name('admin.login'); // page formulaire de connexion
-        route::post('/login', 'login')->name('admin.login'); // envoi du formulaire
+    Route::controller(AdminController::class)->group(function () {
+        route::get('/login', 'login')->name('admin.login')->withoutMiddleware('admin'); // page formulaire de connexion
+        route::post('/login', 'login')->name('admin.login')->withoutMiddleware('admin'); // envoi du formulaire
         route::post('/logout', 'logout')->name('admin.logout');
     });
 
 
 
+    // dashboard admin
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
+
+    // parametre application
+    Route::prefix('parametre')->controller(ParametreController::class)->group(function () {
+        route::get('', 'index')->name('parametre.index');
+        route::post('store', 'store')->name('parametre.store');
+        route::get('maintanance-up', 'maintananceUp')->name('parametre.maintenance-up');
+        route::get('maintenance-down', 'maintenanceDown')->name('parametre.maintenance-down');
+        route::get('optimize-clear', 'optimizeClear')->name('parametre.optimize-clear');
+    });
 
 
     //register admin

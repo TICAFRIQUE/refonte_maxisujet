@@ -25,6 +25,7 @@
 
     <div class="row">
         <div class="col-lg-12">
+            @include('backend.components.alertMessage');
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <h5 class="card-title mb-0">Liste des administrateurs</h5>
@@ -37,8 +38,7 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Nom</th>
-                                    <th>Prenoms</th>
+                                    <th>Nom utilisateur</th>
                                     <th>Telephone</th>
                                     <th>Email</th>
                                     <th>role</th>
@@ -50,8 +50,7 @@
                                 @foreach ($data_admin as $key => $item)
                                     <tr id="row_{{ $item['id'] }}">
                                         <td> {{ ++$key }} </td>
-                                        <td>{{ $item['last_name'] }}</td>
-                                        <td>{{ $item['first_name'] }}</td>
+                                        <td>{{ $item['username'] }}</td>
                                         <td>{{ $item['phone'] }}</td>
                                         <td>{{ $item['email'] }}</td>
                                         <td>{{ $item['roles'][0]['name'] ?? '' }}</td>

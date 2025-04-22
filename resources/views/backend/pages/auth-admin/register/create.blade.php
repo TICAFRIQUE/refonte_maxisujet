@@ -17,16 +17,11 @@
                                 action="{{ route('admin-register.store') }}" enctype="multipart/form-data">
                                 @csrf
                                 <div class="mb-3">
-                                    <label for="username" class="form-label">Nom</label>
-                                    <input type="text" name="last_name" class="form-control" id="username" required>
+                                    <label for="username" class="form-label">Username</label>
+                                    <input type="text" name="username" class="form-control" id="username" required>
                                 </div>
 
-                                <div class="mb-3">
-                                    <label for="username" class="form-label">Prenoms</label>
-                                    <input type="text" name="first_name" class="form-control" id="username"
-                                        required>
-                                </div>
-
+                             
                                 <div class="mb-3">
                                     <label for="username" class="form-label">Email</label>
                                     <input type="email" name="email" class="form-control" id="username"

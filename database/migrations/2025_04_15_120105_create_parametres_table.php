@@ -33,7 +33,7 @@ return new class extends Migration
             $table->string('siege_social')->nullable();
 
             //Security
-            $table->boolean('mode_maintenance')->default(0);
+            $table->enum('mode_maintenance', ['up', 'down'])->default('up');
 
             $table->timestamps();
         });

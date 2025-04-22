@@ -1,10 +1,21 @@
 <!-- Danger Alert -->
-@if ($Msg = Session::get('error'))
+{{-- @if ($Msg = Session::get('error'))
     <div class="alert alert-danger alert-top-border alert-dismissible fade show" role="alert">
-    <i class="ri-error-warning-line me-3 align-middle fs-16 text-danger"></i><strong> {{$Msg}} </strong>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
+        <i class="ri-error-warning-line me-3 align-middle fs-16 text-danger"></i><strong> {{ $Msg }} </strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif --}}
+
+
+<!-- Danger Alert -->
+@if ($Msg = Session::get('error'))
+    <div class="alert alert-danger alert-dismissible bg-danger text-white alert-label-icon fade show material-shadow"
+        role="alert">
+        <i class="ri-error-warning-line label-icon"></i><strong>{{ $Msg }}</strong>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 @endif
+
 
 
 

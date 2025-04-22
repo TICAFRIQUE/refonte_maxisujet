@@ -16,7 +16,8 @@ class Admin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::user() && Auth::user()->role !== 'client') {
+        // Si l'utilisateur est authentifié et n'est pas un client
+        if (Auth::check() && Auth::user()->role !== 'client') {
             return $next($request);
         }
 
@@ -24,4 +25,3 @@ class Admin
         return redirect()->route('admin.login')->withError('Session expirée ou accès non autorisé, veuillez vous connecter');
     }
 }
-

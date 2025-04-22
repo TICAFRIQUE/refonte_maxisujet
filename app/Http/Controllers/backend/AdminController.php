@@ -53,7 +53,7 @@ class AdminController extends Controller
 
 
 
-    //register admin
+    //Liste des users admin
 
     public function index()
     {
@@ -73,8 +73,7 @@ class AdminController extends Controller
     {
         try {
             $request->validate([
-                'last_name' => 'required',
-                'first_name' => 'required',
+                'username' => 'required',
                 'email' => 'required|email',
                 'phone' => 'required|',
                 'role' => 'required',
@@ -89,19 +88,21 @@ class AdminController extends Controller
 
             // Vérification supplémentaire pour le numéro de téléphone
             if (!preg_match('/^[0-9]{10}$/', $request->phone)) {
-                Alert::error('Erreur', 'Le numéro de téléphone doit contenir exactement 10 chiffres.');
-                return back();
+                return back()->with('Erreur', 'Le numéro de téléphone doit contenir exactement 10 chiffres.');
+                // Alert::error('Erreur', 'Le numéro de téléphone doit contenir exactement 10 chiffres.');
+                // return back();
             }
 
             // Vérifier si l'email existe déjà
             if (User::where('email', $request->email)->exists()) {
-                Alert::error('L\'adresse email existe déjà associé à un utilisateur', 'Erreur');
-                return back()->withInput();
+                return back()->with('L\'adresse email existe déjà associé à un utilisateur', 'Erreur');
+
+                // Alert::error('L\'adresse email existe déjà associé à un utilisateur', 'Erreur');
+                // return back()->withInput();
             }
 
             $data_user = User::firstOrCreate([
-                'last_name' => $request['last_name'],
-                'first_name' => $request['first_name'],
+                'username' => $request['username'],
                 'email' => $request->email,
                 'phone' => $request->phone,
                 'role' => $request->role,
@@ -115,8 +116,12 @@ class AdminController extends Controller
             Alert::success('Opération réussie', 'Succès');
             return back();
         } catch (\Exception $e) {
-            Alert::error('Erreur', $e->getMessage());
-            return back();
+
+            return back()->with('error', 'Une erreur est survenue lors de la création : ' . $e->getMessage());
+
+
+            // Alert::error('Erreur', $e->getMessage());
+            // return back();
         }
     }
 
@@ -129,8 +134,7 @@ class AdminController extends Controller
             $user = User::findOrFail($id);
 
             $updateData = [
-                'last_name' => $request['last_name'],
-                'first_name' => $request['first_name'],
+                'username' => $request['username'],
                 'email' => $request->email,
                 'phone' => $request->phone,
                 'role' => $request->role,
@@ -149,17 +153,25 @@ class AdminController extends Controller
             Alert::success('Opération réussie', 'Les informations ont été mises à jour');
             return back();
         } catch (\Exception $e) {
-            Alert::error('Erreur', 'Une erreur est survenue lors de la mise à jour : ' . $e->getMessage());
+            return back()->with('error', 'Une erreur est survenue lors de la mise à jour : ' . $e->getMessage());
+            // Alert::error('Erreur', 'Une erreur est survenue lors de la mise à jour : ' . $e->getMessage());
             return back();
         }
     }
 
     public function delete($id)
     {
-        User::find($id)->forceDelete();
-        return response()->json([
-            'status' => 200,
-        ]);
+        try {
+            User::find($id)->forceDelete();
+            return response()->json([
+                'status' => 200,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 500,
+                'message' => $th->getMessage(),
+            ]);
+        }
     }
 
 

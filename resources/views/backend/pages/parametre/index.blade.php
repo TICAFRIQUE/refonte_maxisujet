@@ -21,10 +21,26 @@
     </div> --}}
 
     <style>
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 10px; border: 1px solid black; text-align: left; }
-        th { background-color: #f4f4f4; }
-        a { text-decoration: none; color: blue; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid black;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        a {
+            text-decoration: none;
+            color: blue;
+        }
     </style>
 
     <div class="row">
@@ -54,7 +70,7 @@
                 <div class="card-body p-4">
                     <div class="tab-content">
                         <div class="tab-pane active" id="personalDetails" role="tabpanel">
-                            <form action="{{ route('setting.store') }}" method="post" enctype="multipart/form-data">
+                            <form action="{{ route('parametre.store') }}" method="post" enctype="multipart/form-data">
                                 @csrf
 
                                 <div class="row">
@@ -67,7 +83,7 @@
                                                 accept="image/*">
                                             <div class="mt-2">
                                                 <img id="background-preview"
-                                                    src="{{ $data_setting ? URL::asset($data_setting->getFirstMediaUrl('cover')) : URL::asset('build/images/profile-bg.jpg') }}"
+                                                    src="{{ $data_parametre ? URL::asset($data_parametre->getFirstMediaUrl('cover')) : URL::asset('images/camera-icon.png') }}"
                                                     class="rounded-circle avatar-xl img-thumbnail"
                                                     alt="Aperçu de l'arrière-plan">
                                             </div>
@@ -79,7 +95,7 @@
                                                 accept="image/*">
                                             <div class="mt-2 text-center">
                                                 <img id="header-preview"
-                                                    src="{{ $data_setting ? URL::asset($data_setting->getFirstMediaUrl('logo_header')) : URL::asset('images/avatar-1.jpg') }}"
+                                                    src="{{ $data_parametre ? URL::asset($data_parametre->getFirstMediaUrl('logo_header')) : URL::asset('images/camera-icon.png') }}"
                                                     class="rounded-circle avatar-xl img-thumbnail"
                                                     alt="Aperçu du logo d'en-tête">
                                             </div>
@@ -91,7 +107,7 @@
                                                 accept="image/*">
                                             <div class="mt-2 text-center">
                                                 <img id="footer-preview"
-                                                    src="{{ $data_setting ? URL::asset($data_setting->getFirstMediaUrl('logo_footer')) : URL::asset('images/avatar-1.jpg') }}"
+                                                    src="{{ $data_parametre ? URL::asset($data_parametre->getFirstMediaUrl('logo_footer')) : URL::asset('images/camera-icon.png') }}"
                                                     class="rounded-circle avatar-xl img-thumbnail"
                                                     alt="Aperçu du logo de pied de page">
                                             </div>
@@ -129,17 +145,17 @@
                                 <div class="row">
                                     <div class="col-lg-5">
                                         <div class="mb-3">
-                                            <label for="emailInput" class="form-label">Titre du projet</label>
-                                            <input type="text" name="projet_title" class="form-control" id="emailInput"
-                                                value="{{ $data_setting['projet_title'] ?? '' }}">
+                                            <label for="emailInput" class="form-label">Nom du projet</label>
+                                            <input type="text" name="nom_projet" class="form-control" id="emailInput"
+                                                value="{{ $data_parametre['nom_projet'] ?? '' }}" required>
                                         </div>
                                     </div>
 
                                     <div class="col-lg-7">
                                         <div class="mb-3">
                                             <label for="emailInput" class="form-label">Description du projet</label>
-                                            <input type="text" name="projet_description" class="form-control"
-                                                id="emailInput" value="{{ $data_setting['projet_description'] ?? '' }}">
+                                            <input type="text" name="description_projet" class="form-control"
+                                                id="emailInput" value="{{ $data_parametre['description_projet'] ?? '' }}">
                                         </div>
                                     </div>
                                     <!--end col-->
@@ -147,23 +163,23 @@
                                     <div class="col-lg-4">
                                         <div class="mb-3">
                                             <label for="phonenumberInput" class="form-label">Telephone1</label>
-                                            <input type="text" name="phone1" class="form-control" id="phonenumberInput"
-                                                value="{{ $data_setting['phone1'] ?? '' }}">
+                                            <input type="text" name="contact1" class="form-control" id="phonenumberInput"
+                                                value="{{ $data_parametre['contact1'] ?? '' }}">
                                         </div>
                                     </div>
 
                                     <div class="col-lg-4">
                                         <div class="mb-3">
                                             <label for="phonenumberInput" class="form-label">Telephone2</label>
-                                            <input type="text" name="phone2" class="form-control"
-                                                id="phonenumberInput" value="{{ $data_setting['phone2'] ?? '' }}">
+                                            <input type="text" name="contact2" class="form-control"
+                                                id="phonenumberInput" value="{{ $data_parametre['contact2'] ?? '' }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="mb-3">
                                             <label for="phonenumberInput" class="form-label">Telephone3</label>
-                                            <input type="text" name="phone3" class="form-control"
-                                                id="phonenumberInput" value="{{ $data_setting['phone3'] ?? '' }}">
+                                            <input type="text" name="contact3" class="form-control"
+                                                id="phonenumberInput" value="{{ $data_parametre['contact3'] ?? '' }}">
                                         </div>
                                     </div>
                                     <!--end col-->
@@ -171,7 +187,7 @@
                                         <div class="mb-3">
                                             <label for="emailInput" class="form-label">Email 1</label>
                                             <input type="email" name="email1" class="form-control" id="emailInput"
-                                                value="{{ $data_setting['email1'] ?? '' }}">
+                                                value="{{ $data_parametre['email1'] ?? '' }}">
                                         </div>
                                     </div>
 
@@ -179,7 +195,7 @@
                                         <div class="mb-3">
                                             <label for="emailInput" class="form-label">Email 2</label>
                                             <input type="email" name="email2" class="form-control" id="emailInput"
-                                                value="{{ $data_setting['email2'] ?? '' }}">
+                                                value="{{ $data_parametre['email2'] ?? '' }}">
                                         </div>
                                     </div>
                                     <!--end col-->
@@ -189,7 +205,7 @@
                                         <div class="mb-3">
                                             <label for="countryInput" class="form-label">Siège social</label>
                                             <input type="text" name="siege_social" class="form-control"
-                                                id="countryInput" value="{{ $data_setting['siege_social'] ?? '' }}" />
+                                                id="countryInput" value="{{ $data_parametre['siege_social'] ?? '' }}" />
                                         </div>
                                     </div>
                                     <!--end col-->
@@ -198,7 +214,7 @@
                                         <div class="mb-3">
                                             <label for="countryInput" class="form-label">Localisation</label>
                                             <input type="text" name="localisation" class="form-control"
-                                                id="countryInput" value="{{ $data_setting['localisation'] ?? '' }}" />
+                                                id="countryInput" value="{{ $data_parametre['localisation'] ?? '' }}" />
                                         </div>
                                     </div>
 
@@ -206,7 +222,7 @@
                                         <div class="mb-3">
                                             <label for="countryInput" class="form-label">Google maps</label>
                                             <input type="text" name="google_maps" class="form-control"
-                                                id="countryInput" value="{{ $data_setting['google_maps'] ?? '' }}" />
+                                                id="countryInput" value="{{ $data_parametre['google_maps'] ?? '' }}" />
                                         </div>
                                     </div>
 
@@ -223,8 +239,8 @@
                                                     <i class=" ri-facebook-fill"></i>
                                                 </span>
                                             </div>
-                                            <input type="text" name="facebook_link" class="form-control"
-                                                id="websiteInput" value="{{ $data_setting['facebook_link'] ?? '' }}">
+                                            <input type="text" name="lien_facebook" class="form-control"
+                                                id="websiteInput" value="{{ $data_parametre['lien_facebook'] ?? '' }}">
                                         </div>
                                         <div class="mb-3 d-flex">
                                             <div class="avatar-xs d-block flex-shrink-0 me-3">
@@ -232,8 +248,8 @@
                                                     <i class=" ri-instagram-fill"></i>
                                                 </span>
                                             </div>
-                                            <input type="text" name="instagram_link" class="form-control"
-                                                id="websiteInput" value="{{ $data_setting['instagram_link'] ?? '' }}">
+                                            <input type="text" name="lien_instagram" class="form-control"
+                                                id="websiteInput" value="{{ $data_parametre['lien_instagram'] ?? '' }}">
                                         </div>
 
                                         <div class=" mb-3 d-flex">
@@ -242,8 +258,8 @@
                                                     <i class=" ri-tiktok-fill"></i>
                                                 </span>
                                             </div>
-                                            <input type="text" name="tiktok_link" class="form-control"
-                                                id="pinterestName" value="{{ $data_setting['tiktok_link'] ?? '' }}">
+                                            <input type="text" name="lien_twitter" class="form-control"
+                                                id="pinterestName" value="{{ $data_parametre['lien_twitter'] ?? '' }}">
                                         </div>
                                         <div class="mb-3 d-flex">
                                             <div class="avatar-xs d-block flex-shrink-0 me-3">
@@ -251,8 +267,8 @@
                                                     <i class=" ri-linkedin-line"></i>
                                                 </span>
                                             </div>
-                                            <input type="text" name="linkedin_link" class="form-control"
-                                                id="pinterestName" value="{{ $data_setting['linkedin_link'] ?? '' }}">
+                                            <input type="text" name="lien_linkedin" class="form-control"
+                                                id="pinterestName" value="{{ $data_parametre['lien_linkedin'] ?? '' }}">
                                         </div>
 
                                         <div class="mb-3 d-flex">
@@ -261,17 +277,18 @@
                                                     <i class=" ri-twitter-x-fill"></i>
                                                 </span>
                                             </div>
-                                            <input type="text" name="twitter_link" class="form-control"
-                                                id="pinterestName" value="{{ $data_setting['twitter_link'] ?? '' }}">
+                                            <input type="text" name="lien_tiktok" class="form-control"
+                                                id="pinterestName" value="{{ $data_parametre['lien_tiktok'] ?? '' }}">
                                         </div>
                                     </div>
                                     <!-- ========== End social network ========== -->
 
 
                                     <div class="col-lg-12">
-                                        <div class="hstack gap-2 justify-content-end">
-                                            <button type="submit" class="btn btn-primary">Valider</button>
-                                            {{-- <button type="button" class="btn btn-soft-success">A</button> --}}
+                                        <div class="hstack mt-3">
+                                            <button type="submit" class="btn btn-primary w-100">
+                                                <i class="ri-refresh-line align-bottom me-1"></i>
+                                                Mettre à jour</button>
                                         </div>
                                     </div>
                                     <!--end col-->
@@ -313,7 +330,7 @@
                                             <p class="text-muted">Mettre l'application en mode maintenance</p>
                                         </div>
                                         <div class="flex-shrink-0">
-                                            @if ($data_maintenance == null || $data_maintenance['type'] == 'up')
+                                            @if (empty($data_parametre->mode_maintenance) || $data_parametre->mode_maintenance == 'up')
                                                 <div class="form-check form-switch">
                                                     <a href="#"
                                                         class="btn btn-sm btn-primary btn-mode-down">Activer</a>
@@ -348,8 +365,8 @@
                                             <tr>
                                                 <td>{{ basename($file) }}</td>
                                                 <td>
-                                                    <a
-                                                        href="{{ route('setting.download-backup', basename($file)) }}">Télécharger <i class="ri-download-line align-bottom"></i></a>
+                                                    <a href="{{ route('setting.download-backup', basename($file)) }}">Télécharger
+                                                        <i class="ri-download-line align-bottom"></i></a>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -385,7 +402,7 @@
                 e.preventDefault();
                 $.ajax({
                     type: "get",
-                    url: "{{ route('setting.cache-clear') }}",
+                    url: "{{ route('parametre.optimize-clear') }}",
                     // data: "data",
                     dataType: "json",
                     success: function(response) {
@@ -411,7 +428,13 @@
                             }).then((result) => {
                                 /* Read more about handling dismissals below */
                                 if (result.dismiss === Swal.DismissReason.timer) {
-                                    console.log("I was closed by the timer");
+                                    Swal.fire({
+                                        position: "top-end",
+                                        icon: "success",
+                                        title: "Application optimisé avec succès",
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    });
                                 }
                             });
                         }
@@ -424,7 +447,7 @@
                 e.preventDefault();
                 $.ajax({
                     type: "get",
-                    url: "{{ route('setting.maintenance-down') }}",
+                    url: "{{ route('parametre.maintenance-down') }}",
                     // data: "data",
                     dataType: "json",
                     success: function(response) {
@@ -449,7 +472,7 @@
                 e.preventDefault();
                 $.ajax({
                     type: "get",
-                    url: "{{ route('setting.maintenance-up') }}",
+                    url: "{{ route('parametre.maintenance-up') }}",
                     // data: "data",
                     dataType: "json",
                     success: function(response) {

@@ -29,16 +29,11 @@
                                 enctype="multipart/form-data">
                                 @csrf
                                 <div class="mb-3">
-                                    <label for="username" class="form-label">Nom</label>
-                                    <input type="text" value="{{ $data_admin['last_name'] }}" name="last_name"
+                                    <label for="username" class="form-label">Nom utilisateur</label>
+                                    <input type="text" value="{{ $data_admin['username'] }}" name="username"
                                         class="form-control" id="username" required>
                                 </div>
 
-                                <div class="mb-3">
-                                    <label for="username" class="form-label">Prenoms</label>
-                                    <input type="text" value="{{ $data_admin['first_name'] }}" name="first_name"
-                                        class="form-control" id="username" required>
-                                </div>
 
                                 <div class="mb-3">
                                     <label for="username" class="form-label">Email</label>

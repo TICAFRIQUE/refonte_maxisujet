@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
+use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Parametre extends Model
+class Parametre extends Model implements HasMedia
 {
     //
-    use HasFactory, InteractsWithMedia;
+    use HasFactory, InteractsWithMedia ;
 
     public $incrementing = false;
 
@@ -45,7 +46,7 @@ class Parametre extends Model
     {
         parent::boot();
         self::creating(function ($model) {
-            $model->id = IdGenerator::generate(['table' => 'settings', 'length' => 10, 'prefix' =>
+            $model->id = IdGenerator::generate(['table' => 'parametres', 'length' => 10, 'prefix' =>
             mt_rand()]);
         });
     }

@@ -57,7 +57,7 @@
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="d-flex align-items-center">
                                 <img class="rounded-circle header-profile-user"
-                                    src="@if (Auth::user()->avatar != '') {{ URL::asset('images/' . Auth::user()->avatar) }}@else{{ URL::asset('build/images/users/avatar-1.jpg') }} @endif"
+                                    src="@if (Auth::user()->avatar != '') {{ URL::asset('images/' . Auth::user()->avatar) }}@else{{ URL::asset('images/user-icon.png') }} @endif"
                                     alt="Header Avatar">
                                 <span class="text-start ms-xl-2">
                                     <span
@@ -75,7 +75,7 @@
                                     class="align-middle">Profil</span></a>
 
 
-                            <a class="dropdown-item" href="pages-faqs"><i
+                            <a class="dropdown-item" href="#"><i
                                     class="mdi mdi-lifebuoy text-muted fs-16 align-middle me-1"></i> <span
                                     class="align-middle">Aide</span></a>
                             <div class="dropdown-divider"></div>
@@ -84,11 +84,11 @@
                                 class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span
                                 class="align-middle">Parametre</span></a> --}}
 
-                            @if (Auth::user())
+                            @if (Auth::check() && Auth::user())
                                 <a class="dropdown-item " href="javascript:void();"
                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
                                         class="bx bx-power-off font-size-16 align-middle me-1"></i> <span
-                                        key="t-logout">@lang('translation.logout')</span></a>
+                                        key="t-logout">Déconnexion</span></a>
                                 <form id="logout-form" action="{{ route('admin.logout') }}" method="POST"
                                     style="display: none;">
                                     @csrf

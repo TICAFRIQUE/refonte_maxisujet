@@ -15,9 +15,9 @@
                     <div class="col-12">
                         <div class="d-flex align-items-lg-center flex-lg-row flex-column">
                             <div class="flex-grow-1">
-                                <h4 class="fs-16 mb-1">Bonjour,
-                                    {{-- {{ Auth::user()->first_name . ' ' . Auth::user()->last_name }} --}}
-                                    !</h4>
+                               @auth
+                               <h4 class="fs-16 mb-1">Bonjour, {{ Auth::user()->username }} !</h4>
+                               @endauth
                                 <p class="text-muted mb-0">Voici ce qui se passe avec votre restaurant aujourd'hui.</p>
                             </div>
                             <div class="mt-3 mt-lg-0">

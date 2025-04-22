@@ -13,14 +13,8 @@
                      action="{{ route('admin-register.update', $item['id']) }}" enctype="multipart/form-data">
                      @csrf
                      <div class="mb-3">
-                         <label for="username" class="form-label">Nom</label>
-                         <input type="text" value="{{ $item['last_name'] }}" name="last_name" class="form-control"
-                             id="username" required>
-                     </div>
-
-                     <div class="mb-3">
-                         <label for="username" class="form-label">Prenoms</label>
-                         <input type="text" value="{{ $item['first_name'] }}" name="first_name" class="form-control"
+                         <label for="username" class="form-label">Nom utilisateur</label>
+                         <input type="text" value="{{ $item['username'] }}" name="username" class="form-control"
                              id="username" required>
                      </div>
 
@@ -37,7 +31,9 @@
                      </div>
 
                      <div class="mb-3">
-                         <label for="username" class="form-label">Mot de passe</label>
+                         <label for="username" class="form-label">Mot de passe
+                            <small class="text-danger">Nouveau mot de passe si vous voulez changer l'ancien</small>
+                         </label>
                          <input type="password" name="password" class="form-control" id="username" autocomplete="off">
                      </div>
 
@@ -46,7 +42,9 @@
                          <select class="form-control" name="role" id="" required>
                              <option disabled selected value>Selectionner...</option>
                              @foreach ($data_role as $role)
-                                 <option value="{{ $role['name'] }}" {{ $item['roles'][0]['name'] == $role['name'] ? 'selected' : '' }}>{{ $role['name'] }}
+                                 <option value="{{ $role['name'] }}"
+                                     {{ $item['roles'][0]['name'] == $role['name'] ? 'selected' : '' }}>
+                                     {{ $role['name'] }}
                                  </option>
                              @endforeach
                          </select>

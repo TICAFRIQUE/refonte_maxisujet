@@ -24,7 +24,7 @@
         </button>
     </div>
 
-    @auth
+    {{-- @auth
         <div class="dropdown sidebar-user m-1 rounded">
             <button type="button" class="btn material-shadow-none" id="page-header-user-dropdown" data-bs-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
@@ -57,12 +57,12 @@
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
                         class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span
                         key="t-logout">@lang('translation.logout')</span></a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
                     @csrf
                 </form>
             </div>
         </div>
-    @endauth
+    @endauth --}}
 
     <div id="scrollbar">
         <div class="container-fluid">
@@ -75,12 +75,12 @@
                 {{-- <li class="menu-title"><span>@lang('translation.menu')</span></li> --}}
 
                 {{-- @can('voir-tableau de bord') --}}
-                    <li class="nav-item">
-                        <a class="nav-link menu-link {{ Route::is('dashboard.*') ? 'active' : '' }} "
-                            href="{{ route('dashboard.index') }}">
-                            <i class="ri-dashboard-2-line"></i> <span>TABLEAU DE BORD</span>
-                        </a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link {{ Route::is('dashboard.*') ? 'active' : '' }} "
+                        href="{{ route('dashboard.index') }}">
+                        <i class="ri-dashboard-2-line"></i> <span>TABLEAU DE BORD</span>
+                    </a>
+                </li>
                 {{-- @endcan --}}
 
 
@@ -110,9 +110,9 @@
                                     class="nav-link {{ Route::is('module.*') ? 'active' : '' }}">Modules</a>
                             </li>
                             <li class="nav-item">
-                                    <a href="{{ route('role.index') }}"
-                                        class="nav-link {{ Route::is('role.*') ? 'active' : '' }}">Roles</a>
-                                </li>
+                                <a href="{{ route('role.index') }}"
+                                    class="nav-link {{ Route::is('role.*') ? 'active' : '' }}">Roles</a>
+                            </li>
                             <li class="nav-item">
                                 <a href="{{ route('permission.index') }}"
                                     class="nav-link {{ Route::is('permission.*') ? 'active' : '' }}">Permissions/
