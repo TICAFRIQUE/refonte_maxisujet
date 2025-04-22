@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\backend\user;
+namespace App\Http\Controllers\backend;
 
 use App\Models\User;
 use App\Models\Caisse;

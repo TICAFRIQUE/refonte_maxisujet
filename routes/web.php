@@ -2,11 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\backend\DashboardController;
-use App\Http\Controllers\backend\user\AdminController;
-use App\Http\Controllers\backend\module\ModuleController;
-use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
-use App\Http\Controllers\backend\permission\RoleController;
-use App\Http\Controllers\backend\permission\PermissionController;
+use App\Http\Controllers\backend\AdminController;
+use App\Http\Controllers\backend\ModuleController;
+use App\Http\Controllers\backend\RoleController;
+use App\Http\Controllers\backend\ParametreController;
+use App\Http\Controllers\backend\PermissionController;
 
 // Route::get('/', function () {
 //     return view('backend.pages.index');
@@ -19,7 +19,9 @@ Route::fallback(function () {
 Route::prefix('admin')->group(function () {
 
     // dashboard admin
-    Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
+    // information application
+    Route::get('/parametre', [ParametreController::class, 'index'])->name('parametre.index');
 
     // login and logout
     Route::controller(AdminController::class)->prefix('admin')->group(function () {
