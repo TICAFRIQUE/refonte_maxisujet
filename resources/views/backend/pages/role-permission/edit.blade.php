@@ -69,9 +69,9 @@
                     </div>
                 @endforeach
             </div>
-            <div class="row mt-3">
+            <div class="row m-3">
                 <div class="col-12">
-                    <button type="submit" class="btn btn-primary">Mettre à jour les permissions</button>
+                    <button type="submit" class="btn btn-success w-100">Mettre à jour les permissions</button>
                 </div>
             </div>
         </form>

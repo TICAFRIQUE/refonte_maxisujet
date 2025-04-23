@@ -32,7 +32,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
     Route::prefix('parametre')->controller(ParametreController::class)->group(function () {
         route::get('', 'index')->name('parametre.index');
         route::post('store', 'store')->name('parametre.store');
-        route::get('maintanance-up', 'maintananceUp')->name('parametre.maintenance-up');
+        route::get('maintenance-up', 'maintenanceUp')->name('parametre.maintenance-up');
         route::get('maintenance-down', 'maintenanceDown')->name('parametre.maintenance-down');
         route::get('optimize-clear', 'optimizeClear')->name('parametre.optimize-clear');
     });

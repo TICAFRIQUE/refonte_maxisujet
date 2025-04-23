@@ -116,11 +116,9 @@ class ModuleController extends Controller
     {
 
         //supprimer les permissions associé au module
-        $module = Module::find($id);
-        Permission::where('module_name', $module['name'])->delete();
+        Permission::where('module_id', $id)->forceDelete();
 
-
-        Module::find($id)->delete();
+        Module::find($id)->forceDelete();
         return response()->json([
             'status' => 200,
         ]);

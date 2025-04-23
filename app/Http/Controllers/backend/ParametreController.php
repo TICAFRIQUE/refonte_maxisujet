@@ -187,7 +187,7 @@ class ParametreController extends Controller
     {
 
         Artisan::call('up');
-        Parametre::update([
+        Parametre::first()->update([
             'mode_maintenance' => 'up',
         ]);
         return response()->json(['message' => 'mode maintenance desactivé', 'status' => 200], 200);
@@ -206,7 +206,7 @@ class ParametreController extends Controller
             '--secret' => 'admin@',
             '--render' => 'backend.pages.maintenance-mode-view',
         ]);
-        Parametre::update([
+        Parametre::first()->update([
             'mode_maintenance' => 'down',
         ]);
         return response()->json(['message' => 'mode maintenance activé', 'status' => 200], 200);
