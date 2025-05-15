@@ -27,8 +27,9 @@ class AppServiceProvider extends ServiceProvider
         //
 
 
-        //
+
         Schema::defaultStringLength(191);
+
 
         $this->app->booted(function () {
             try {
@@ -54,15 +55,10 @@ class AppServiceProvider extends ServiceProvider
 
 
 
-        //get setting data
+        //recuperer les parametres
         if (Schema::hasTable('parametres')) {
-            try {
-                $data_parametre = Parametre::first();
-            } catch (Throwable $th) {
-                $data_parametre = null;
-            }
+            $data_parametre = Parametre::with('media')->first();
         }
-
 
         view()->share([
             'parametre' => $data_parametre ?? null,
