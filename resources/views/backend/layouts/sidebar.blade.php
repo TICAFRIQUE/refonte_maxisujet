@@ -77,45 +77,85 @@
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ Route::is('dashboard.*') ? 'active' : '' }} "
                             href="{{ route('dashboard.index') }}">
-                            <i class="ri-dashboard-2-line"></i> <span>TABLEAU DE BORD</span>
+                            <i class="ri-home-4-line"></i> <span>TABLEAU DE BORD</span>
                         </a>
                     </li>
                 @endcan
 
+                @can('voir-categorie')
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ Route::is('categorie.*') ? 'active' : '' }} "
+                            href="{{ route('categorie.index') }}">
+                            <i class="ri-folder-3-line"></i> <span>CATEGORIES</span>
+                        </a>
+                    </li>
+                @endcan
 
+                @can('voir-matiere')
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ Route::is('matiere.*') ? 'active' : '' }} "
+                            href="{{ route('matiere.index') }}">
+                            <i class="ri-book-2-line"></i> <span>MATIERES</span>
+                        </a>
+                    </li>
+                @endcan
 
+                @can('voir-niveau')
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ Route::is('niveau.*') ? 'active' : '' }} "
+                            href="{{ route('niveau.create') }}">
+                            <i class="ri-bar-chart-grouped-line"></i> <span>NIVEAUX</span>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('voir-sujet')
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ Route::is('sujet.*') ? 'active' : '' }} "
+                            href="{{ route('sujet.index') }}">
+                            <i class="ri-file-list-3-line"></i> <span>SUJETS</span>
+                        </a>
+                    </li>
+                @endcan
 
                 @if (Auth::user()->role == 'superadmin' || Auth::user()->role == 'developpeur' || Auth::user()->can('voir-parametre'))
                     <li class="nav-item">
                         <a class="nav-link menu-link" href="#sidebarAuth" data-bs-toggle="collapse" role="button"
                             aria-controls="sidebarAuth">
-                            <i class=" ri-settings-2-fill"></i> <span>PARAMETRE</span>
+                            <i class="ri-settings-3-line"></i> <span>PARAMETRE</span>
                         </a>
                         <div class="collapse menu-dropdown {{ Route::is('role.*') || Route::is('parametre.*') || Route::is('module.*') || Route::is('role.*') || Route::is('permission.*') || Route::is('admin-register.*') ? 'show' : '' }}"
                             id="sidebarAuth">
                             <ul class="nav nav-sm flex-column">
                                 <li class="nav-item active">
                                     <a href="{{ route('parametre.index') }}"
-                                        class="nav-link {{ Route::is('parametre.*') ? 'active' : '' }}">Informations</a>
+                                        class="nav-link {{ Route::is('parametre.*') ? 'active' : '' }}">
+                                        <i class="ri-information-line"></i> Informations
+                                    </a>
                                 </li>
-
                                 <li class="nav-item active">
                                     <a href="{{ route('admin-register.index') }}"
-                                        class="nav-link {{ Route::is('admin-register.*') ? 'active' : '' }}">Utilisateurs</a>
+                                        class="nav-link {{ Route::is('admin-register.*') ? 'active' : '' }}">
+                                        <i class="ri-user-settings-line"></i> Utilisateurs
+                                    </a>
                                 </li>
-
                                 <li class="nav-item">
                                     <a href="{{ route('module.index') }}"
-                                        class="nav-link {{ Route::is('module.*') ? 'active' : '' }}">Modules</a>
+                                        class="nav-link {{ Route::is('module.*') ? 'active' : '' }}">
+                                        <i class="ri-apps-line"></i> Modules
+                                    </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('role.index') }}"
-                                        class="nav-link {{ Route::is('role.*') ? 'active' : '' }}">Roles</a>
+                                        class="nav-link {{ Route::is('role.*') ? 'active' : '' }}">
+                                        <i class="ri-shield-user-line"></i> Roles
+                                    </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('permission.index') }}"
-                                        class="nav-link {{ Route::is('permission.*') ? 'active' : '' }}">Permissions/
-                                        Roles</a>
+                                        class="nav-link {{ Route::is('permission.*') ? 'active' : '' }}">
+                                        <i class="ri-lock-2-line"></i> Permissions/Roles
+                                    </a>
                                 </li>
                             </ul>
                         </div>

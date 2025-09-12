@@ -1,10 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\backend\DashboardController;
-use App\Http\Controllers\backend\AdminController;
-use App\Http\Controllers\backend\ModuleController;
 use App\Http\Controllers\backend\RoleController;
+use App\Http\Controllers\backend\AdminController;
+use App\Http\Controllers\backend\SujetController;
+use App\Http\Controllers\backend\ModuleController;
+use App\Http\Controllers\backend\NiveauController;
+use App\Http\Controllers\backend\MatiereController;
+use App\Http\Controllers\backend\CategorieController;
+use App\Http\Controllers\backend\DashboardController;
 use App\Http\Controllers\backend\ParametreController;
 use App\Http\Controllers\backend\PermissionController;
 
@@ -35,7 +39,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
         route::get('maintenance-up', 'maintenanceUp')->name('parametre.maintenance-up');
         route::get('maintenance-down', 'maintenanceDown')->name('parametre.maintenance-down');
         route::get('optimize-clear', 'optimizeClear')->name('parametre.optimize-clear');
-         Route::get('download-backup/{file}', 'downloadBackup')->name('setting.download-backup');  // download backup db
+        Route::get('download-backup/{file}', 'downloadBackup')->name('setting.download-backup');  // download backup db
     });
 
 
@@ -74,4 +78,43 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
         route::post('update/{id}', 'update')->name('module.update');
         route::get('delete/{id}', 'delete')->name('module.delete');
     });
+
+
+    // categories
+    Route::prefix('categorie')->controller(CategorieController::class)->group(function () {
+        route::get('', 'index')->name('categorie.index');
+        route::post('store', 'store')->name('categorie.store')->middleware('can:creer-categorie');
+        route::post('update/{id}', 'update')->name('categorie.update')->middleware('can:modifier-categorie');
+        route::get('delete/{id}', 'delete')->name('categorie.delete')->middleware('can:supprimer-categorie');
+    });
+
+    // matieres
+    Route::prefix('matiere')->controller(MatiereController::class)->group(function () {
+        route::get('', 'index')->name('matiere.index');
+        route::post('store', 'store')->name('matiere.store')->middleware('can:creer-matiere');
+        route::post('update/{id}', 'update')->name('matiere.update')->middleware('can:modifier-matiere');
+        route::get('delete/{id}', 'delete')->name('matiere.delete')->middleware('can:supprimer-matiere');
+    });
+
+    //niveau & cycle
+    Route::prefix('niveau')->controller(NiveauController::class)->group(function () {
+        route::get('create', 'create')->name('niveau.create')->middleware('can:creer-niveau');
+        route::post('store', 'store')->name('niveau.store')->middleware('can:creer-niveau');
+        route::get('add-subCat/{id}', 'addSubCat')->name('niveau.add-subCat')->middleware('can:creer-niveau'); // add subCategorie
+        route::post('add-subCat-store', 'addSubCatStore')->name('niveau.add-subCat-store')->middleware('can:creer-niveau'); // add subCategorie
+        route::get('edit/{id}', 'edit')->name('niveau.edit')->middleware('can:modifier-niveau');
+        route::post('update/{id}', 'update')->name('niveau.update')->middleware('can:modifier-niveau');
+        route::get('delete/{id}', 'delete')->name('niveau.delete')->middleware('can:supprimer-niveau');
+    });
+
+    // sujets
+    Route::prefix('sujet')->controller(SujetController::class)->group(function () {
+        route::get('', 'index')->name('sujet.index');
+        route::get('create', 'create')->name('sujet.create')->middleware('can:creer-sujet');
+        route::post('store', 'store')->name('sujet.store')->middleware('can:creer-sujet');
+        route::get('edit/{id}', 'edit')->name('sujet.edit')->middleware('can:modifier-sujet');
+        route::post('update/{id}', 'update')->name('sujet.update')->middleware('can:modifier-sujet');
+        route::get('delete/{id}', 'delete')->name('sujet.delete')->middleware('can:supprimer-sujet');
+    });
+
 });

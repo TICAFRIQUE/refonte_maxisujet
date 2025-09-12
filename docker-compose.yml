@@ -1,0 +1,37 @@
+services:
+  app:
+    build: .
+    container_name: laravel_app
+    ports:
+      - "8000:8000"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: true
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: refonte_maxisujet
+      DB_USERNAME: root
+      DB_PASSWORD: ""
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - db
+    command: sh -c "
+      composer install --no-dev --optimize-autoloader --ignore-platform-reqs &&
+      php artisan migrate --force &&
+      php artisan db:seed --force &&
+      php artisan serve --host=0.0.0.0 --port=8000 "
+    
+
+  db:
+    image: mysql:8.0
+    container_name: laravel_db
+    environment:
+      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_DATABASE: refonte_maxisujet
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:

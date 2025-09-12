@@ -58,10 +58,17 @@ class AppServiceProvider extends ServiceProvider
         //recuperer les parametres
         if (Schema::hasTable('parametres')) {
             $data_parametre = Parametre::with('media')->first();
+            view()->share([
+                'parametre' => $data_parametre ?? null,
+            ]);
         }
 
-        view()->share([
-            'parametre' => $data_parametre ?? null,
-        ]);
+        //partager les niveaux avec toutes les vues
+        if (Schema::hasTable('niveaux')) {
+            $data_niveaux = \App\Models\Niveau::whereNull('parent_id')->with('children', fn($q) => $q->OrderBy('position', 'ASC'))->withCount('children')->OrderBy('position', 'ASC')->get();
+            view()->share([
+                'data_niveaux' => $data_niveaux ?? null,
+            ]);
+        }
     }
 }

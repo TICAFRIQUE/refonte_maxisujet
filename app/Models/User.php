@@ -49,6 +49,12 @@ class User extends Authenticatable
     }
 
 
+    // RELATIONSHIPS
+    // un user a plusieurs sujets
+    public function sujets()
+    {
+        return $this->hasMany(Sujet::class);
+    }
 
 
 
