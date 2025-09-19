@@ -52,12 +52,33 @@
                                 <div class="mb-3">
                                     <label for="niveaux" class="form-label">Niveaux</label>
                                     <select name="niveaux[]" id="niveaux" class="form-control" data-choices
-                                        data-choices-multiple-groups="true" multiple required>
-                                        <option value=""> Sélectionner</option>
-                                        @foreach ($niveaux as $niveau)
-                                            @include('backend.pages.sujet.partials.subNiveauOption', [
-                                                'sousNiveaux' => $niveau,
-                                            ])
+                                        data-choices-multiple-groups="true" multiple required
+                                        style="max-height:220px;overflow-y:auto;">
+                                        @foreach ($data_niveaux as $cycle)
+                                            <optgroup label="{{ $cycle->libelle }}">
+                                                @foreach ($cycle->children as $niveau)
+                                                    <option value="{{ $niveau->id }}"
+                                                        {{ (collect(old('niveaux'))->contains($niveau->id)) ? 'selected' : '' }}>
+                                                        {{ $niveau->libelle }}
+                                                    </option>
+                                                    @if($niveau->children && $niveau->children->count())
+                                                        @foreach($niveau->children as $subNiveau)
+                                                            <option value="{{ $subNiveau->id }}"
+                                                                {{ (collect(old('niveaux'))->contains($subNiveau->id)) ? 'selected' : '' }}>
+                                                                &nbsp;&nbsp;{{ $subNiveau->libelle }}
+                                                            </option>
+                                                            @if($subNiveau->children && $subNiveau->children->count())
+                                                                @foreach($subNiveau->children as $subSubNiveau)
+                                                                    <option value="{{ $subSubNiveau->id }}"
+                                                                        {{ (collect(old('niveaux'))->contains($subSubNiveau->id)) ? 'selected' : '' }}>
+                                                                        &nbsp;&nbsp;&nbsp;&nbsp;{{ $subSubNiveau->libelle }}
+                                                                    </option>
+                                                                @endforeach
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
+                                                @endforeach
+                                            </optgroup>
                                         @endforeach
                                     </select>
                                 </div>

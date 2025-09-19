@@ -16,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => App\Http\Middleware\Admin::class,
         ]);
+
+        // Configurer la redirection d'authentification
+        $middleware->redirectGuestsTo(fn () => route('user.loginForm'));
       
     })
     ->withExceptions(function (Exceptions $exceptions) {

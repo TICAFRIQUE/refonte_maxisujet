@@ -1,0 +1,138 @@
+/* Images du carousel */
+.carousel-img {
+    /* height: 280px;
+    width: 100%; */
+    /* object-fit: cover;
+    object-position: center; */
+    /* Amélioration de la netteté */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+/* Responsive pour mobile */
+@media (max-width: 768px) {
+    .carousel-img {
+        height: 250px; /* Augmentation de la hauteur pour moins de compression */
+    }
+    
+    .carousel-caption {
+        padding: 0.5rem;
+        /* Amélioration de la lisibilité */
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    }
+    
+    .carousel-caption h3 {
+        font-size: 1.3rem; /* Légèrement plus grand */
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+    
+    .carousel-caption p {
+        font-size: 0.95rem; /* Légèrement plus grand */
+        margin-bottom: 0.5rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.4;
+    }
+    
+    .carousel-caption .btn {
+        font-size: 0.85rem; /* Légèrement plus grand */
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+    }
+}
+
+/* Responsive pour très petits écrans */
+@media (max-width: 480px) {
+    .carousel-img {
+        height: 200px; /* Augmentation de la hauteur */
+    }
+    
+    .carousel-caption {
+        padding: 0.5rem;
+        bottom: 1rem;
+    }
+    
+    .carousel-caption h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .carousel-caption p {
+        font-size: 0.85rem;
+        margin-bottom: 0.3rem;
+        -webkit-line-clamp: 2; /* Garder 2 lignes au lieu d'1 */
+    }
+    
+    .carousel-caption .btn {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+    }
+}
+
+/* Améliorations pour le carousel en général */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 8%;
+}
+
+@media (max-width: 768px) {
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 12%;
+    }
+    
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        width: 2rem; /* Plus grand pour une meilleure visibilité */
+        height: 2rem;
+    }
+}
+
+/* Indicateurs responsive */
+.carousel-indicators {
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 480px) {
+    .carousel-indicators {
+        margin-bottom: 0.5rem;
+    }
+    
+    .carousel-indicators [data-bs-target] {
+        width: 10px; /* Légèrement plus grand */
+        height: 10px;
+        margin-right: 3px;
+        margin-left: 3px;
+    }
+}
+
+/* Overlay amélioré pour une meilleure lisibilité */
+.carousel-caption {
+    background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.8) 0%,
+        rgba(0, 0, 0, 0.6) 50%,
+        rgba(0, 0, 0, 0.3) 100%
+    );
+    border-radius: 0.5rem;
+    /* Suppression du backdrop-filter qui peut causer du flou */
+    /* backdrop-filter: blur(5px); */
+}
+
+/* Animation douce pour le carousel */
+.carousel-item {
+    transition: transform 0.6s ease-in-out;
+}
+
+/* Amélioration de la netteté pour les transitions */
+.carousel-item-next,
+.carousel-item-prev,
+.carousel-item.active {
+    transform: translateX(0);
+    backface-visibility: hidden;
+}

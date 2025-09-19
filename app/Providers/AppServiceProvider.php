@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Throwable;
+use App\Models\Niveau;
+use App\Models\Categorie;
 use App\Models\Parametre;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Schema;
@@ -26,7 +28,8 @@ class AppServiceProvider extends ServiceProvider
     {
         //
 
-
+        //pagination par defaut a 10
+        \Illuminate\Pagination\Paginator::useBootstrapFive();
 
         Schema::defaultStringLength(191);
 
@@ -65,9 +68,25 @@ class AppServiceProvider extends ServiceProvider
 
         //partager les niveaux avec toutes les vues
         if (Schema::hasTable('niveaux')) {
-            $data_niveaux = \App\Models\Niveau::whereNull('parent_id')->with('children', fn($q) => $q->OrderBy('position', 'ASC'))->withCount('children')->OrderBy('position', 'ASC')->get();
+            $data_niveaux = Niveau::whereNull('parent_id')->with('children', fn($q) => $q->OrderBy('position', 'ASC'))->withCount('children')->OrderBy('position', 'ASC')->active()->get();
             view()->share([
                 'data_niveaux' => $data_niveaux ?? null,
+            ]);
+        }
+
+        // partager les categories avec toutes les vues
+        if (Schema::hasTable('categories')) {
+            $data_categories = Categorie::active()->get();
+            view()->share([
+                'data_categories' => $data_categories ?? null,
+            ]);
+        }
+
+        //partager les matieres avec toutes les vues
+        if (Schema::hasTable('matieres')) {
+            $data_matieres = \App\Models\Matiere::active()->get();
+            view()->share([
+                'data_matieres' => $data_matieres ?? null,
             ]);
         }
     }

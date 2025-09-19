@@ -6,11 +6,16 @@ use App\Http\Controllers\backend\AdminController;
 use App\Http\Controllers\backend\SujetController;
 use App\Http\Controllers\backend\ModuleController;
 use App\Http\Controllers\backend\NiveauController;
+use App\Http\Controllers\backend\SliderController;
+use App\Http\Controllers\frontend\HomeControlleur;
+use App\Http\Controllers\frontend\UserControlleur;
 use App\Http\Controllers\backend\MatiereController;
 use App\Http\Controllers\backend\CategorieController;
 use App\Http\Controllers\backend\DashboardController;
 use App\Http\Controllers\backend\ParametreController;
 use App\Http\Controllers\backend\PermissionController;
+use App\Http\Controllers\frontend\SujetFrontController;
+use App\Http\Controllers\frontend\UserDashboardControlleur;
 
 
 
@@ -112,9 +117,73 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
         route::get('', 'index')->name('sujet.index');
         route::get('create', 'create')->name('sujet.create')->middleware('can:creer-sujet');
         route::post('store', 'store')->name('sujet.store')->middleware('can:creer-sujet');
+        route::get('show/{id}', 'show')->name('sujet.show')->middleware('can:voir-sujet');
+        Route::post('sujet/{id}/approuve/{etat}', [SujetController::class, 'approuve'])->name('sujet.approuve');
         route::get('edit/{id}', 'edit')->name('sujet.edit')->middleware('can:modifier-sujet');
         route::post('update/{id}', 'update')->name('sujet.update')->middleware('can:modifier-sujet');
         route::get('delete/{id}', 'delete')->name('sujet.delete')->middleware('can:supprimer-sujet');
     });
 
+    // sliders
+    Route::prefix('slider')->controller(SliderController::class)->group(function () {
+        route::get('', 'index')->name('slider.index');
+        route::get('create', 'create')->name('slider.create');
+        route::post('store', 'store')->name('slider.store');
+        route::get('show/{id}', 'show')->name('slider.show');
+        route::get('edit/{id}', 'edit')->name('slider.edit');
+        route::post('update/{id}', 'update')->name('slider.update');
+        route::get('delete/{id}', 'delete')->name('slider.delete');
+    });
 });
+
+// ROUTES FRONTEND (PUBLIC)
+Route::get('/', function () {
+    return view('frontend.index');
+})->name('accueil');
+
+Route::get('/', HomeControlleur::class)->name('accueil');
+
+// Liste des sujets 
+Route::prefix('sujets')->controller(SujetFrontController::class)->group(function () {
+    route::get('', 'index')->name('sujet.front.index');
+    Route::get('/detail/{libelle}', 'show')->name('sujet.front.show');
+    Route::get('/apercu/{id}/{type}', 'apercu')->name('sujet.front.apercu')->middleware('auth');
+    Route::get('/download/{id}/{type}', 'download')->name('sujet.front.download')->middleware('auth');
+});
+
+// utilisateurs
+Route::prefix('user')->controller(UserControlleur::class)->group(function () {
+    // login and logout
+    route::get('login', 'loginForm')->name('user.loginForm');
+    route::post('loginStore', 'login')->name('user.login');
+    route::get('register', 'registerForm')->name('user.registerForm');
+    route::post('registerStore', 'register')->name('user.register');
+    route::post('logout', 'logout')->name('user.logout')->middleware('auth');
+
+
+
+    // password reset
+    route::get('password/forgot', 'showForgot')->name('password.request');
+    route::post('password/email', 'sendResetLink')->name('password.email');
+    route::get('password/reset/{token}', 'showReset')->name('password.reset');
+    route::post('password/reset', 'resetPassword')->name('password.update');
+});
+
+// dashboard user
+Route::prefix('user')->controller(UserDashboardControlleur::class)->middleware('auth')->group(function () {
+    route::get('dashboard', 'dashboard')->name('user.dashboard');
+    route::post('updateProfile', 'updateProfile')->name('user.profile');
+    route::get('sujet/index', 'indexSujet')->name('user.sujet.index');
+    route::get('sujet/create', 'createSujet')->name('user.sujet.create');
+    route::post('sujet/store', 'storeSujet')->name('user.sujet.store');
+    route::get('sujet/{id}/edit', 'editSujet')->name('user.sujet.edit');
+    route::post('sujet/{id}/update', 'updateSujet')->name('user.sujet.update');
+    route::get('sujet/delete/{id}', 'delete')->name('user.sujet.delete');
+});
+
+// Pages statiques
+Route::view('/cgu', 'frontend.pages.static.cgu')->name('cgu');
+Route::view('/confidentialite', 'frontend.pages.static.confidentialite')->name('confidentialite');
+
+// SEO Routes
+Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');

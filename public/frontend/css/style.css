@@ -1,0 +1,162 @@
+body {
+            background: #f8fafc;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(90deg, rgb(1, 10, 35), #2563eb);
+        }
+
+        .navbar .nav-link,
+        .navbar .navbar-brand {
+            color: #fff !important;
+            font-weight: 500;
+        }
+
+        .navbar .btn-outline-light {
+            border-color: #fff;
+            color: #fff;
+        }
+
+        .navbar .btn-outline-light:hover {
+            background: #fff;
+            color: #04f;
+        }
+
+        .navbar .btn-warning {
+            background: #f60;
+            border: none;
+            color: #fff;
+        }
+
+        .navbar .btn-warning:hover {
+            background: #e55b00;
+            color: #fff;
+        }
+
+        /* Carousel */
+        .carousel-caption {
+            background: rgba(0, 0, 0, 0.45);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .carousel-caption h3 {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .carousel-caption p {
+            color: #f1f5f9;
+        }
+
+        .carousel-caption .btn {
+            background: #f60;
+            border: none;
+        }
+
+        .carousel-caption .btn:hover {
+            background: #04f;
+        }
+
+        /* Cartes */
+        .card {
+            border-radius: 1rem;
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-title {
+            color: #04f;
+            font-weight: 600;
+        }
+
+        .card .btn-primary {
+            background: #04f;
+            border: none;
+        }
+
+        .card .btn-primary:hover {
+            background: #f60;
+        }
+
+        .btn-outline-primary:hover {
+            background: #04f;
+            color: #fff;
+        }
+
+        .badge {
+            font-size: 0.8rem;
+        }
+
+        .badge.bg-info {
+            background: #e6f0ff !important;
+            color: #04f !important;
+        }
+
+        .badge.bg-secondary {
+            background: #fff4e6 !important;
+            color: #f60 !important;
+        }
+
+        /* Sections */
+        .section-title {
+            color: #04f;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1e293b;
+            color: #fff;
+            padding: 2rem 0;
+        }
+
+        .footer a {
+            color: #f60;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: #04f;
+        }
+
+        /* Select2 Customization */
+        .select2-custom {
+            width: 100%;
+            border: 1px solid #007bff; /* Couleur de bordure */
+            border-radius: 0.25rem; /* Arrondi des coins */
+        }
+
+        .select2-custom .select2-selection {
+            background-color: #f8f9fa; /* Couleur de fond */
+            color: #495057; /* Couleur du texte */
+        }
+
+        .select2-custom .select2-selection--single .select2-selection__rendered {
+            color: #495057; /* Couleur du texte sélectionné */
+        }
+
+        .select2-custom .select2-selection--single .select2-selection__arrow {
+            background-color: #007bff; /* Couleur de la flèche */
+        }
+
+        .select2-custom .select2-selection--single .select2-selection__arrow b {
+            border-color: #fff transparent transparent transparent; /* Couleur de la flèche */
+        }
+
+        .select2-custom .select2-results__option {
+            color: #495057; /* Couleur du texte des options */
+        }
+
+        .select2-custom .select2-results__option--highlighted {
+            background-color: #007bff; /* Couleur de fond de l'option survolée */
+            color: #fff; /* Couleur du texte de l'option survolée */
+        }

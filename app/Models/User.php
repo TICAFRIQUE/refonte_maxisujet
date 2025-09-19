@@ -16,7 +16,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable  , HasPermissions, HasRoles , SoftDeletes;
+    use HasFactory, Notifiable, HasPermissions, HasRoles, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -32,6 +32,12 @@ class User extends Authenticatable
         'password',
         'avatar',
         'role',
+        //autheur fields
+        'profil', //['eleve', 'enseignant', 'etudiant', 'parent', 'autre']
+        'last_login_at', //[derniere connexion]
+        'last_login_ip', //['adresse ip']
+        'points', // ['points de l'utilisateur']
+        'statut', // ['actif', 'inactif']
         'created_at',
         'updated_at',
         'deleted_at',
@@ -55,6 +61,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Sujet::class);
     }
+
+        // Historique des téléchargements
+        public function downloads()
+        {
+            return $this->hasMany(DownloadLog::class);
+        }
 
 
 

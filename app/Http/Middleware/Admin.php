@@ -17,7 +17,7 @@ class Admin
     public function handle(Request $request, Closure $next): Response
     {
         // Si l'utilisateur est authentifié et n'est pas un client
-        if (Auth::check() && Auth::user()->role !== 'client') {
+        if (Auth::check() && Auth::user()->role !== 'auteur') {
             return $next($request);
         }
 

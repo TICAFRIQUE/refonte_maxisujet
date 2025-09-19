@@ -1,2 +1,38 @@
+# Robots.txt pour MaxiSujets
 User-agent: *
-Disallow:
+
+# Autorisé
+Allow: /
+Allow: /sujets
+Allow: /categories
+Allow: /niveaux
+Allow: /matieres
+
+# Interdit
+Disallow: /admin
+Disallow: /login
+Disallow: /register
+Disallow: /dashboard
+Disallow: /api
+Disallow: /storage/app
+Disallow: /vendor
+Disallow: /config
+Disallow: *.log$
+Disallow: *.env$
+
+# Autorise les fichiers CSS, JS et images
+Allow: *.css$
+Allow: *.js$
+Allow: *.jpg$
+Allow: *.jpeg$
+Allow: *.png$
+Allow: *.gif$
+Allow: *.webp$
+Allow: *.svg$
+Allow: *.pdf$
+
+# Sitemap
+Sitemap: {{ url('/sitemap.xml') }}
+
+# Crawl-delay (optionnel)
+Crawl-delay: 1

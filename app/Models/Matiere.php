@@ -49,4 +49,11 @@ class Matiere extends Model
     {
         return $this->hasMany(Sujet::class);
     }
+
+
+    // scopes
+    public function scopeActive($query)
+    {
+        return $query->where('statut', 'active');
+    }
 }

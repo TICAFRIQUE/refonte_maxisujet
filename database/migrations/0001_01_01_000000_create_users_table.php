@@ -20,6 +20,14 @@ return new class extends Migration
             $table->string('password')->nullable();
             $table->text('avatar')->nullable();
             $table->string('role')->nullable();
+            
+            // autheurs fields
+            $table->string('profil')->nullable(); // eleve, enseignant, parent
+            $table->timestamp('last_login_at')->nullable(); // dernier connexion
+            $table->string('last_login_ip')->nullable(); //dernier ip
+            $table->integer('points')->nullable()->default(0);
+            $table->enum('statut', ['active', 'desactive'])->default('active')->nullable();
+            
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

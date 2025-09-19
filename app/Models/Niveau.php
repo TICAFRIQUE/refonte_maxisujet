@@ -81,4 +81,10 @@ class Niveau extends Model
     {
         return $this->belongsToMany(Sujet::class, 'niveau_sujet', 'niveau_id', 'sujet_id');
     }
+
+    // scopes
+    public function scopeActive($query)
+    {
+        return $query->where('statut', 'active');
+    }
 }

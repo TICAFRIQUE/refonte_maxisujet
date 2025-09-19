@@ -19,7 +19,7 @@ class Sujet extends Model implements HasMedia
         'libelle', // unique  = libelle categorie+random(5)
         'description',
         'statut', // enum['active', 'desactive']
-        'approuve', // boolean
+        'approuve', // boolean [true, false]
         'annee',
         'categorie_id',
         'matiere_id',
@@ -60,6 +60,12 @@ class Sujet extends Model implements HasMedia
         return $this->belongsToMany(Niveau::class, 'niveau_sujet', 'sujet_id', 'niveau_id');
     }
 
+    public function downloads()
+        {
+            return $this->hasMany(DownloadLog::class);
+        }
+
+
 
 
     /**
@@ -87,4 +93,15 @@ class Sujet extends Model implements HasMedia
     //     $this->addMediaCollection('corrige')->useDisk('public');
     //     $this->addMediaCollection('non_corrige')->useDisk('public');
     // }
+
+
+    // scopes
+    public function scopeActive($query)
+    {
+        return $query->where('statut', 'active');
+    }
+    public function scopeApprouve($query)
+    {
+        return $query->where('approuve', true);
+    }
 }

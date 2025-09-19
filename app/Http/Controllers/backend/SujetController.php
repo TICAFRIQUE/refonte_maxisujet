@@ -4,6 +4,7 @@ namespace App\Http\Controllers\backend;
 
 use App\Models\Sujet;
 use App\Models\Niveau;
+use App\Models\Categorie;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -68,6 +69,8 @@ class SujetController extends Controller
                 'corrige' => 'nullable|file|mimes:pdf,doc,docx',
             ]);
 
+            //generer le libelle a partir de la categorie et matiere
+
             $sujet = new Sujet();
             $sujet->categorie_id = $request->categorie_id;
             $sujet->matiere_id = $request->matiere_id;
@@ -77,9 +80,11 @@ class SujetController extends Controller
             $sujet->annee = $request->annee;
             $sujet->user_id = Auth::user()->id;
 
-            // Génération du libelle et du code si besoin
-            $sujet->libelle = $request->libelle ?? 'Sujet-' . uniqid();
-            $sujet->code = $request->code ?? strtoupper(substr($sujet->libelle, 0, 3)) . rand(10000, 99999);
+
+            // Générer le libelle à partir de la catégorie
+            $categorie = Categorie::find($request->categorie_id);
+            $sujet->libelle = $categorie->libelle . substr(str_shuffle('ABCDEFGHJKLMNPQRSTUVWXYZ' . '0123456789'), 0, 5);
+            $sujet->code = 'MS' . substr(str_shuffle('ABCDEFGHJKLMNPQRSTUVWXYZ' . '0123456789'), 0, 5);
 
             $sujet->save();
 
@@ -103,10 +108,14 @@ class SujetController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
-        
+        try {
+            $sujet = Sujet::with(['categorie', 'matiere', 'user', 'niveaux', 'media'])->findOrFail($id);
+            return view('backend.pages.sujet.show', compact('sujet'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Une erreur est survenue: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -129,6 +138,21 @@ class SujetController extends Controller
 
             return view('backend.pages.sujet.edit', compact('sujet', 'categories', 'matieres', 'users', 'niveaux'))
                 ->with('selectedNiveaux', $sujet->niveaux->pluck('id')->toArray());
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Une erreur est survenue: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Approuve the specified resource.
+     */
+    public function approuve($id, $etat)
+    {
+        try {
+            $sujet = Sujet::findOrFail($id);
+            $sujet->approuve = $etat;
+            $sujet->save();
+            return back()->with('success', 'Statut mis à jour.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Une erreur est survenue: ' . $e->getMessage());
         }
@@ -160,8 +184,10 @@ class SujetController extends Controller
             $sujet->statut = $request->statut;
             $sujet->approuve = $request->approuve;
             $sujet->annee = $request->annee;
-            $sujet->libelle = $request->libelle ?? $sujet->libelle;
-            $sujet->code = $request->code ?? $sujet->code;
+
+
+            $categorie = Categorie::find($request->categorie_id);
+            $sujet->libelle = $categorie->libelle . substr(str_shuffle('ABCDEFGHJKLMNPQRSTUVWXYZ' . '0123456789'), 0, 5);
             $sujet->save();
 
             // Met à jour les niveaux liés
@@ -186,8 +212,18 @@ class SujetController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function delete(string $id)
     {
         //
+        try {
+            Sujet::find($id)->delete();
+            return response()->json([
+                'status' => 200,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 500,
+            ]);
+        }
     }
 }

@@ -71,7 +71,12 @@
                                                     <i class="ri-more-fill align-middle"></i>
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end">
-                                                    <li><a href="{{ route('sujet.edit', $item->id) }}" type="button" class="dropdown-item edit-item-btn"><i
+                                                    <li><a href="{{ route('sujet.show', $item->id) }}" type="button"
+                                                            class="dropdown-item edit-item-btn"><i
+                                                                class="ri-eye-fill align-bottom me-2 text-muted"></i>
+                                                            Details</a></li>
+                                                    <li><a href="{{ route('sujet.edit', $item->id) }}" type="button"
+                                                            class="dropdown-item edit-item-btn"><i
                                                                 class="ri-pencil-fill align-bottom me-2 text-muted"></i>
                                                             Modifier</a></li>
                                                     <li>
