@@ -13,11 +13,13 @@
     <!-- Section actions avantages -->
     @include('frontend.sections.carte_avantage')
 
-    <!-- Cycles horizontal cycles -->
-    @include('frontend.components.cycle_niveaux')
-
+   
     <!-- Derniers documents -->
     @include('frontend.sections.recent_document')
+
+
+     <!-- Cycles horizontal cycles -->
+    @include('frontend.components.cycle_niveaux')
 
     <!-- Blog & Astuces -->
     {{-- @include('frontend.sections.blog_astuce') --}}

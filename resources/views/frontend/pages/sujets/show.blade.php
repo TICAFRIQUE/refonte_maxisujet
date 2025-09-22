@@ -11,7 +11,7 @@
 <div class="container my-5">
     <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-4 my-5">
-        <ol class="breadcrumb bg-white rounded shadow-sm px-3 py-2">
+        <ol class="breadcrumb bg-white rounded shadow-sm p-4">
             <li class="breadcrumb-item">
                 <a href="{{ route('accueil') }}" class="text-primary text-decoration-none">
                     <i class="bi bi-house-door"></i> Accueil
@@ -70,9 +70,19 @@
                     <h6 class="text-primary mb-3"><i class="bi bi-file-earmark-text"></i> Aperçu du sujet</h6>
                     @auth
                         @if(auth()->user()->points > 0 && $sujet->getFirstMediaUrl('non_corrige'))
-                            <iframe src="{{ route('sujet.front.apercu', ['id' => $sujet->id, 'type' => 'non_corrige']) }}"
-                                    style="width:100%;height:180px;border-radius:0.5rem;border:1px solid #e5e7eb;margin-bottom:1rem;"
-                                    frameborder="0"></iframe>
+                            @php
+                                $fileUrl = $sujet->getFirstMediaUrl('non_corrige');
+                                $isPdf = $fileUrl && Str::endsWith($fileUrl, '.pdf');
+                            @endphp
+                            <div class="text-center mb-3">
+                                @if($isPdf)
+                                    <img src="{{ asset('frontend/img/pdf-icon.png') }}" alt="PDF"
+                                         class="img-fluid" style="max-height:120px;">
+                                @else
+                                    <img src="{{ $fileUrl }}" alt="Aperçu"
+                                         class="img-fluid rounded" style="max-height:120px; object-fit:cover; border:1px solid #eee;">
+                                @endif
+                            </div>
                         @else
                             <div class="alert alert-info w-100 mb-3">
                                 @if(auth()->user()->points <= 0)
@@ -91,9 +101,19 @@
                     <h6 class="text-success mb-3"><i class="bi bi-file-earmark-check"></i> Aperçu du corrigé</h6>
                     @auth
                         @if(auth()->user()->points > 0 && $sujet->getFirstMediaUrl('corrige'))
-                            <iframe src="{{ route('sujet.front.apercu', ['id' => $sujet->id, 'type' => 'corrige']) }}"
-                                    style="width:100%;height:180px;border-radius:0.5rem;border:1px solid #e5e7eb;"
-                                    frameborder="0"></iframe>
+                            @php
+                                $corrigeUrl = $sujet->getFirstMediaUrl('corrige');
+                                $isPdfCorrige = $corrigeUrl && Str::endsWith($corrigeUrl, '.pdf');
+                            @endphp
+                            <div class="text-center mb-3">
+                                @if($isPdfCorrige)
+                                    <img src="{{ asset('frontend/img/pdf-icon.png') }}" alt="PDF"
+                                         class="img-fluid" style="max-height:120px;">
+                                @else
+                                    <img src="{{ $corrigeUrl }}" alt="Aperçu"
+                                         class="img-fluid rounded" style="max-height:120px; object-fit:cover; border:1px solid #eee;">
+                                @endif
+                            </div>
                         @else
                             <div class="alert alert-info w-100">
                                 @if(auth()->user()->points <= 0)

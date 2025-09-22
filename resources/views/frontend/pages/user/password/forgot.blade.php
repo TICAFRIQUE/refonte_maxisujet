@@ -3,7 +3,7 @@
 @section('content')
 <div class="container my-5">
     <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb bg-white rounded shadow-sm px-3 py-2">
+        <ol class="breadcrumb bg-white rounded shadow-sm p-4">
             <li class="breadcrumb-item"><a href="{{ route('accueil') }}" class="text-primary text-decoration-none"><i class="bi bi-house-door"></i> Accueil</a></li>
             <li class="breadcrumb-item active" aria-current="page">Mot de passe oublié</li>
         </ol>
@@ -17,8 +17,8 @@
                     <span>Entrez votre email pour recevoir un lien de réinitialisation.</span>
                 </div>
                 <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success">{{ session('status') }}</div>
+                    @if (session('success'))
+                        <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
                     @if ($errors->any())
                         <div class="alert alert-danger">
@@ -30,7 +30,7 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('password.email') }}" class="needs-validation" novalidate>
+                    <form method="POST" action="{{ route('password.email') }}" class="needs-validation" novalidate id="forgotForm">
                         @csrf
                         <div class="mb-3">
                             <label for="email" class="form-label">Adresse email</label>
@@ -39,7 +39,10 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Envoyer le lien</button>
+                        <button type="submit" class="btn btn-primary w-100" id="submitBtn">
+                            <span id="btnText">Envoyer le lien</span>
+                            <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        </button>
                     </form>
                 </div>
             </div>
@@ -47,3 +50,24 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    $('#forgotForm').on('submit', function(e) {
+        var email = $('#email').val().trim();
+        if(email === '') {
+            e.preventDefault();
+            $('#email').addClass('is-invalid');
+            $('#submitBtn').prop('disabled', false);
+            $('#btnText').removeClass('d-none');
+            $('#spinner').addClass('d-none');
+            return false;
+        } else {
+            $('#email').removeClass('is-invalid');
+            $('#submitBtn').prop('disabled', true);
+            $('#btnText').addClass('d-none');
+            $('#spinner').removeClass('d-none');
+        }
+    });
+</script>
+@endpush

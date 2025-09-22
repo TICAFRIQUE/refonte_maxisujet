@@ -122,7 +122,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('sujet.front.index') }}">Sujets</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('sujet.front.index') }}">Documents</a></li>
 
                     <li class="nav-item"><a class="nav-link" href="#">Actualités</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Forum</a></li>

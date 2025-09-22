@@ -5,7 +5,7 @@
     <div class="container my-5">
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb bg-white rounded shadow-sm px-3 py-2">
+            <ol class="breadcrumb bg-white rounded shadow-sm p-4">
                 <li class="breadcrumb-item">
                     <a href="{{ route('accueil') }}" class="text-primary text-decoration-none">
                         <i class="bi bi-house-door"></i> Accueil
@@ -34,7 +34,7 @@
                             </div>
                         @endif
 
-                        <form method="POST" action="{{ route('user.register') }}" class="needs-validation" novalidate>
+                        <form method="POST" action="{{ route('user.register') }}" class="needs-validation" novalidate id="registerForm">
                             @csrf
 
                             <div class="mb-3">
@@ -120,7 +120,10 @@
                                 <div class="g-recaptcha" data-sitekey="{{ env('NOCAPTCHA_SITEKEY') }}"></div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary w-100">S'inscrire</button>
+                            <button type="submit" class="btn btn-primary w-100" id="submitBtn">
+                                <span id="btnText">S'inscrire</span>
+                                <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                            </button>
                             <div class="text-center mt-3">
                                 <small class="text-muted">Déjà un compte ? <a href="{{ route('user.loginForm') }}" class="text-decoration-none">Se connecter</a></small>
                             </div>
@@ -176,6 +179,41 @@
     }
     pwd?.addEventListener('input', refreshStrength);
     refreshStrength();
+
+    // Empêcher la soumission si des champs obligatoires sont vides
+    $('#registerForm').on('submit', function(e) {
+        let valid = true;
+
+        // Vérifie chaque champ requis
+        $('#registerForm [required]').each(function() {
+            if (!$(this).val() || ($(this).is(':checkbox') && !$(this).is(':checked'))) {
+                $(this).addClass('is-invalid');
+                valid = false;
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+        });
+
+        if (!valid) {
+            e.preventDefault();
+            $('#submitBtn').prop('disabled', false);
+            $('#btnText').removeClass('d-none');
+            $('#spinner').addClass('d-none');
+            return false;
+        }
+
+        // Spinner lors de la soumission
+        $('#submitBtn').prop('disabled', true);
+        $('#btnText').addClass('d-none');
+        $('#spinner').removeClass('d-none');
+    });
+
+    // Si la page contient des erreurs, on réinitialise le bouton et le spinner
+    @if ($errors->any())
+        $('#submitBtn').prop('disabled', false);
+        $('#btnText').removeClass('d-none');
+        $('#spinner').addClass('d-none');
+    @endif
 </script>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 @endpush

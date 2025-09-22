@@ -2,15 +2,21 @@
 
 namespace App\Http\Controllers\frontend;
 
+use Exception;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Services\PHPMailerService;
+use PHPMailer\PHPMailer\PHPMailer;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Str;
-use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Password;
+use RealRashid\SweetAlert\Facades\Alert;
+use App\Jobs\SendPHPMailerJob;
 
 class UserControlleur extends Controller
 {
@@ -79,9 +85,18 @@ class UserControlleur extends Controller
             $pointsService = new \App\Services\PointsService();
             $pointsService->giveRegistrationPoints($user);
 
-
+            // Authentifier l'utilisateur
             Auth::login($user);
 
+            //envoyer un email de bienvenue avec PHPMailer
+            $htmlContent = View::make('frontend.pages.user.emails.welcome_email', ['user' => $user])->render();
+            Mail::send([], [], function ($message) use ($request, $htmlContent) {
+                $message->to($request->email)
+                    ->subject('Bienvenue sur MaxiSujets !')
+                    ->html($htmlContent);
+            });
+
+            // SendPHPMailerJob::dispatch($user->email, 'Bienvenue sur MaxiSujets !', $htmlContent);
             Alert::success('Inscription réussie', 'Bienvenue sur MaxiSujets !');
             return redirect()->route('accueil');
         } catch (\Exception $e) {
@@ -159,17 +174,41 @@ class UserControlleur extends Controller
         return view('frontend.pages.user.password.forgot');
     }
 
-    /** Forgot password - send link */
+
+    //** Forgot password - send link with PHPMAILER */
     public function sendResetLink(Request $request)
     {
         $request->validate(['email' => 'required|email:rfc,dns']);
-        $status = Password::sendResetLink($request->only('email'));
-        if ($status === Password::RESET_LINK_SENT) {
-            Alert::success('Email envoyé', __($status));
-            return back();
+
+        // Vérifier si l'utilisateur existe
+        $user = \App\Models\User::where('email', $request->email)->first();
+        if (!$user) {
+            return back()->withErrors(['email' => "Aucun utilisateur trouvé avec cet email."]);
         }
-        return back()->withErrors(['email' => __($status)]);
+
+        // Générer le token de reset
+        $token = app('auth.password.broker')->createToken($user);
+
+        // Générer le lien de reset
+        $resetLink = url(route('password.reset', ['token' => $token, 'email' => $request->email], false));
+
+        // Rendre la vue Blade dans une variable
+        $htmlContent = View::make('frontend.pages.user.password.email', [
+            'user' => $user,
+            'resetLink' => $resetLink,
+        ])->render();
+
+        //send email
+        try {
+            SendPHPMailerJob::dispatch($request->email, 'Réinitialisation de votre mot de passe MaxiSujets', $htmlContent);
+
+            return back()->with('success', 'Un lien de réinitialisation a été envoyé à votre email.');
+        } catch (Exception $e) {
+            return back()->withErrors(['email' => "Erreur lors de l'envoi du mail : {$e->getMessage()}"]);
+        }
     }
+
+
 
     /** Reset password - show form */
     public function showReset(string $token)

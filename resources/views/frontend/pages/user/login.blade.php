@@ -4,7 +4,7 @@
 <div class="container my-5">
     <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb bg-white rounded shadow-sm px-3 py-2">
+        <ol class="breadcrumb bg-white rounded shadow-sm p-4">
             <li class="breadcrumb-item">
                 <a href="{{ route('accueil') }}" class="text-primary text-decoration-none">
                     <i class="bi bi-house-door"></i> Accueil

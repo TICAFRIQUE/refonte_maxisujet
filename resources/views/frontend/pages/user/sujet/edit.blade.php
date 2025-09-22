@@ -3,7 +3,7 @@
 @section('content')
 <div class="container my-5">
     <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb bg-white rounded shadow-sm px-3 py-2">
+        <ol class="breadcrumb bg-white rounded shadow-sm p-4">
             <li class="breadcrumb-item"><a href="{{ route('user.dashboard') }}" class="text-primary text-decoration-none"><i class="bi bi-person-circle"></i> Mon espace</a></li>
             <li class="breadcrumb-item active" aria-current="page">Éditer le sujet</li>
         </ol>

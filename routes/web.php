@@ -161,7 +161,6 @@ Route::prefix('user')->controller(UserControlleur::class)->group(function () {
     route::post('logout', 'logout')->name('user.logout')->middleware('auth');
 
 
-
     // password reset
     route::get('password/forgot', 'showForgot')->name('password.request');
     route::post('password/email', 'sendResetLink')->name('password.email');
