@@ -15,14 +15,24 @@ class SujetController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $sujets = Sujet::with(['categorie', 'matiere', 'user', 'niveaux', 'media'])->get();
-            return view('backend.pages.sujet.index', compact('sujets'));
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Une erreur est survenue: ' . $e->getMessage());
+        $query = Sujet::query();
+
+        if ($request->filled('approuve')) {
+            $query->where('approuve', $request->approuve);
         }
+        if ($request->filled('date_debut')) {
+            $query->whereDate('created_at', '>=', $request->date_debut);
+        }
+        if ($request->filled('date_fin')) {
+            $query->whereDate('created_at', '<=', $request->date_fin);
+        }
+
+        $sujets = $query->with(['categorie', 'matiere', 'user'])->get();
+        $sujetsNonApprouves = Sujet::where('approuve', 0)->count();
+
+        return view('backend.pages.sujet.index', compact('sujets', 'sujetsNonApprouves'));
     }
 
     /**

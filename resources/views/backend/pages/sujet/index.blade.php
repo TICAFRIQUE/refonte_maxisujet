@@ -21,7 +21,37 @@
         @endslot
     @endcomponent
 
-
+    <div class="row mb-3">
+        <div class="col-lg-8">
+            <form method="GET" action="{{ route('sujet.index') }}" class="row g-2 align-items-end">
+                <div class="col-md-3">
+                    <label for="approuve" class="form-label mb-0">Approuvé</label>
+                    <select name="approuve" id="approuve" class="form-select">
+                        <option value="">Tous</option>
+                        <option value="1" {{ request('approuve') === '1' ? 'selected' : '' }}>Oui</option>
+                        <option value="0" {{ request('approuve') === '0' ? 'selected' : '' }}>Non</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="date_debut" class="form-label mb-0">Date début</label>
+                    <input type="date" name="date_debut" id="date_debut" class="form-control" value="{{ request('date_debut') }}">
+                </div>
+                <div class="col-md-3">
+                    <label for="date_fin" class="form-label mb-0">Date fin</label>
+                    <input type="date" name="date_fin" id="date_fin" class="form-control" value="{{ request('date_fin') }}">
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100"><i class="ri-search-line"></i> Filtrer</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-lg-4 text-end">
+            <div class="alert alert-warning py-2 px-3 mb-0 d-inline-block">
+                <i class="ri-error-warning-line"></i>
+                <strong>{{ $sujetsNonApprouves ?? 0 }}</strong> sujet(s) non approuvé(s)
+            </div>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-lg-12">
@@ -53,7 +83,7 @@
                                 @foreach ($sujets as $key => $item)
                                     <tr id="row_{{ $item->id }}">
                                         <td>{{ ++$key }}</td>
-                                        <td>{{ $item->approuve ? 'Oui' : 'Non' }}</td>
+                                        <td> <span class="badge {{ $item->approuve == 1 ? 'bg-success' : 'bg-danger' }}">{{ $item->approuve == 1 ? 'Oui' : 'Non' }}</span></td>
                                         <td>{{ $item->code }}</td>
                                         <td>{{ $item->libelle }}</td>
                                         <td>{{ $item->description }}</td>
