@@ -81,6 +81,9 @@ class UserControlleur extends Controller
             $user->password = Hash::make($request->password);
             $user->save();
 
+            //assign role
+            $user->assignRole($request->role ?? 'auteur');
+
             // Donner des points d'inscription
             $pointsService = new \App\Services\PointsService();
             $pointsService->giveRegistrationPoints($user);

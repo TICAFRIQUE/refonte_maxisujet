@@ -58,11 +58,13 @@ class AdminController extends Controller
     public function index()
     {
 
-        $data_role = Role::where('name', '!=', 'client')->get();
+        $data_role = Role::get();
 
-        $data_admin = User::with('roles')->whereHas('roles', function ($query) {
-            $query->where('name', '!=', 'client');
-        })->get();
+        // $data_admin = User::with('roles')->whereHas('roles', function ($query) {
+        //     $query->where('name', '!=', 'client');
+        // })->get();
+
+          $data_admin = User::with('roles')->get();
         // dd($data_admin->toArray());
 
         return view('backend.pages.auth-admin.register.index', compact('data_admin', 'data_role'));
