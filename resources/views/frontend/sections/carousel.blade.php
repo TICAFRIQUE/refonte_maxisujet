@@ -26,7 +26,7 @@
             @empty
                 <!-- Sliders par défaut avec des images de meilleure qualité -->
                 <div class="carousel-item active">
-                    <img src="https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=1200&q=85"
+                    <img src="{{ asset('frontend/img/slider/slide1.png') }}"
                         class="d-block w-100 carousel-img" alt="Éducation" loading="eager">
                     <div class="carousel-caption d-md-block">
                         <h3>Bienvenue sur MaxiSujets</h3>
@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 <div class="carousel-item">
-                    <img src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=1200&q=85"
+                    <img src="{{ asset('frontend/img/slider/slide2.png') }}"
                         class="d-block w-100 carousel-img" alt="Cours" loading="lazy">
                     <div class="carousel-caption d-md-block">
                         <h3>Des milliers de ressources</h3>
@@ -45,7 +45,7 @@
                     </div>
                 </div>
                 <div class="carousel-item">
-                    <img src="https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1200&q=85"
+                    <img src="{{ asset('frontend/img/slider/slide3.png') }}"
                         class="d-block w-100 carousel-img" alt="Réussite" loading="lazy">
                     <div class="carousel-caption d-md-block">
                         <h3>Réussissez vos études</h3>
@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 <div class="carousel-item">
-                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=85"
+                    <img src="{{ asset('frontend/img/slider/slide2.png') }}"
                         class="d-block w-100 carousel-img" alt="Collaboration" loading="lazy">
                     <div class="carousel-caption d-md-block">
                         <h3>Partagez vos connaissances</h3>
@@ -63,7 +63,7 @@
                     </div>
                 </div>
                 <div class="carousel-item">
-                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1200&q=85"
+                    <img src="{{ asset('frontend/img/slider/slide1.png') }}"
                         class="d-block w-100 carousel-img" alt="Excellence" loading="lazy">
                     <div class="carousel-caption d-md-block">
                         <h3>Excellence académique</h3>

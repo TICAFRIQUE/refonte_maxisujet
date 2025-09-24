@@ -93,13 +93,13 @@ class UserControlleur extends Controller
 
             //envoyer un email de bienvenue avec PHPMailer
             $htmlContent = View::make('frontend.pages.user.emails.welcome_email', ['user' => $user])->render();
-            Mail::send([], [], function ($message) use ($request, $htmlContent) {
-                $message->to($request->email)
-                    ->subject('Bienvenue sur MaxiSujets !')
-                    ->html($htmlContent);
-            });
+            // Mail::send([], [], function ($message) use ($request, $htmlContent) {
+            //     $message->to($request->email)
+            //         ->subject('Bienvenue sur MaxiSujets !')
+            //         ->html($htmlContent);
+            // });
 
-            // SendPHPMailerJob::dispatch($user->email, 'Bienvenue sur MaxiSujets !', $htmlContent);
+            SendPHPMailerJob::dispatch($user->email, 'Bienvenue sur MaxiSujets !', $htmlContent);
             Alert::success('Inscription réussie', 'Bienvenue sur MaxiSujets !');
             return redirect()->route('accueil');
         } catch (\Exception $e) {
