@@ -69,19 +69,28 @@ class SujetFrontController extends Controller
         try {
             $sujet = Sujet::with(['categorie', 'niveaux', 'matiere', 'user', 'media'])
                 ->where('libelle', $libelle)
-                ->firstOrFail();
+                ->active()
+                ->approuve()
+                ->first();
 
-            // Log du téléchargement si utilisateur connecté
+            if (!$sujet) {
+                Alert::error('Erreur', 'Le sujet demandé est introuvable ou indisponible.');
+                return redirect()->route('sujet.front.index');
+            }
+
+            // Log de la consultation si utilisateur connecté
             if (Auth::check()) {
                 DownloadLog::create([
                     'user_id' => Auth::id(),
                     'sujet_id' => $sujet->id,
+                    // 'type' => 'view',
                 ]);
             }
 
             return view('frontend.pages.sujets.show', compact('sujet'));
         } catch (\Exception $e) {
-            return $e->getMessage(); // redirect()->back()->with('error', 'Une erreur est survenue: ' . $e->getMessage());
+            Alert::error('Erreur', 'Une erreur est survenue lors de la récupération du sujet.');
+            return redirect()->route('sujet.front.index');
         }
     }
     /**

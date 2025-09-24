@@ -62,7 +62,7 @@
                                             @endif
                                         @else
                                             <a href="{{ route('user.sujet.create') }}" class="btn btn-outline-danger btn-sm">
-                                                <i class="bi bi-exclamation-triangle"></i> Points insuffisants
+                                               <small> <i class="bi bi-exclamation-triangle"></i> Points insuffisants pour télécharger</small>
                                             </a>
                                         @endif
                                     @else
