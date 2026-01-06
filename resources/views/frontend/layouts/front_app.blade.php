@@ -93,12 +93,18 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg fixed-top shadow">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{{ route('accueil') }}">
-                <img src="{{ asset('frontend/img/logo.png') }}" alt="Logo MaxiSujets" style="height: 40px; margin-right: 8px;">
-                <i class="bi bi-mortarboard-fill"></i> 
+            <!-- Logo seul avec animations améliorées -->
+            <a class="navbar-brand d-flex align-items-center" href="{{ route('accueil') }}">
+                <img src="{{ asset('frontend/img/logo.png') }}" alt="Logo MaxiSujets" class="logo-animate">
             </a>
+
+            <!-- Hamburger menu amélioré -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
-                <span class="navbar-toggler-icon"></span>
+                <div class="hamburger-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
             </button>
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0"> <!-- Utiliser mx-auto pour centrer -->
@@ -213,6 +219,16 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Script d'animations navbar -->
+    <script src="{{ asset('frontend/js/navbar-animations.js') }}"></script>
+    
+    <!-- Scripts d'améliorations pour la page d'accueil -->
+    @if(Route::currentRouteName() === 'accueil')
+        <script src="{{ asset('frontend/js/home-enhancements.js') }}"></script>
+        <script src="{{ asset('frontend/js/modern-animations.js') }}"></script>
+    @endif
+    
     @stack('scripts')
 
     <script>

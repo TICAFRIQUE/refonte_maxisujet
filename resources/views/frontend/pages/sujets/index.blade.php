@@ -5,22 +5,130 @@
 
 <style>
     @media (max-width: 991.98px) {
-    .sidebar-responsive {
-        order: 2 !important;
-        margin-top: 2rem;
+        .sidebar-responsive {
+            order: 2 !important;
+            margin-top: 2rem;
+        }
+        .main-content-responsive {
+            order: 1 !important;
+        }
     }
-    .main-content-responsive {
-        order: 1 !important;
+    @media (min-width: 992px) {
+        .sidebar-responsive {
+            order: 1 !important;
+        }
+        .main-content-responsive {
+            order: 2 !important;
+        }
     }
-}
-@media (min-width: 992px) {
-    .sidebar-responsive {
-        order: 1 !important;
+
+    /* Améliorations simples pour les cartes de sujets */
+    .subject-card {
+        transition: all 0.3s ease;
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
     }
-    .main-content-responsive {
-        order: 2 !important;
+
+    .subject-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
     }
-}
+
+    .subject-image {
+        transition: transform 0.3s ease;
+        border-radius: 10px;
+        border: 2px solid #f8f9fa;
+    }
+
+    .subject-card:hover .subject-image {
+        transform: scale(1.05);
+        border-color: #ff6b35;
+    }
+
+    .subject-title {
+        color: #2d3748;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .subject-description {
+        color: #718096;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .modern-badge {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-weight: 500;
+        margin: 0.15rem;
+    }
+
+    .badge-matiere { 
+        background: #e2e8f0; 
+        color: #475569;
+    }
+    .badge-niveau { 
+        background: #f1f5f9; 
+        color: #64748b;
+    }
+    .badge-annee { 
+        background: #fef3c7; 
+        color: #d97706;
+    }
+    .badge-categorie { 
+        background: #dcfce7; 
+        color: #16a34a;
+    }
+    .badge-code { 
+        background: #1e293b; 
+        color: white;
+    }
+
+    .btn-detail {
+        background: #64748b;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-detail:hover {
+        background: #475569;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(100, 116, 139, 0.3);
+        color: white;
+    }
+
+    .btn-download {
+        background: #ff6b35;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-download:hover {
+        background: #e55a2b;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        color: white;
+    }
+
+    .publication-date {
+        background: #f8fafc;
+        color: #64748b;
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        border: 1px solid #e2e8f0;
+    }
 </style>
     <div class="container-fluid mt-5">
         <!-- Breadcrumb -->
@@ -191,83 +299,82 @@
                         </form>
                     </div>
                 </div>
-                <!-- Liste des sujets -->
+                <!-- Liste des sujets améliorée -->
                 <div class="row g-4">
                     @forelse($sujets as $sujet)
                         <div class="col-md-6 col-xl-4">
-                            <div class="card h-100 shadow-sm border-0">
+                            <div class="card subject-card h-100">
                                 <div class="row g-0 align-items-center">
                                     <div class="col-4 text-center">
-                                        <div class="p-2">
+                                        <div class="p-3">
                                             @php
                                                 $fileUrl = $sujet->getFirstMediaUrl('non_corrige');
                                                 $isPdf = $fileUrl && Str::endsWith($fileUrl, '.pdf');
                                             @endphp
                                             @if($isPdf)
                                                 <img src="{{ asset('frontend/img/pdf-icon.png') }}" alt="PDF"
-                                                     class="img-fluid rounded" style="max-height:90px; object-fit:cover; border:1px solid #eee;">
+                                                     class="img-fluid subject-image" style="max-height:80px; object-fit:cover;">
                                             @elseif($fileUrl)
                                                 <img src="{{ $fileUrl }}" alt="Aperçu"
-                                                     class="img-fluid rounded" style="max-height:90px; object-fit:cover; border:1px solid #eee;">
+                                                     class="img-fluid subject-image" style="max-height:80px; object-fit:cover;">
                                             @else
-                                                <img src="{{ asset('frontend/img/file-placeholder.png') }}" alt="Aperçu"
-                                                     class="img-fluid rounded" style="max-height:90px; object-fit:cover; border:1px solid #eee;">
+                                                <div class="subject-image d-flex align-items-center justify-content-center bg-light" 
+                                                     style="height:80px; width:80px; margin:0 auto;">
+                                                    <i class="bi bi-file-earmark-text text-muted" style="font-size: 2rem;"></i>
+                                                </div>
                                             @endif
                                         </div>
                                     </div>
                                     <div class="col-8">
-                                        <div class="card-body py-3 px-2">
-                                            <h6 class="card-title text-primary mb-1 d-flex align-items-center">
-                                                {{ $sujet->libelle }}
-                                                <span class="badge bg-dark ms-2">{{ $sujet->code }}</span>
+                                        <div class="card-body py-3 px-3">
+                                            <h6 class="subject-title mb-2">
+                                                {{ Str::limit($sujet->libelle, 35) }}
+                                                <span class="modern-badge badge-code">{{ $sujet->code }}</span>
                                             </h6>
-                                            <p class="card-text small mb-2" style="min-height:38px;">
-                                                {{ Str::limit($sujet->description, 60) }}</p>
-                                            <div class="mb-2">
-                                                <span class="badge bg-info">{{ $sujet->matiere->libelle ?? '' }}</span>
+                                            <p class="subject-description mb-3" style="min-height:40px;">
+                                                {{ Str::limit($sujet->description, 70) }}
+                                            </p>
+                                            <div class="mb-3">
+                                                <span class="modern-badge badge-matiere">{{ $sujet->matiere->libelle ?? 'Non définie' }}</span>
                                                 @foreach ($sujet->niveaux as $niveau)
-                                                    <span class="badge bg-secondary">{{ $niveau->libelle }}</span>
+                                                    <span class="modern-badge badge-niveau">{{ $niveau->libelle }}</span>
                                                 @endforeach
-                                                <span class="badge bg-warning text-dark">{{ $sujet->annee }}</span>
-                                                <span
-                                                    class="badge bg-success">{{ $sujet->categorie->libelle ?? '' }}</span>
+                                                <span class="modern-badge badge-annee">{{ $sujet->annee }}</span>
+                                                <span class="modern-badge badge-categorie">{{ $sujet->categorie->libelle ?? 'Générale' }}</span>
                                             </div>
-                                            <div class="mb-2">
-                                                <span class="text-muted small">
-                                                    <i class="bi bi-calendar"></i>
-                                                    Publié le {{ $sujet->created_at->format('d/m/Y') }}
+                                            <div class="mb-3">
+                                                <span class="publication-date">
+                                                    <i class="bi bi-calendar3 me-1"></i>
+                                                    {{ $sujet->created_at->format('d/m/Y') }}
                                                 </span>
                                             </div>
                                             <div class="d-flex flex-wrap gap-2">
                                                 <a href="{{ route('sujet.front.show', $sujet->libelle) }}"
-                                                    class="btn btn-sm btn-outline-primary">
-                                                    <i class="bi bi-eye"></i> <small>Détails</small>
+                                                    class="btn btn-sm btn-detail">
+                                                    <i class="bi bi-eye me-1"></i>Détails
                                                 </a>
                                                 @auth
                                                     @if (auth()->user()->points > 0)
                                                         @if ($sujet->getFirstMediaUrl('non_corrige'))
                                                             <a href="{{ route('sujet.front.download', ['id' => $sujet->id, 'type' => 'non_corrige']) }}"
-                                                                target="_blank" class="btn btn-outline-primary btn-sm">
-                                                                <i class="bi bi-download"></i> Sujet
+                                                                target="_blank" class="btn btn-download btn-sm">
+                                                                <i class="bi bi-download me-1"></i>Sujet
                                                             </a>
                                                         @endif
                                                         @if ($sujet->getFirstMediaUrl('corrige'))
                                                             <a href="{{ route('sujet.front.download', ['id' => $sujet->id, 'type' => 'corrige']) }}"
-                                                                target="_blank" class="btn btn-outline-success btn-sm">
-                                                                <i class="bi bi-download"></i> Corrigé
+                                                                target="_blank" class="btn btn-success btn-sm">
+                                                                <i class="bi bi-download me-1"></i>Corrigé
                                                             </a>
                                                         @endif
                                                     @else
-                                                        <a href="{{ route('user.sujet.create') }}"
-                                                            class="btn btn-outline-danger btn-sm">
-                                                            <i class="bi bi-exclamation-triangle"></i> Points insuffisants pour télécharger
-                                                        </a>
+                                                        <button class="btn btn-outline-warning btn-sm" disabled>
+                                                            <i class="bi bi-exclamation-triangle me-1"></i>Points insuffisants
+                                                        </button>
                                                     @endif
                                                 @else
-                                                    <a href="{{ route('user.loginForm') }}"
-                                                        class="btn btn-outline-secondary btn-sm">
-                                                        <i class="bi bi-lock"></i> <small>Connectez-vous pour
-                                                            télécharger</small>
+                                                    <a href="{{ route('user.loginForm') }}" class="btn btn-outline-secondary btn-sm">
+                                                        <i class="bi bi-lock me-1"></i>Se connecter
                                                     </a>
                                                 @endauth
                                             </div>
