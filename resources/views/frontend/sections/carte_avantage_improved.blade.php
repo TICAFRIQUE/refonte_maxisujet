@@ -33,13 +33,13 @@
                             </div>
                         </div>
                         <h5 class="card-title text-warning fw-bold mb-3">
-                            Partager un document
+                            Publier un document
                         </h5>
                         <p class="card-text text-muted mb-4">
                             Contribuez à la communauté et gagnez <span class="fw-bold text-primary badge bg-primary bg-opacity-10">5 points</span> par document partagé.
                         </p>
                         <a href="{{ route('user.sujet.create') }}" class="btn btn-warning btn-lg rounded-pill px-4 text-white shadow">
-                            <i class="bi bi-share me-2"></i>Partager
+                            <i class="bi bi-share me-2"></i>Publier
                         </a>
                     </div>
                 </div>

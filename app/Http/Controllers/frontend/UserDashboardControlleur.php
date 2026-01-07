@@ -24,11 +24,11 @@ class UserDashboardControlleur extends Controller
             $user = Auth::user();
 
             // Historique téléchargements
-            $downloads = DownloadLog::where('user_id', $user->id)->with('sujet')->paginate(10);
+            $downloads = DownloadLog::where('user_id', $user->id)->with('sujet')->paginate(4)->withQueryString();
 
             // Compter les éléments
-            $downloadsCount = $downloads->count();
-            $publishedSubjectsCount = Sujet::where('user_id', $user->id)->count();
+            $downloadsCount = $downloads->count(); // Nombre de téléchargements
+            $publishedSubjectsCount = Sujet::where('user_id', $user->id)->count(); // Nombre de sujets publiés
             $points = $user->points ?? 0; // Assurez-vous que le modèle User a un attribut points
 
             return view('frontend.pages.user.dashboard', compact('user', 'downloads', 'downloadsCount', 'publishedSubjectsCount', 'points'));

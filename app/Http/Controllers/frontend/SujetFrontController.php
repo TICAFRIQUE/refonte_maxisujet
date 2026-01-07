@@ -9,6 +9,7 @@ use App\Models\Matiere;
 use App\Models\Categorie;
 use App\Models\DownloadLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -50,8 +51,8 @@ class SujetFrontController extends Controller
                 })
                 ->active()->approuve()
                 ->orderBy('created_at', 'desc')
-                ->paginate(12)
-                ->withQueryString();
+                ->paginate(12) // Nombre de sujets par page
+                ->withQueryString(); // Ajout de la pagination
 
             // Pour afficher les filtres dans la vue
             $categories = Categorie::all();
@@ -79,13 +80,13 @@ class SujetFrontController extends Controller
             }
 
             // Log de la consultation si utilisateur connecté
-            if (Auth::check()) {
-                DownloadLog::create([
-                    'user_id' => Auth::id(),
-                    'sujet_id' => $sujet->id,
-                    // 'type' => 'view',
-                ]);
-            }
+            // if (Auth::check()) {
+            //     DownloadLog::create([
+            //         'user_id' => Auth::id(),
+            //         'sujet_id' => $sujet->id,
+            //         // 'type' => 'view',
+            //     ]);
+            // }
 
             return view('frontend.pages.sujets.show', compact('sujet'));
         } catch (\Exception $e) {
@@ -110,37 +111,39 @@ class SujetFrontController extends Controller
             return redirect()->route('sujet.front.index');
         }
 
-        // Retirer les points
-        User::where('id', $user->id)->decrement('points', $pointsToRemove);
-        
-
-        // Enregistrer le téléchargement
-        DownloadLog::create([
-            'user_id' => $user->id,
-            'sujet_id' => $sujet->id,
-            'type' => $type,
-            'created_at' => now(),
-        ]);
-
-        // Récupérer le fichier
-        $mediaUrl = $sujet->getFirstMediaUrl($type);
-        if (!$mediaUrl) {
+        // Récupérer le fichier MediaLibrary d'abord
+        $media = $sujet->getMedia($type)->first();
+        if (!$media) {
             Alert::error('Erreur', 'Le fichier est introuvable.');
             return redirect()->route('sujet.front.index');
         }
 
-        // Rediriger vers le fichier (ou utiliser Storage::download si local)
-        return redirect($mediaUrl);
+        // Retirer les points avec transaction pour s'assurer de la cohérence
+        DB::transaction(function () use ($user, $sujet, $type, $pointsToRemove) {
+            User::where('id', $user->id)->decrement('points', $pointsToRemove);
+            
+            // Enregistrer le téléchargement
+            DownloadLog::create([
+                'user_id' => $user->id,
+                'sujet_id' => $sujet->id,
+                'type' => $type,
+                'created_at' => now(),
+            ]);
+        });
 
-        // Récupérer le fichier MediaLibrary
-        // $media = $sujet->getMedia($type)->first();
-        // if (!$media) {
+        // S'assurer que toutes les opérations DB sont terminées
+        DB::commit();
+
+        // Lancer le téléchargement direct
+        return response()->download($media->getPath(), $media->file_name);
+
+        // Ancienne méthode qui redirige vers l'URL (commentée)
+        // $mediaUrl = $sujet->getFirstMediaUrl($type);
+        // if (!$mediaUrl) {
         //     Alert::error('Erreur', 'Le fichier est introuvable.');
         //     return redirect()->route('sujet.front.index');
         // }
-
-        // // Lancer le téléchargement direct
-        // return response()->download($media->getPath(), $media->file_name);
+        // return redirect($mediaUrl);
     }
 
 
@@ -160,7 +163,7 @@ class SujetFrontController extends Controller
         }
 
         if ($user->points < $pointsToRemove) {
-           Alert::error('Erreur', 'Vous n\'avez pas assez de points pour voir l\'aperçu.');
+            Alert::error('Erreur', 'Vous n\'avez pas assez de points pour voir l\'aperçu.');
             return redirect()->route('sujet.front.index');
         }
 

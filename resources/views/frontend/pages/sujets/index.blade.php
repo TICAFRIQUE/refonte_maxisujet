@@ -129,256 +129,353 @@
         font-weight: 500;
         border: 1px solid #e2e8f0;
     }
+
+    /* Sidebar simple */
+    .simple-sidebar {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .filter-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .filter-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .filter-title {
+        color: #1e293b;
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .filter-title i {
+        margin-right: 0.5rem;
+        color: #64748b;
+    }
+
+    .filter-link {
+        display: inline-block;
+        padding: 0.4rem 1rem;
+        margin: 0.2rem 0.3rem 0.2rem 0;
+        background: #f8fafc;
+        color: #475569;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s ease;
+    }
+
+    .filter-link:hover {
+        background: #e2e8f0;
+        color: #334155;
+        text-decoration: none;
+    }
+
+    .filter-link.active {
+        background: #ff6b35;
+        color: white;
+        border-color: #ff6b35;
+    }
+
+    .search-section {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .search-title {
+        color: #1e293b;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-title i {
+        margin-right: 0.5rem;
+        color: #64748b;
+    }
 </style>
-    <div class="container-fluid mt-5">
-        <!-- Breadcrumb -->
+    <div class="container mt-4">
+        <!-- Breadcrumb simplifié -->
         <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb bg-white rounded shadow-sm p-4">
+            <ol class="breadcrumb bg-light rounded p-3">
                 <li class="breadcrumb-item">
-                    <a href="{{ route('accueil') }}" class="text-primary text-decoration-none">
+                    <a href="{{ route('accueil') }}" class="text-decoration-none">
                         <i class="bi bi-house-door"></i> Accueil
                     </a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
                     Sujets
                 </li>
-                @if (request('categorie'))
-                    <li class="breadcrumb-item active" aria-current="page">
-                        {{ ucfirst(request('categorie')) }}
-                    </li>
-                @endif
-                @if (request('niveau'))
-                    <li class="breadcrumb-item active" aria-current="page">
-                        {{ ucfirst(request('niveau')) }}
-                    </li>
-                @endif
-                @if (request('matiere'))
-                    <li class="breadcrumb-item active" aria-current="page">
-                        {{ ucfirst(request('matiere')) }}
-                    </li>
-                @endif
-                @if (request('annee'))
-                    <li class="breadcrumb-item active" aria-current="page">
-                        {{ request('annee') }}
-                    </li>
-                @endif
-                @if (request('code'))
-                    <li class="breadcrumb-item active" aria-current="page">
-                        {{ request('code') }}
-                    </li>
-                @endif
             </ol>
         </nav>
-        <div class="row d-flex flex-wrap">
-            <!-- Sidebar améliorée avec menu récursif -->
-            <div class="col-lg-3 mb-4 sidebar-responsive">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h5 class="mb-3 text-primary">Cycles & Niveaux</h5>
-                        @foreach ($data_niveaux as $cycle)
-                            <div class="mb-3">
-                                <div class="fw-bold mb-2" style="color:#04f;">
-                                    <i class="bi {{ $cycle->icon ?? 'bi-book' }}"></i> {{ $cycle->libelle }}
-                                </div>
-                                <div class="row g-2">
-                                    @foreach ($cycle->children as $niveau)
-                                        <a href="{{ route('sujet.front.index', array_merge(request()->except('page'), ['niveau' => $niveau->slug])) }}"
-                                            class="badge text-dark border text-decoration-none {{ request('niveau') == $niveau->slug ? 'bg-success text-white' : 'bg-light' }}">
-                                            {{ $niveau->libelle }}
-                                        </a>
-                                        @if ($niveau->children && $niveau->children->count())
-                                            @foreach ($niveau->children as $subNiveau)
-                                                <a href="{{ route('sujet.front.index', array_merge(request()->except('page'), ['niveau' => $subNiveau->slug])) }}"
-                                                    class="badge text-dark border ms-2 text-decoration-none {{ request('niveau') == $subNiveau->slug ? 'bg-success text-white' : 'bg-light' }}">
-                                                    &raquo; {{ $subNiveau->libelle }}
-                                                </a>
-                                            @endforeach
-                                        @endif
-                                    @endforeach
-                                </div>
+        <div class="row">
+            <!-- Recherche -->
+            <div class="col-12">
+                <div class="search-section">
+                    <div class="search-title">
+                        <i class="bi bi-search"></i>
+                        Rechercher un sujet
+                    </div>
+                    <form class="row g-3" method="GET" action="{{ route('sujet.front.index') }}">
+                        <div class="col-lg-3 col-md-4">
+                            <select class="form-select" name="matiere">
+                                <option value="">Toutes les matières</option>
+                                @foreach ($matieres as $matiere)
+                                    <option value="{{ $matiere->slug }}" {{ request('matiere') == $matiere->slug ? 'selected' : '' }}>
+                                        {{ $matiere->libelle }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-md-4">
+                            <select class="form-select" name="niveau">
+                                <option value="">Tous les niveaux</option>
+                                @foreach ($data_niveaux as $cycle)
+                                    <optgroup label="{{ $cycle->libelle }}">
+                                        @foreach ($cycle->children as $niveau)
+                                            <option value="{{ $niveau->slug }}" {{ request('niveau') == $niveau->slug ? 'selected' : '' }}>
+                                                {{ $niveau->libelle }}
+                                            </option>
+                                            @if ($niveau->children && $niveau->children->count())
+                                                @foreach ($niveau->children as $subNiveau)
+                                                    <option value="{{ $subNiveau->slug }}" {{ request('niveau') == $subNiveau->slug ? 'selected' : '' }}>
+                                                        &nbsp;&nbsp;{{ $subNiveau->libelle }}
+                                                    </option>
+                                                @endforeach
+                                            @endif
+                                        @endforeach
+                                    </optgroup>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-md-4">
+                            <select class="form-select" name="annee">
+                                <option value="">Toutes les années</option>
+                                @for ($year = date('Y'); $year >= 2000; $year--)
+                                    <option value="{{ $year }}" {{ request('annee') == $year ? 'selected' : '' }}>
+                                        {{ $year }}
+                                    </option>
+                                @endfor
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-md-6">
+                            <select class="form-select" name="categorie">
+                                <option value="">Toutes les catégories</option>
+                                @foreach ($categories as $categorie)
+                                    <option value="{{ $categorie->slug }}" {{ request('categorie') == $categorie->slug ? 'selected' : '' }}>
+                                        {{ $categorie->libelle }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-md-6">
+                            <div class="d-flex gap-2">
+                                <input type="text" class="form-control" name="code" value="{{ request('code') }}" placeholder="Code">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-search"></i>
+                                </button>
                             </div>
-                        @endforeach
-                        <hr>
-                        <h5 class="mb-3 text-primary">Matières</h5>
-                        <div class="d-flex flex-wrap gap-2">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar simple -->
+            <div class="col-lg-3 sidebar-responsive">
+                <div class="simple-sidebar">
+                    <!-- Matières -->
+                    <div class="filter-section">
+                        <div class="filter-title">
+                            <i class="bi bi-book"></i>
+                            Matières
+                        </div>
+                        <div>
                             @foreach ($data_matieres as $matiere)
                                 <a href="{{ route('sujet.front.index', array_merge(request()->except('page'), ['matiere' => $matiere->slug])) }}"
-                                    class="badge text-dark border text-decoration-none {{ request('matiere') == $matiere->slug ? 'bg-success text-white' : 'bg-light' }}">
+                                    class="filter-link {{ request('matiere') == $matiere->slug ? 'active' : '' }}">
                                     {{ $matiere->libelle }}
                                 </a>
                             @endforeach
                         </div>
-                        <hr>
-                        <h5 class="mb-3 text-primary">Catégories</h5>
-                        <div class="d-flex flex-wrap gap-2">
+                    </div>
+
+                    <!-- Catégories -->
+                    <div class="filter-section">
+                        <div class="filter-title">
+                            <i class="bi bi-tags"></i>
+                            Catégories
+                        </div>
+                        <div>
                             @foreach ($data_categories as $categorie)
                                 <a href="{{ route('sujet.front.index', array_merge(request()->except('page'), ['categorie' => $categorie->slug])) }}"
-                                    class="badge  text-dark px-3 py-2 shadow-sm {{ request('categorie') == $categorie->slug ? 'bg-success text-white' : 'bg-warning' }}">
+                                    class="filter-link {{ request('categorie') == $categorie->slug ? 'active' : '' }}">
                                     {{ $categorie->libelle }}
                                 </a>
                             @endforeach
                         </div>
                     </div>
-                </div>
-            </div>
-            <!-- Main content -->
-            <div class="col-lg-9 main-content-responsive">
-                <div class="card shadow-sm mb-4">
-                    <div class="card-body">
-                        <h5 class="mb-3 text-primary">Recherche de sujet</h5>
-                        <form class="row g-3" method="GET" action="{{ route('sujet.front.index') }}">
-                            <div class="col-md-3">
-                                <label class="form-label">Matière</label>
-                                <select class="form-select select2-custom" name="matiere" id="matiere-select">
-                                    <option value="">Toutes</option>
-                                    @foreach ($matieres as $matiere)
-                                        <option value="{{ $matiere->slug }}"
-                                            {{ request('matiere') == $matiere->slug ? 'selected' : '' }}>
-                                            {{ $matiere->libelle }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Niveau</label>
-                                <select class="form-select select2-custom" name="niveau" id="niveau-select">
-                                    <option value="">Tous</option>
-                                    @foreach ($data_niveaux as $cycle)
-                                        <optgroup label="{{ $cycle->libelle }}">
-                                            @foreach ($cycle->children as $niveau)
-                                                <option value="{{ $niveau->slug }}"
-                                                    {{ request('niveau') == $niveau->slug ? 'selected' : '' }}>
-                                                    {{ $niveau->libelle }}
-                                                </option>
-                                                @if ($niveau->children && $niveau->children->count())
-                                                    @foreach ($niveau->children as $subNiveau)
-                                                        <option value="{{ $subNiveau->slug }}"
-                                                            {{ request('niveau') == $subNiveau->slug ? 'selected' : '' }}>
-                                                            &nbsp;&nbsp;{{ $subNiveau->libelle }}
-                                                        </option>
-                                                    @endforeach
-                                                @endif
-                                            @endforeach
-                                        </optgroup>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label">Année</label>
-                                <select class="form-select select2-custom" name="annee" id="annee-select">
-                                    <option value="">Toutes</option>
-                                    @for ($year = date('Y'); $year >= 2000; $year--)
-                                        <option value="{{ $year }}"
-                                            {{ request('annee') == $year ? 'selected' : '' }}>
-                                            {{ $year }}
-                                        </option>
-                                    @endfor
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label">Catégorie</label>
-                                <select class="form-select select2-custom" name="categorie" id="categorie-select">
-                                    <option value="">Toutes</option>
-                                    @foreach ($categories as $categorie)
-                                        <option value="{{ $categorie->slug }}"
-                                            {{ request('categorie') == $categorie->slug ? 'selected' : '' }}>
-                                            {{ $categorie->libelle }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label">Code</label>
-                                <input type="text" class="form-control" name="code" value="{{ request('code') }}"
-                                    placeholder="Code">
-                            </div>
-                            <div class="col-12 text-end">
-                                <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i>
-                                    Rechercher</button>
-                            </div>
-                        </form>
+
+                    <!-- Niveaux simplifiés -->
+                    <div class="filter-section">
+                        <div class="filter-title">
+                            <i class="bi bi-mortarboard"></i>
+                            Niveaux
+                        </div>
+                        <div>
+                            @foreach ($data_niveaux as $cycle)
+                                @foreach ($cycle->children as $niveau)
+                                    <a href="{{ route('sujet.front.index', array_merge(request()->except('page'), ['niveau' => $niveau->slug])) }}"
+                                        class="filter-link {{ request('niveau') == $niveau->slug ? 'active' : '' }}">
+                                        {{ $niveau->libelle }}
+                                    </a>
+                                @endforeach
+                            @endforeach
+                        </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Contenu principal -->
+            <div class="col-lg-9 main-content-responsive">
                 <!-- Liste des sujets améliorée -->
                 <div class="row g-4">
                     @forelse($sujets as $sujet)
-                        <div class="col-md-6 col-xl-4">
+                        <div class="col-md-6 col-xl-6">
                             <div class="card subject-card h-100">
-                                <div class="row g-0 align-items-center">
-                                    <div class="col-4 text-center">
-                                        <div class="p-3">
+                                <div class="card-body p-4">
+                                    <!-- En-tête avec image et titre -->
+                                    <div class="d-flex align-items-start mb-3">
+                                        <div class="flex-shrink-0 me-3">
                                             @php
                                                 $fileUrl = $sujet->getFirstMediaUrl('non_corrige');
                                                 $isPdf = $fileUrl && Str::endsWith($fileUrl, '.pdf');
                                             @endphp
                                             @if($isPdf)
                                                 <img src="{{ asset('frontend/img/pdf-icon.png') }}" alt="PDF"
-                                                     class="img-fluid subject-image" style="max-height:80px; object-fit:cover;">
+                                                     class="subject-image" style="width:60px; height:60px; object-fit:cover;">
                                             @elseif($fileUrl)
                                                 <img src="{{ $fileUrl }}" alt="Aperçu"
-                                                     class="img-fluid subject-image" style="max-height:80px; object-fit:cover;">
+                                                     class="subject-image" style="width:60px; height:60px; object-fit:cover;">
                                             @else
                                                 <div class="subject-image d-flex align-items-center justify-content-center bg-light" 
-                                                     style="height:80px; width:80px; margin:0 auto;">
-                                                    <i class="bi bi-file-earmark-text text-muted" style="font-size: 2rem;"></i>
+                                                     style="width:60px; height:60px;">
+                                                    <i class="bi bi-file-earmark-text text-muted" style="font-size: 1.5rem;"></i>
                                                 </div>
                                             @endif
                                         </div>
-                                    </div>
-                                    <div class="col-8">
-                                        <div class="card-body py-3 px-3">
-                                            <h6 class="subject-title mb-2">
-                                                {{ Str::limit($sujet->libelle, 35) }}
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h6 class="subject-title mb-0 me-2">{{ Str::limit($sujet->libelle, 40) }}</h6>
                                                 <span class="modern-badge badge-code">{{ $sujet->code }}</span>
-                                            </h6>
-                                            <p class="subject-description mb-3" style="min-height:40px;">
-                                                {{ Str::limit($sujet->description, 70) }}
+                                            </div>
+                                            <p class="subject-description mb-0 small">
+                                                {{ Str::limit($sujet->description, 80) }}
                                             </p>
-                                            <div class="mb-3">
-                                                <span class="modern-badge badge-matiere">{{ $sujet->matiere->libelle ?? 'Non définie' }}</span>
-                                                @foreach ($sujet->niveaux as $niveau)
-                                                    <span class="modern-badge badge-niveau">{{ $niveau->libelle }}</span>
-                                                @endforeach
-                                                <span class="modern-badge badge-annee">{{ $sujet->annee }}</span>
-                                                <span class="modern-badge badge-categorie">{{ $sujet->categorie->libelle ?? 'Générale' }}</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Informations organisées -->
+                                    <div class="mb-3">
+                                        <div class="row g-2 small">
+                                            <div class="col-6">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="bi bi-book me-1 text-muted"></i>
+                                                    <span class="modern-badge badge-matiere">{{ $sujet->matiere->libelle ?? 'Non définie' }}</span>
+                                                </div>
                                             </div>
-                                            <div class="mb-3">
-                                                <span class="publication-date">
-                                                    <i class="bi bi-calendar3 me-1"></i>
-                                                    {{ $sujet->created_at->format('d/m/Y') }}
-                                                </span>
+                                            <div class="col-6">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="bi bi-calendar me-1 text-muted"></i>
+                                                    <span class="modern-badge badge-annee">{{ $sujet->annee }}</span>
+                                                </div>
                                             </div>
-                                            <div class="d-flex flex-wrap gap-2">
-                                                <a href="{{ route('sujet.front.show', $sujet->libelle) }}"
-                                                    class="btn btn-sm btn-detail">
-                                                    <i class="bi bi-eye me-1"></i>Détails
-                                                </a>
-                                                @auth
-                                                    @if (auth()->user()->points > 0)
-                                                        @if ($sujet->getFirstMediaUrl('non_corrige'))
-                                                            <a href="{{ route('sujet.front.download', ['id' => $sujet->id, 'type' => 'non_corrige']) }}"
-                                                                target="_blank" class="btn btn-download btn-sm">
-                                                                <i class="bi bi-download me-1"></i>Sujet
-                                                            </a>
-                                                        @endif
-                                                        @if ($sujet->getFirstMediaUrl('corrige'))
-                                                            <a href="{{ route('sujet.front.download', ['id' => $sujet->id, 'type' => 'corrige']) }}"
-                                                                target="_blank" class="btn btn-success btn-sm">
-                                                                <i class="bi bi-download me-1"></i>Corrigé
-                                                            </a>
+                                            <div class="col-6">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="bi bi-mortarboard me-1 text-muted"></i>
+                                                    @if($sujet->niveaux->count() > 0)
+                                                        <span class="modern-badge badge-niveau">{{ $sujet->niveaux->first()->libelle }}</span>
+                                                        @if($sujet->niveaux->count() > 1)
+                                                            <small class="text-muted ms-1">+{{ $sujet->niveaux->count() - 1 }}</small>
                                                         @endif
                                                     @else
-                                                        <button class="btn btn-outline-warning btn-sm" disabled>
-                                                            <i class="bi bi-exclamation-triangle me-1"></i>Points insuffisants
-                                                        </button>
+                                                        <span class="modern-badge badge-niveau">Tous niveaux</span>
                                                     @endif
-                                                @else
-                                                    <a href="{{ route('user.loginForm') }}" class="btn btn-outline-secondary btn-sm">
-                                                        <i class="bi bi-lock me-1"></i>Se connecter
-                                                    </a>
-                                                @endauth
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="bi bi-tag me-1 text-muted"></i>
+                                                    <span class="modern-badge badge-categorie">{{ $sujet->categorie->libelle ?? 'Générale' }}</span>
+                                                </div>
                                             </div>
                                         </div>
+                                    </div>
+
+                                    <!-- Date de publication -->
+                                    <div class="mb-3">
+                                        <small class="text-muted">
+                                            <i class="bi bi-clock me-1"></i>
+                                            Publié le {{ $sujet->created_at->format('d/m/Y') }}
+                                        </small>
+                                    </div>
+
+                                    <!-- Boutons d'action améliorés -->
+                                    <div class="d-flex flex-wrap gap-2 mt-auto">
+                                        <a href="{{ route('sujet.front.show', $sujet->libelle) }}"
+                                            class="btn btn-outline-primary btn-sm flex-fill">
+                                            <i class="bi bi-eye me-1"></i>
+                                            Voir détails
+                                        </a>
+                                        
+                                        @auth
+                                            @if (auth()->user()->points > 0)
+                                                <div class="btn-group flex-fill" role="group">
+                                                    @if ($sujet->getFirstMediaUrl('non_corrige'))
+                                                        <a href="{{ route('sujet.front.download', ['id' => $sujet->id, 'type' => 'non_corrige']) }}"
+                                                            target="_blank" class="btn btn-primary btn-sm">
+                                                            <i class="bi bi-download me-1"></i>Sujet
+                                                        </a>
+                                                    @endif
+                                                    @if ($sujet->getFirstMediaUrl('corrige'))
+                                                        <a href="{{ route('sujet.front.download', ['id' => $sujet->id, 'type' => 'corrige']) }}"
+                                                            target="_blank" class="btn btn-success btn-sm">
+                                                            <i class="bi bi-download me-1"></i>Corrigé
+                                                        </a>
+                                                    @endif
+                                                </div>
+                                            @else
+                                                <button class="btn btn-outline-warning btn-sm flex-fill" disabled>
+                                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                                    Points insuffisants
+                                                </button>
+                                            @endif
+                                        @else
+                                            <a href="{{ route('user.loginForm') }}" class="btn btn-outline-secondary btn-sm flex-fill">
+                                                <i class="bi bi-lock me-1"></i>
+                                                Se connecter
+                                            </a>
+                                        @endauth
                                     </div>
                                 </div>
                             </div>
