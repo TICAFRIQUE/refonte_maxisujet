@@ -329,7 +329,7 @@
                 <p class="lead text-muted">Restez informé des dernières nouvelles éducatives</p>
             </div>
             <div class="row g-4">
-                @foreach(app('App\Http\Controllers\Frontend\RubriqueFrontController')->getActualitesRecentes(3) as $actualite)
+                @foreach(app('App\Http\Controllers\frontend\RubriqueFrontController')->getActualitesRecentes(3) as $actualite)
                     <div class="col-lg-4 col-md-6">
                         <div class="card h-100 shadow-sm border-0" style="border-radius: 15px; overflow: hidden; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.08)'">
                             @if($actualite->getFirstMediaUrl('image_principale'))
@@ -380,7 +380,7 @@
                 <p class="lead text-muted">Découvrez nos conseils pour réussir vos études</p>
             </div>
             <div class="row g-4">
-                @foreach(app('App\Http\Controllers\Frontend\RubriqueFrontController')->getAstucesConseils(3) as $astuce)
+                @foreach(app('App\Http\Controllers\frontend\RubriqueFrontController')->getAstucesConseils(3) as $astuce)
                     <div class="col-lg-4 col-md-6">
                         <div class="card h-100 shadow-sm border-0" style="border-radius: 15px; overflow: hidden; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.08)'">
                             @if($astuce->getFirstMediaUrl('image_principale'))
