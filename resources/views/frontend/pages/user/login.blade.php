@@ -123,8 +123,16 @@
                                 <label for="password" class="form-label">
                                     <i class="bi bi-lock me-2"></i>Mot de passe
                                 </label>
-                                <input type="password" name="password" id="password" class="form-control" required
-                                    placeholder="Votre mot de passe">
+                                <div class="position-relative">
+                                    <input type="password" name="password" id="password" class="form-control pe-5" required
+                                        placeholder="Votre mot de passe">
+                                    <button type="button" id="togglePassword" 
+                                            class="btn position-absolute top-50 end-0 translate-middle-y me-2"
+                                            style="border: none; background: none; color: #6b7280; z-index: 10; padding: 0.5rem;"
+                                            title="Afficher/Masquer le mot de passe">
+                                        <i class="bi bi-eye" id="eyeIcon"></i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="d-flex justify-content-end mb-4">
                                 <a href="{{ route('password.request') }}" class="forgot-link">Mot de passe oublié ?</a>
@@ -145,4 +153,29 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const togglePassword = document.getElementById('togglePassword');
+            const password = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+
+            togglePassword.addEventListener('click', function() {
+                // Basculer le type d'input
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                password.setAttribute('type', type);
+                
+                // Changer l'icône
+                if (type === 'text') {
+                    eyeIcon.classList.remove('bi-eye');
+                    eyeIcon.classList.add('bi-eye-slash');
+                    togglePassword.title = 'Masquer le mot de passe';
+                } else {
+                    eyeIcon.classList.remove('bi-eye-slash');
+                    eyeIcon.classList.add('bi-eye');
+                    togglePassword.title = 'Afficher le mot de passe';
+                }
+            });
+        });
+    </script>
 @endsection

@@ -1,12 +1,15 @@
 @extends('frontend.layouts.front_app')
 
 @section('title', 'MaxiSujets - Plateforme N°1 de Documents Éducatifs en Côte d\'Ivoire')
-@section('meta_description', 'Téléchargez gratuitement des milliers de documents éducatifs : cours, exercices corrigés,
+@section('meta_description',
+    'Téléchargez gratuitement des milliers de documents éducatifs : cours, exercices corrigés,
     examens blancs, sujets de concours. Ressources pour primaire, secondaire et supérieur.')
-@section('meta_keywords', 'documents scolaires côte d\'ivoire, cours gratuits CI, exercices corrigés, examens blancs,
+@section('meta_keywords',
+    'documents scolaires côte d\'ivoire, cours gratuits CI, exercices corrigés, examens blancs,
     sujets concours, BEPC, BAC, université côte d\'ivoire, ressources éducatives')
 @section('og_title', 'MaxiSujets - Documents Éducatifs Gratuits Côte d\'Ivoire')
-@section('og_description', 'La plus grande bibliothèque de documents éducatifs en Côte d\'Ivoire. Cours, exercices,
+@section('og_description',
+    'La plus grande bibliothèque de documents éducatifs en Côte d\'Ivoire. Cours, exercices,
     examens pour tous les niveaux.')
 
     @push('styles')
@@ -281,20 +284,24 @@
         <div class="container">
             <div class="row text-center">
                 <div class="col-md-3 mb-4">
-                    <div class="stats-number">10K+</div>
+                    <i class="bi bi-file-earmark-text text-primary mb-3" style="font-size: 2rem;"></i>
+                    <div style="font-size: 2.5rem; font-weight: 700; background: linear-gradient(45deg, #ff6b35, #f7931e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">+10K</div>
                     <p class="text-muted fw-bold">Documents</p>
                 </div>
                 <div class="col-md-3 mb-4">
-                    <div class="stats-number">5K+</div>
+                    <i class="bi bi-people text-success mb-3" style="font-size: 2rem;"></i>
+                    <div style="font-size: 2.5rem; font-weight: 700; background: linear-gradient(45deg, #ff6b35, #f7931e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">+5K</div>
                     <p class="text-muted fw-bold">Étudiants</p>
                 </div>
                 <div class="col-md-3 mb-4">
-                    <div class="stats-number">20+</div>
+                    <i class="bi bi-book text-warning mb-3" style="font-size: 2rem;"></i>
+                    <div style="font-size: 2.5rem; font-weight: 700; background: linear-gradient(45deg, #ff6b35, #f7931e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">+20</div>
                     <p class="text-muted fw-bold">Matières</p>
                 </div>
                 <div class="col-md-3 mb-4">
-                    <div class="stats-number">100%</div>
-                    <p class="text-muted fw-bold">Gratuit</p>
+                    <i class="bi bi-shield-check text-info mb-3" style="font-size: 2rem;"></i>
+                    <div style="font-size: 2.5rem; font-weight: 700; background: linear-gradient(45deg, #ff6b35, #f7931e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">100%</div>
+                    <p class="text-muted fw-bold">Vérifiés</p>
                 </div>
             </div>
         </div>
@@ -312,94 +319,105 @@
     </section>
 
     <!-- Documents Récents - Design Moderne -->
-    <section class="py-5 bg-light">
+    @include('frontend.sections.recent_document')
+
+    <!-- Section Actualités -->
+    <section class="py-5 bg-white">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="display-5 fw-bold">Derniers Documents</h2>
-                <p class="lead text-muted">Découvrez les derniers ajouts à notre bibliothèque</p>
+                <h2 class="display-5 fw-bold text-dark">📰 Actualités</h2>
+                <p class="lead text-muted">Restez informé des dernières nouvelles éducatives</p>
             </div>
             <div class="row g-4">
-                @foreach ($sujetsRecents as $sujet)
+                @foreach(app('App\Http\Controllers\Frontend\RubriqueFrontController')->getActualitesRecentes(3) as $actualite)
                     <div class="col-lg-4 col-md-6">
-                        <div class="document-card h-100">
-                            <!-- Aperçu du Document -->
-                            <div class="document-preview">
-                                @php
-                                    $preview = $sujet->getFirstMediaUrl('non_corrige');
-                                    $isPdf = $preview && Str::endsWith($preview, '.pdf');
-                                @endphp
-                                @if ($isPdf)
-                                    <i class="bi bi-file-earmark-pdf display-1 text-danger"></i>
-                                @elseif($preview)
-                                    <img src="{{ $preview }}" alt="Aperçu" class="img-fluid"
-                                        style="max-height: 150px; object-fit: cover;">
-                                @else
-                                    <i class="bi bi-file-earmark-text display-1 text-primary"></i>
+                        <div class="card h-100 shadow-sm border-0" style="border-radius: 15px; overflow: hidden; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.08)'">
+                            @if($actualite->getFirstMediaUrl('image_principale'))
+                                <img src="{{ $actualite->getFirstMediaUrl('image_principale', 'medium') }}" 
+                                     class="card-img-top" alt="{{ $actualite->titre }}" style="height: 200px; object-fit: cover;">
+                            @else
+                                <div class="card-img-top d-flex align-items-center justify-content-center bg-gradient" 
+                                     style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                    <i class="bi bi-newspaper text-white" style="font-size: 3rem;"></i>
+                                </div>
+                            @endif
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="badge bg-primary rounded-pill">Actualité</span>
+                                    <small class="text-muted">{{ $actualite->date_publication ? $actualite->date_publication->format('d M Y') : $actualite->created_at->format('d M Y') }}</small>
+                                </div>
+                                <h5 class="card-title fw-bold mb-3">{{ Str::limit($actualite->titre, 50) }}</h5>
+                                @if($actualite->resume)
+                                    <p class="card-text text-muted mb-3">{{ Str::limit($actualite->resume, 100) }}</p>
                                 @endif
-                            </div>
-
-                            <!-- Contenu de la Carte -->
-                            <div class="p-4">
-                                <div class="d-flex justify-content-between align-items-start mb-3">
-                                    <h5 class="card-title fw-bold text-dark mb-0">{{ Str::limit($sujet->libelle, 50) }}</h5>
-                                    <span class="badge bg-dark">{{ $sujet->code }}</span>
-                                </div>
-
-                                <p class="text-muted mb-3" style="min-height: 48px;">
-                                    {{ Str::limit($sujet->description, 80) }}</p>
-
-                                <!-- Badges d'Information -->
-                                <div class="mb-3">
-                                    <span class="category-badge me-2">{{ $sujet->categorie->libelle ?? 'Document' }}</span>
-                                    <span class="badge subject-badge me-2">{{ $sujet->matiere->libelle ?? '' }}</span>
-                                    @foreach ($sujet->niveaux->take(2) as $niveau)
-                                        <span class="badge level-badge me-1">{{ $niveau->libelle }}</span>
-                                    @endforeach
-                                </div>
-
-                                <!-- Date et Année -->
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <small class="text-muted">
-                                        <i class="bi bi-calendar3 me-1"></i>{{ $sujet->created_at->format('d/m/Y') }}
-                                    </small>
-                                    <span class="badge bg-warning text-dark">{{ $sujet->annee }}</span>
-                                </div>
-
-                                <!-- Actions -->
-                                <div class="d-flex gap-2">
-                                    <a href="{{ route('sujet.front.show', $sujet->libelle) }}"
-                                        class="btn btn-outline-primary rounded-pill flex-fill">
-                                        <i class="bi bi-eye me-1"></i>Voir
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="{{ route('rubrique.show', $actualite->slug) }}" 
+                                       class="btn btn-outline-primary rounded-pill px-4">
+                                        <i class="bi bi-arrow-right me-1"></i>Lire plus
                                     </a>
-                                    @auth
-                                        @if (auth()->user()->points > 0)
-                                            @if ($sujet->getFirstMediaUrl('non_corrige'))
-                                                <a href="{{ $sujet->getFirstMediaUrl('non_corrige') }}"
-                                                    class="btn btn-primary rounded-pill" target="_blank">
-                                                    <i class="bi bi-download"></i>
-                                                </a>
-                                            @endif
-                                        @else
-                                            <button class="btn btn-outline-danger rounded-pill" disabled>
-                                                <i class="bi bi-lock"></i>
-                                            </button>
-                                        @endif
-                                    @else
-                                        <a href="{{ route('user.loginForm') }}"
-                                            class="btn btn-outline-secondary rounded-pill">
-                                            <i class="bi bi-person"></i>
-                                        </a>
-                                    @endauth
+                                    <small class="text-muted">
+                                        <i class="bi bi-eye me-1"></i>{{ $actualite->nb_vues }} vues
+                                    </small>
                                 </div>
                             </div>
                         </div>
                     </div>
                 @endforeach
             </div>
-
             <div class="text-center mt-5">
-                <a href="{{ route('sujet.front.index') }}" class="modern-btn">
-                    <i class="bi bi-arrow-right me-2"></i>Voir Tous les Documents
+                <a href="{{ route('actualites.index') }}" class="btn btn-primary btn-lg px-5 rounded-pill">
+                    <i class="bi bi-newspaper me-2"></i>Voir toutes les actualités
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Astuces & Conseils -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold text-dark">💡 Astuces & Conseils</h2>
+                <p class="lead text-muted">Découvrez nos conseils pour réussir vos études</p>
+            </div>
+            <div class="row g-4">
+                @foreach(app('App\Http\Controllers\Frontend\RubriqueFrontController')->getAstucesConseils(3) as $astuce)
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 shadow-sm border-0" style="border-radius: 15px; overflow: hidden; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.08)'">
+                            @if($astuce->getFirstMediaUrl('image_principale'))
+                                <img src="{{ $astuce->getFirstMediaUrl('image_principale', 'medium') }}" 
+                                     class="card-img-top" alt="{{ $astuce->titre }}" style="height: 200px; object-fit: cover;">
+                            @else
+                                <div class="card-img-top d-flex align-items-center justify-content-center bg-gradient" 
+                                     style="height: 200px; background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);">
+                                    <i class="bi bi-lightbulb text-white" style="font-size: 3rem;"></i>
+                                </div>
+                            @endif
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="badge bg-warning text-dark rounded-pill">Conseil</span>
+                                    <small class="text-muted">{{ $astuce->date_publication ? $astuce->date_publication->format('d M Y') : $astuce->created_at->format('d M Y') }}</small>
+                                </div>
+                                <h5 class="card-title fw-bold mb-3">{{ Str::limit($astuce->titre, 50) }}</h5>
+                                @if($astuce->resume)
+                                    <p class="card-text text-muted mb-3">{{ Str::limit($astuce->resume, 100) }}</p>
+                                @endif
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="{{ route('rubrique.show', $astuce->slug) }}" 
+                                       class="btn btn-outline-warning rounded-pill px-4">
+                                        <i class="bi bi-arrow-right me-1"></i>Lire plus
+                                    </a>
+                                    <small class="text-muted">
+                                        <i class="bi bi-eye me-1"></i>{{ $astuce->nb_vues }} vues
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            <div class="text-center mt-5">
+                <a href="{{ route('astuces-conseils.index') }}" class="btn btn-warning btn-lg px-5 rounded-pill text-dark">
+                    <i class="bi bi-lightbulb me-2"></i>Voir toutes les astuces
                 </a>
             </div>
         </div>

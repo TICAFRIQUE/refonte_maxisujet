@@ -7,8 +7,10 @@ use App\Http\Controllers\backend\SujetController;
 use App\Http\Controllers\backend\ModuleController;
 use App\Http\Controllers\backend\NiveauController;
 use App\Http\Controllers\backend\SliderController;
+use App\Http\Controllers\backend\RubriqueController;
 use App\Http\Controllers\frontend\HomeControlleur;
 use App\Http\Controllers\frontend\UserControlleur;
+use App\Http\Controllers\frontend\RubriqueFrontController;
 use App\Http\Controllers\backend\MatiereController;
 use App\Http\Controllers\backend\CategorieController;
 use App\Http\Controllers\backend\DashboardController;
@@ -134,6 +136,19 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
         route::post('update/{id}', 'update')->name('slider.update');
         route::get('delete/{id}', 'delete')->name('slider.delete');
     });
+
+    // rubriques (actualités et astuces & conseils)
+    Route::prefix('rubrique')->name('backend.rubrique.')->controller(RubriqueController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/store', 'store')->name('store');
+        Route::get('/{rubrique}', 'show')->name('show');
+        Route::get('/{rubrique}/edit', 'edit')->name('edit');
+        Route::put('/{rubrique}', 'update')->name('update');
+        Route::delete('/{rubrique}', 'destroy')->name('destroy');
+        Route::post('/{rubrique}/toggle-statut', 'toggleStatut')->name('toggle-statut');
+        Route::post('/{rubrique}/toggle-featured', 'toggleFeatured')->name('toggle-featured');
+    });
 });
 
 // ROUTES FRONTEND (PUBLIC)
@@ -178,6 +193,20 @@ Route::prefix('user')->controller(UserDashboardControlleur::class)->middleware('
     route::get('sujet/{id}/edit', 'editSujet')->name('user.sujet.edit');
     route::post('sujet/{id}/update', 'updateSujet')->name('user.sujet.update');
     route::get('sujet/delete/{id}', 'delete')->name('user.sujet.delete');
+});
+
+// Routes pour les rubriques (frontend)
+Route::prefix('actualites')->controller(RubriqueFrontController::class)->group(function () {
+    Route::get('/', 'actualites')->name('actualites.index');
+});
+
+Route::prefix('astuces-conseils')->controller(RubriqueFrontController::class)->group(function () {
+    Route::get('/', 'astucesConseils')->name('astuces-conseils.index');
+});
+
+Route::controller(RubriqueFrontController::class)->group(function () {
+    Route::get('/rubrique/{slug}', 'show')->name('rubrique.show');
+    Route::get('/recherche-rubriques', 'rechercheGlobale')->name('rubriques.recherche');
 });
 
 // Pages statiques

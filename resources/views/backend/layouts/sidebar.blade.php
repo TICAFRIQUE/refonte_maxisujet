@@ -118,6 +118,12 @@
                     </li>
                 @endcan
 
+                <li class="nav-item">
+                    <a class="nav-link menu-link {{ Route::is('backend.rubrique.*') ? 'active' : '' }}" 
+                        href="{{ route('backend.rubrique.index') }}">
+                        <i class="ri-newspaper-line"></i> <span>RUBRIQUES</span>
+                    </a>
+                </li>
 
                    {{-- @can('voir-sujet') --}}
                     <li class="nav-item">

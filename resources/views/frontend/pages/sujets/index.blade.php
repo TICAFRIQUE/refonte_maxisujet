@@ -230,15 +230,15 @@
         <div class="row">
             <!-- Recherche -->
             <div class="col-12">
-                <div class="search-section">
-                    <div class="search-title">
-                        <i class="bi bi-search"></i>
+                <div class="search-section" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border: 2px solid #e2e8f0; position: relative; overflow: hidden;">
+                    <div class="search-title position-relative" style="background: linear-gradient(90deg, #4f46e5, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 1.3rem; font-weight: 700;">
+                        <i class="bi bi-search" style="color: #4f46e5; font-size: 1.2rem; margin-right: 0.8rem; filter: drop-shadow(0 2px 4px rgba(79, 70, 229, 0.3));"></i>
                         Rechercher un sujet
                     </div>
-                    <form class="row g-3" method="GET" action="{{ route('sujet.front.index') }}">
+                    <form class="row g-3 position-relative" method="GET" action="{{ route('sujet.front.index') }}">
                         <div class="col-lg-3 col-md-4">
-                            <select class="form-select" name="matiere">
-                                <option value="">Toutes les matières</option>
+                            <select class="form-select" name="matiere" style="border-radius: 12px; border: 2px solid #e2e8f0; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); transition: all 0.3s ease; font-weight: 500;" onmouseover="this.style.borderColor='#4f46e5'; this.style.boxShadow='0 0 0 3px rgba(79, 70, 229, 0.1)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                                <option value="">🎓 Toutes les matières</option>
                                 @foreach ($matieres as $matiere)
                                     <option value="{{ $matiere->slug }}" {{ request('matiere') == $matiere->slug ? 'selected' : '' }}>
                                         {{ $matiere->libelle }}
@@ -247,8 +247,8 @@
                             </select>
                         </div>
                         <div class="col-lg-3 col-md-4">
-                            <select class="form-select" name="niveau">
-                                <option value="">Tous les niveaux</option>
+                            <select class="form-select" name="niveau" style="border-radius: 12px; border: 2px solid #e2e8f0; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); transition: all 0.3s ease; font-weight: 500;" onmouseover="this.style.borderColor='#4f46e5'; this.style.boxShadow='0 0 0 3px rgba(79, 70, 229, 0.1)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                                <option value="">📚 Tous les niveaux</option>
                                 @foreach ($data_niveaux as $cycle)
                                     <optgroup label="{{ $cycle->libelle }}">
                                         @foreach ($cycle->children as $niveau)
@@ -268,8 +268,8 @@
                             </select>
                         </div>
                         <div class="col-lg-2 col-md-4">
-                            <select class="form-select" name="annee">
-                                <option value="">Toutes les années</option>
+                            <select class="form-select" name="annee" style="border-radius: 12px; border: 2px solid #e2e8f0; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); transition: all 0.3s ease; font-weight: 500;" onmouseover="this.style.borderColor='#4f46e5'; this.style.boxShadow='0 0 0 3px rgba(79, 70, 229, 0.1)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                                <option value="">📅 Toutes les années</option>
                                 @for ($year = date('Y'); $year >= 2000; $year--)
                                     <option value="{{ $year }}" {{ request('annee') == $year ? 'selected' : '' }}>
                                         {{ $year }}
@@ -278,8 +278,8 @@
                             </select>
                         </div>
                         <div class="col-lg-2 col-md-6">
-                            <select class="form-select" name="categorie">
-                                <option value="">Toutes les catégories</option>
+                            <select class="form-select" name="categorie" style="border-radius: 12px; border: 2px solid #e2e8f0; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); transition: all 0.3s ease; font-weight: 500;" onmouseover="this.style.borderColor='#4f46e5'; this.style.boxShadow='0 0 0 3px rgba(79, 70, 229, 0.1)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                                <option value="">🏷️ Toutes les catégories</option>
                                 @foreach ($categories as $categorie)
                                     <option value="{{ $categorie->slug }}" {{ request('categorie') == $categorie->slug ? 'selected' : '' }}>
                                         {{ $categorie->libelle }}
@@ -289,8 +289,8 @@
                         </div>
                         <div class="col-lg-2 col-md-6">
                             <div class="d-flex gap-2">
-                                <input type="text" class="form-control" name="code" value="{{ request('code') }}" placeholder="Code">
-                                <button type="submit" class="btn btn-primary">
+                                <input type="text" class="form-control" name="code" value="{{ request('code') }}" placeholder="🔍 Code" style="border-radius: 12px; border: 2px solid #e2e8f0; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); transition: all 0.3s ease; font-weight: 500;" onmouseover="this.style.borderColor='#4f46e5'; this.style.boxShadow='0 0 0 3px rgba(79, 70, 229, 0.1)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                                <button type="submit" class="btn" style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); border: none; border-radius: 12px; color: white; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3); min-width: 50px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(79, 70, 229, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(79, 70, 229, 0.3)'">
                                     <i class="bi bi-search"></i>
                                 </button>
                             </div>
@@ -443,12 +443,16 @@
                                     <!-- Boutons d'action améliorés -->
                                     <div class="d-flex flex-wrap gap-2 mt-auto">
                                         <a href="{{ route('sujet.front.show', $sujet->libelle) }}"
-                                            class="btn btn-outline-primary btn-sm flex-fill">
-                                            <i class="bi bi-eye me-1"></i>
-                                            Voir détails
+                                            class="btn btn-primary btn-sm flex-fill position-relative overflow-hidden" 
+                                            style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 12px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+                                            <i class="bi bi-eye me-2"></i>
+                                            <span>Voir détails</span>
+                                            <div class="position-absolute top-0 start-0 w-100 h-100" 
+                                                 style="background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%); pointer-events: none;"></div>
                                         </a>
-                                        
-                                        @auth
+
+                                        <!-- Bouton de téléchargement avec gestion des points -->
+                                        {{-- @auth
                                             @if (auth()->user()->points > 0)
                                                 <div class="btn-group flex-fill" role="group">
                                                     @if ($sujet->getFirstMediaUrl('non_corrige'))
@@ -475,7 +479,7 @@
                                                 <i class="bi bi-lock me-1"></i>
                                                 Se connecter
                                             </a>
-                                        @endauth
+                                        @endauth --}}
                                     </div>
                                 </div>
                             </div>
