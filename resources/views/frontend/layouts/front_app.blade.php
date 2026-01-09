@@ -573,7 +573,8 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('sujet.front.index') }}">Liste des sujets</a>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('sujet.front.index') }}">Liste des
+                            sujets</a>
                     </li>
 
                     <!-- Actualités -->
@@ -668,8 +669,8 @@
                                 {{-- <span class="footer-brand-name">MaxiSujets</span> --}}
                             </div>
                             <p class="footer-description">
-                                La plateforme de référence pour l'accès aux documents éducatifs en Côte d'Ivoire.
-                                Téléchargez des milliers de cours, exercices et examens gratuitement.
+                                Ce site regroupe de nombreux supports de sujets et de cours portant sur divers domaines
+                                de votre parcours scolaire, universitaire et votre entrée dans la vie professionnelle.
                             </p>
                             <div class="footer-stats">
                                 <div class="stat-item">
