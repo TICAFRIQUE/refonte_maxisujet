@@ -93,7 +93,7 @@
         box-shadow: 0 0 0 0.25rem rgba(255, 107, 53, 0.1);
     }
 </style>
-    <div class="container my-2">
+    <div class="container py-5 min-vh-100 d-flex flex-column">
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb bg-light rounded p-3">
@@ -107,12 +107,12 @@
                 </li>
             </ol>
         </nav>
-        <div class="row justify-content-center">
-            <div class="col-md-6">
+        <div class="row justify-content-center flex-grow-1">
+            <div class="col-md-6 d-flex align-items-center">
                 <div class="card auth-card">
                     <div class="card-header auth-header bg-primary text-white text-center">
                         <h4 class="mb-2">Rejoignez MaxiSujets</h4>
-                        <p class="mb-0 opacity-90">Inscrivez-vous gratuitement pour accéder aux ressources éducatives</p>
+                        <p class="mb-0 opacity-90">Inscrivez-vous gratuitement pour accéder aux ressources et publier des sujets</p>
                     </div>
                     <div class="card-body auth-body">
                         @if ($errors->any())
@@ -238,6 +238,7 @@
                 </div>
             </div>
         </div>
+    </div>
 @endsection
 
 @push('scripts')

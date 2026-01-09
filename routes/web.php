@@ -112,6 +112,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
         route::get('edit/{id}', 'edit')->name('niveau.edit')->middleware('can:modifier-niveau');
         route::post('update/{id}', 'update')->name('niveau.update')->middleware('can:modifier-niveau');
         route::get('delete/{id}', 'delete')->name('niveau.delete')->middleware('can:supprimer-niveau');
+        route::post('update-positions', 'updatePositions')->name('niveau.update-positions')->middleware('can:modifier-niveau');
     });
 
     // sujets

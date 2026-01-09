@@ -44,6 +44,51 @@
                     transform: rotate(360deg);
                 }
             }
+            
+            .fade-in {
+                animation: fadeInUp 1s ease-out;
+            }
+            
+            .fade-in-delay-1 {
+                animation: fadeInUp 1s ease-out 0.3s both;
+            }
+            
+            .fade-in-delay-2 {
+                animation: fadeInUp 1s ease-out 0.6s both;
+            }
+            
+            .fade-in-delay-3 {
+                animation: fadeInUp 1s ease-out 0.9s both;
+            }
+            
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            
+            @keyframes float {
+                0%, 100% {
+                    transform: translateY(0px);
+                }
+                50% {
+                    transform: translateY(-10px);
+                }
+            }
+            
+            .student-illustration {
+                filter: drop-shadow(0 10px 25px rgba(0,0,0,0.1));
+            }
+            
+            .backdrop-filter-blur {
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
 
             .feature-card {
                 background: white;
@@ -231,48 +276,114 @@
     <section class="modern-hero text-white">
         <div class="container position-relative" style="z-index: 2;">
             <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <h1 class="display-3 fw-bold mb-4 fade-in">
-                        Excellez dans vos <span class="text-warning">Études</span>
+                <div class="col-lg-7">
+                    <h1 class="display-2 fw-bold mb-4 fade-in">
+                        🎯 Le Comptoir de Tous les <span class="text-warning">Sujets</span> à Votre Portée !!
                     </h1>
-                    <p class="lead mb-4 fade-in-delay-1">
-                        Accédez à la plus grande bibliothèque de documents éducatifs de Côte d'Ivoire.
-                        Plus de <strong>10,000 ressources</strong> pour votre réussite scolaire et universitaire.
+                    <p class="lead mb-4 fade-in-delay-1" style="font-size: 1.3rem; line-height: 1.6;">
+                        <strong>🏆 Réussissez vos Examens & Concours</strong> avec notre immense bibliothèque de 
+                        <span class="text-warning fw-bold">sujets corrigés</span>, d'<span class="text-warning fw-bold">annales</span> 
+                        et d'<span class="text-warning fw-bold">épreuves types</span>. 
                     </p>
+                    {{-- <div class="alert alert-warning bg-gradient text-dark border-0 mb-4 fade-in-delay-1" style="border-radius: 15px; font-size: 1.1rem;">
+                        <i class="bi bi-trophy-fill me-2"></i>
+                        <strong>+10,000 sujets</strong> pour maximiser vos chances de succès !
+                    </div> --}}
+                    
                     <div class="d-flex flex-column flex-sm-row gap-3 mb-4 fade-in-delay-2">
-                        <a href="{{ route('sujet.front.index') }}" class="btn btn-light btn-lg rounded-pill px-4">
-                            <i class="bi bi-search me-2"></i>Explorer Maintenant
+                        <a href="{{ route('sujet.front.index') }}" class="btn btn-light btn-lg rounded-pill px-5 py-3 shadow" style="font-size: 1.1rem;">
+                            <i class="bi bi-collection-fill me-2"></i>🔍 Explorer les Sujets
                         </a>
-                        <a href="{{ route('user.registerForm') }}" class="btn btn-outline-light btn-lg rounded-pill px-4">
-                            <i class="bi bi-person-plus me-2"></i>Rejoindre Gratuitement
+                        <a href="{{ route('user.registerForm') }}" class="btn btn-outline-light btn-lg rounded-pill px-5 py-3" style="font-size: 1.1rem;">
+                            <i class="bi bi-person-plus me-2"></i>📚 Accès Gratuit
                         </a>
                     </div>
                 </div>
-                <div class="col-lg-6 fade-in-delay-3">
-                    <div class="search-section">
-                        <h4 class="mb-3">Recherche Rapide</h4>
-                        <form action="{{ route('sujet.front.index') }}" method="GET" class="row g-2">
-                            <div class="col-md-8">
-                                <input type="text" name="search" class="form-control form-control-lg"
-                                    placeholder="Rechercher un document..." style="border-radius: 10px;">
+                <div class="col-lg-5 text-center fade-in-delay-3">
+                    <div class="position-relative">
+                        <!-- Illustration d'une personne étudiant -->
+                        <div class="student-illustration mx-auto" style="width: 300px; height: 350px; position: relative;">
+                            <!-- Cercle de fond -->
+                            <div class="position-absolute w-100 h-100 rounded-circle" style="background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(247,147,30,0.2) 100%); backdrop-filter: blur(10px);"></div>
+                            
+                            <!-- Personne avec SVG -->
+                            <svg class="position-absolute" style="top: 50%; left: 50%; transform: translate(-50%, -50%); width: 200px; height: 250px;" viewBox="0 0 200 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Corps -->
+                                <ellipse cx="100" cy="180" rx="45" ry="60" fill="#1e3a8a" opacity="0.9"/>
+                                
+                                <!-- Bras -->
+                                <ellipse cx="60" cy="150" rx="15" ry="40" fill="#f7931e" opacity="0.8" transform="rotate(-20 60 150)"/>
+                                <ellipse cx="140" cy="150" rx="15" ry="40" fill="#f7931e" opacity="0.8" transform="rotate(20 140 150)"/>
+                                
+                                <!-- Tête -->
+                                <circle cx="100" cy="80" r="35" fill="#fbbf24"/>
+                                
+                                <!-- Cheveux -->
+                                <path d="M70 55 Q100 40 130 55 Q135 70 130 80 Q100 75 70 80 Q65 70 70 55" fill="#374151"/>
+                                
+                                <!-- Yeux -->
+                                <circle cx="90" cy="75" r="3" fill="#1f2937"/>
+                                <circle cx="110" cy="75" r="3" fill="#1f2937"/>
+                                
+                                <!-- Sourire -->
+                                <path d="M85 90 Q100 100 115 90" stroke="#1f2937" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                
+                                <!-- Livre dans la main -->
+                                <rect x="45" y="135" width="20" height="15" rx="2" fill="#fff" opacity="0.9"/>
+                                <line x1="47" y1="139" x2="63" y2="139" stroke="#1e3a8a" stroke-width="1"/>
+                                <line x1="47" y1="143" x2="63" y2="143" stroke="#1e3a8a" stroke-width="1"/>
+                                <line x1="47" y1="147" x2="63" y2="147" stroke="#1e3a8a" stroke-width="1"/>
+                                
+                                <!-- Diplôme dans l'autre main -->
+                                <rect x="135" y="130" width="25" height="18" rx="2" fill="#fbbf24" opacity="0.9"/>
+                                <circle cx="147" cy="139" r="8" fill="none" stroke="#1e3a8a" stroke-width="2"/>
+                                <path d="M142 139 L147 144 L152 134" stroke="#1e3a8a" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                
+                                <!-- Jambes -->
+                                <ellipse cx="85" cy="220" rx="12" ry="25" fill="#1e3a8a" opacity="0.8"/>
+                                <ellipse cx="115" cy="220" rx="12" ry="25" fill="#1e3a8a" opacity="0.8"/>
+                            </svg>
+                            
+                            <!-- Éléments flottants autour -->
+                            <div class="position-absolute" style="top: 10%; left: 10%; animation: float 3s ease-in-out infinite;">
+                                <div class="bg-warning text-dark px-2 py-1 rounded" style="font-size: 0.7rem;">📚 BAC</div>
                             </div>
-                            <div class="col-md-4">
-                                <button type="submit" class="btn btn-warning btn-lg w-100" style="border-radius: 10px;">
-                                    <i class="bi bi-search"></i>
-                                </button>
+                            <div class="position-absolute" style="top: 20%; right: 15%; animation: float 4s ease-in-out infinite; animation-delay: 1s;">
+                                <div class="bg-success text-white px-2 py-1 rounded" style="font-size: 0.7rem;">✅ Réussi</div>
                             </div>
-                        </form>
-                        <div class="mt-3">
-                            <small class="text-white-50">Recherches populaires :</small>
-                            <div class="mt-2">
-                                <a href="{{ route('sujet.front.index', ['search' => 'mathématiques']) }}"
-                                    class="badge bg-light text-dark me-2">Mathématiques</a>
-                                <a href="{{ route('sujet.front.index', ['search' => 'physique']) }}"
-                                    class="badge bg-light text-dark me-2">Physique</a>
-                                <a href="{{ route('sujet.front.index', ['search' => 'français']) }}"
-                                    class="badge bg-light text-dark">Français</a>
+                            <div class="position-absolute" style="bottom: 15%; left: 5%; animation: float 3.5s ease-in-out infinite; animation-delay: 2s;">
+                                <div class="bg-info text-white px-2 py-1 rounded" style="font-size: 0.7rem;">🏆 Concours</div>
+                            </div>
+                            <div class="position-absolute" style="bottom: 25%; right: 10%; animation: float 4.5s ease-in-out infinite; animation-delay: 0.5s;">
+                                <div class="bg-primary text-white px-2 py-1 rounded" style="font-size: 0.7rem;">📝 BEPC</div>
+                            </div>
+                            <div class="position-absolute" style="top: 5%; left: 50%; animation: float 3.8s ease-in-out infinite; animation-delay: 0.8s;">
+                                <div class="bg-secondary text-white px-2 py-1 rounded" style="font-size: 0.7rem;">🎓 Licence</div>
+                            </div>
+                            <div class="position-absolute" style="top: 30%; left: 0%; animation: float 4.2s ease-in-out infinite; animation-delay: 1.5s;">
+                                <div class="bg-danger text-white px-2 py-1 rounded" style="font-size: 0.7rem;">📖 CEP</div>
+                            </div>
+                            
+                            <div class="position-absolute" style="bottom: 40%; left: 15%; animation: float 4.8s ease-in-out infinite; animation-delay: 1.8s;">
+                                <div class="bg-warning text-dark px-2 py-1 rounded" style="font-size: 0.7rem;">⭐ Mention</div>
+                            </div>
+                            <div class="position-absolute" style="bottom: 5%; right: 35%; animation: float 3.4s ease-in-out infinite; animation-delay: 0.3s;">
+                                <div class="bg-success text-white px-2 py-1 rounded" style="font-size: 0.7rem;">🎯 Brevet</div>
+                            </div>
+                            <div class="position-absolute" style="top: 50%; right: 20%; animation: float 4.6s ease-in-out infinite; animation-delay: 1.2s;">
+                                <div class="bg-info text-white px-2 py-1 rounded" style="font-size: 0.7rem;">📊 Notes</div>
+                            </div>
+                           
+                            <div class="position-absolute" style="top: 35%; left: 20%; animation: float 4.4s ease-in-out infinite; animation-delay: 0.7s;">
+                                <div class="bg-secondary text-white px-2 py-1 rounded" style="font-size: 0.7rem;">📋 Examen</div>
                             </div>
                         </div>
+                        
+                        <!-- Citation motivante -->
+                        {{-- <div class="mt-4 p-3 bg-white bg-opacity-10 rounded-4 backdrop-filter-blur">
+                            <p class="mb-2 fst-italic text-white-75">"Avec MaxiSujets, j'ai réussi mon BAC avec mention !"</p>
+                            <small class="text-warning fw-bold">- Étudiant(e) MaxiSujets</small>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -282,26 +393,34 @@
     <!-- Statistiques Modernes -->
     <section class="py-5 bg-light">
         <div class="container">
+            <div class="text-center mb-4">
+                <h3 class="fw-bold text-dark">🎯 MaxiSujets en Chiffres</h3>
+                <p class="text-muted">La référence #1 des sujets d'examens en Côte d'Ivoire</p>
+            </div>
             <div class="row text-center">
                 <div class="col-md-3 mb-4">
                     <i class="bi bi-file-earmark-text text-primary mb-3" style="font-size: 2rem;"></i>
                     <div style="font-size: 2.5rem; font-weight: 700; background: linear-gradient(45deg, #ff6b35, #f7931e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">+10K</div>
-                    <p class="text-muted fw-bold">Documents</p>
+                    <p class="text-muted fw-bold">📝 Sujets d'Examens</p>
+                    <small class="text-muted">BEPC, BAC, Concours</small>
                 </div>
                 <div class="col-md-3 mb-4">
                     <i class="bi bi-people text-success mb-3" style="font-size: 2rem;"></i>
                     <div style="font-size: 2.5rem; font-weight: 700; background: linear-gradient(45deg, #ff6b35, #f7931e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">+5K</div>
-                    <p class="text-muted fw-bold">Étudiants</p>
+                    <p class="text-muted fw-bold">🎓 Étudiants Aidés</p>
+                    <small class="text-muted">Chaque mois</small>
                 </div>
                 <div class="col-md-3 mb-4">
-                    <i class="bi bi-book text-warning mb-3" style="font-size: 2rem;"></i>
-                    <div style="font-size: 2.5rem; font-weight: 700; background: linear-gradient(45deg, #ff6b35, #f7931e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">+20</div>
-                    <p class="text-muted fw-bold">Matières</p>
+                    <i class="bi bi-trophy text-warning mb-3" style="font-size: 2rem;"></i>
+                    <div style="font-size: 2.5rem; font-weight: 700; background: linear-gradient(45deg, #ff6b35, #f7931e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">95%</div>
+                    <p class="text-muted fw-bold">🏆 Taux de Réussite</p>
+                    <small class="text-muted">Avec nos sujets</small>
                 </div>
                 <div class="col-md-3 mb-4">
                     <i class="bi bi-shield-check text-info mb-3" style="font-size: 2rem;"></i>
                     <div style="font-size: 2.5rem; font-weight: 700; background: linear-gradient(45deg, #ff6b35, #f7931e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">100%</div>
-                    <p class="text-muted fw-bold">Vérifiés</p>
+                    <p class="text-muted fw-bold">✅ Sujets Vérifiés</p>
+                    <small class="text-muted">Par des experts</small>
                 </div>
             </div>
         </div>

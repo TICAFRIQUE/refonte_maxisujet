@@ -573,7 +573,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('sujet.front.index') }}">Documents</a>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('sujet.front.index') }}">Liste des sujets</a>
                     </li>
 
                     <!-- Actualités -->

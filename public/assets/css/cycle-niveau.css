@@ -1,0 +1,210 @@
+/* Styles pour la gestion des cycles et niveaux */
+
+.niveau-item {
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.niveau-item:hover {
+    background-color: #f8f9fa;
+    border-left-color: #0d6efd;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.drag-handle {
+    cursor: grab;
+    transition: color 0.2s ease;
+}
+
+.drag-handle:hover {
+    color: #0d6efd !important;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+/* Animation pour les badges */
+.badge {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Style pour les éléments vides */
+.empty-state {
+    padding: 3rem;
+    text-align: center;
+    color: #6c757d;
+}
+
+/* Amélioration des dropdowns */
+.dropdown-menu {
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border-radius: 0.5rem;
+}
+
+.dropdown-item {
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+    transform: translateX(2px);
+}
+
+/* Style pour la hiérarchie */
+.border-start {
+    position: relative;
+}
+
+.border-start::before {
+    content: '';
+    position: absolute;
+    left: -2px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, #0d6efd, #6610f2);
+    opacity: 0.6;
+}
+
+/* Animation pour les cartes */
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+/* Style pour les boutons d'action */
+.btn-group-sm .btn {
+    transition: all 0.2s ease;
+}
+
+.btn-group-sm .btn:hover {
+    transform: scale(1.05);
+}
+
+/* Style pour la recherche */
+#searchInput {
+    transition: border-color 0.2s ease;
+}
+
+#searchInput:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Animation pour les éléments filtrés */
+.niveau-item.filtered {
+    opacity: 0.3;
+    transform: scale(0.95);
+}
+
+/* Style pour les alertes de validation */
+.alert-validation {
+    border-left: 4px solid #dc3545;
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0.25rem;
+}
+
+.alert-validation.success {
+    border-left-color: #198754;
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .niveau-item .d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+    
+    .niveau-item .btn-group {
+        margin-top: 0.5rem;
+        width: 100%;
+    }
+    
+    .drag-handle {
+        display: none;
+    }
+}
+
+/* Style pour les tooltips personnalisés */
+.custom-tooltip {
+    background: #212529;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    position: absolute;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.custom-tooltip.show {
+    opacity: 1;
+}
+
+/* Animation de chargement */
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #0d6efd;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Style pour les statistiques */
+.stats-card {
+    transition: all 0.3s ease;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+/* Amélioration des formulaires */
+.form-control:focus,
+.form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.was-validated .form-control:valid {
+    border-color: #198754;
+}
+
+.was-validated .form-control:invalid {
+    border-color: #dc3545;
+}
+
+/* Style pour les breadcrumbs */
+.breadcrumb-item a {
+    color: #0d6efd;
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    text-decoration: underline;
+}

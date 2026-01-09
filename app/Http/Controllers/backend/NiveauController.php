@@ -24,36 +24,45 @@ class NiveauController extends Controller
 
     public function store(Request $request)
     {
-
         try {
-            //  dd($request->all());
-            //request validation ......
+            // Validation des données
             $request->validate([
-                'libelle' => 'required:Niveaus',
-            ]);
-
-            //compter le nombre de Niveau principale et ajouter +1 pour la position
-            $data_count = Niveau::where('parent_id', null)->count();
-
-            // recuperer la Niveau et la mettre en lowercase 
-
-            $Niveau_lowercase = Str::lower($request['libelle']);
-
-            Niveau::firstOrCreate([
-                'libelle' => Str::ucfirst($Niveau_lowercase),
-
+                'libelle' => 'required|string|min:2|max:50|regex:/^[a-zA-ZÀ-ÿ0-9\s]+$/',
+                'statut' => 'required|in:active,desactive'
             ], [
-                'parent_id' => null,
-                'status' => $request['status'],
-                'position' => $data_count + 1,
-                'url' => $request['url'],
+                'libelle.required' => 'Le nom du cycle est obligatoire.',
+                'libelle.min' => 'Le nom du cycle doit contenir au moins 2 caractères.',
+                'libelle.max' => 'Le nom du cycle ne peut pas dépasser 50 caractères.',
+                'libelle.regex' => 'Le nom du cycle ne peut contenir que des lettres, chiffres et espaces.',
+                'statut.required' => 'Le statut est obligatoire.',
+                'statut.in' => 'Le statut doit être "active" ou "desactive".'
             ]);
 
+            // Vérifier si un cycle avec ce nom existe déjà
+            $libelle_formatted = Str::ucfirst(Str::lower(trim($request->libelle)));
+            $existing = Niveau::whereNull('parent_id')
+                             ->where('libelle', $libelle_formatted)
+                             ->first();
+            
+            if ($existing) {
+                return back()->with('error', 'Un cycle avec ce nom existe déjà.')->withInput();
+            }
 
+            // Compter le nombre de cycles principaux et ajouter +1 pour la position
+            $data_count = Niveau::whereNull('parent_id')->count();
 
-            return back()->with('success', 'Opération réussi');
+            // Créer le nouveau cycle
+            Niveau::create([
+                'libelle' => $libelle_formatted,
+                'parent_id' => null,
+                'statut' => $request->statut,
+                'position' => $data_count + 1,
+                'url' => null,
+            ]);
+
+            return back()->with('success', 'Cycle créé avec succès !');
         } catch (\Throwable $e) {
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', 'Erreur lors de la création du cycle: ' . $e->getMessage())->withInput();
         }
     }
 
@@ -77,35 +86,49 @@ class NiveauController extends Controller
     public function addSubCatStore(Request $request)
     {
         try {
-            //request validation ......
+            // Validation des données
             $request->validate([
-                'libelle' => 'required:niveaux',
+                'libelle' => 'required|string|min:2|max:50|regex:/^[a-zA-ZÀ-ÿ0-9\s]+$/',
+                'statut' => 'required|in:active,desactive',
+                'niveau_parent' => 'required|exists:niveaux,id'
+            ], [
+                'libelle.required' => 'Le nom du niveau est obligatoire.',
+                'libelle.min' => 'Le nom du niveau doit contenir au moins 2 caractères.',
+                'libelle.max' => 'Le nom du niveau ne peut pas dépasser 50 caractères.',
+                'libelle.regex' => 'Le nom du niveau ne peut contenir que des lettres, chiffres et espaces.',
+                'statut.required' => 'Le statut est obligatoire.',
+                'statut.in' => 'Le statut doit être "active" ou "desactive".',
+                'niveau_parent.required' => 'Le niveau parent est obligatoire.',
+                'niveau_parent.exists' => 'Le niveau parent spécifié n\'existe pas.'
             ]);
 
-            $niveau_parent = Niveau::whereId($request['niveau_parent'])->first();
+            $niveau_parent = Niveau::findOrFail($request->niveau_parent);
+            $libelle_formatted = Str::ucfirst(Str::lower(trim($request->libelle)));
 
-            // dd($niveau_parent->toArray());
-            //function for add position
-            $data_count = Niveau::where('parent_id', $niveau_parent['id'])->count();
+            // Vérifier si un niveau avec ce nom existe déjà pour ce parent
+            $existing = Niveau::where('parent_id', $niveau_parent->id)
+                             ->where('libelle', $libelle_formatted)
+                             ->first();
+            
+            if ($existing) {
+                return back()->with('error', 'Un niveau avec ce nom existe déjà dans ce cycle.')->withInput();
+            }
 
-            Niveau::firstOrCreate(
-                [
-                    'libelle' => Str::ucfirst(Str::lower($request['libelle'])),
-                    'parent_id' => $niveau_parent['id'],
-                ],
+            // Compter les niveaux existants pour ce parent
+            $data_count = Niveau::where('parent_id', $niveau_parent->id)->count();
 
-                [
-                    'parent_id' => $niveau_parent['id'],
-                    'statut' => $request['statut'],
-                    'url' => $request['url'],
-                    'position' => $data_count + 1,
-                ]
-            );
+            // Créer le nouveau niveau
+            Niveau::create([
+                'libelle' => $libelle_formatted,
+                'parent_id' => $niveau_parent->id,
+                'statut' => $request->statut,
+                'position' => $data_count + 1,
+                'url' => null,
+            ]);
 
-
-            return redirect()->route('niveau.create')->with('success', 'Opération réussi');
+            return redirect()->route('niveau.create')->with('success', 'Niveau créé avec succès dans le cycle "' . $niveau_parent->libelle . '" !');
         } catch (\Throwable $e) {
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', 'Erreur lors de la création du niveau: ' . $e->getMessage())->withInput();
         }
     }
 
@@ -130,25 +153,48 @@ class NiveauController extends Controller
 
     public function update(Request $request, $id)
     {
-
-        //request validation ......
-        $request->validate([
-            'libelle' => 'required',
-        ]);
-
         try {
-
-            $data_Niveau = Niveau::find($id)->update([
-                'libelle' => Str::ucfirst(Str::lower($request['libelle'])),
-                'statut' => $request['statut'],
-                'url' => $request['url'],
-                'position' => $request['position'],
+            // Validation des données
+            $request->validate([
+                'libelle' => 'required|string|min:2|max:50|regex:/^[a-zA-ZÀ-ÿ0-9\s]+$/',
+                'statut' => 'required|in:active,desactive',
+                'position' => 'required|integer|min:1'
+            ], [
+                'libelle.required' => 'Le nom est obligatoire.',
+                'libelle.min' => 'Le nom doit contenir au moins 2 caractères.',
+                'libelle.max' => 'Le nom ne peut pas dépasser 50 caractères.',
+                'libelle.regex' => 'Le nom ne peut contenir que des lettres, chiffres et espaces.',
+                'statut.required' => 'Le statut est obligatoire.',
+                'statut.in' => 'Le statut doit être "active" ou "desactive".',
+                'position.required' => 'La position est obligatoire.',
+                'position.integer' => 'La position doit être un nombre entier.',
+                'position.min' => 'La position doit être supérieure à 0.'
             ]);
 
+            $niveau = Niveau::findOrFail($id);
+            $libelle_formatted = Str::ucfirst(Str::lower(trim($request->libelle)));
 
-            return redirect()->route('niveau.create')->with('success', 'Opération réussi');
+            // Vérifier si un niveau avec ce nom existe déjà (sauf le niveau actuel)
+            $existing = Niveau::where('parent_id', $niveau->parent_id)
+                             ->where('libelle', $libelle_formatted)
+                             ->where('id', '!=', $id)
+                             ->first();
+            
+            if ($existing) {
+                return back()->with('error', 'Un niveau avec ce nom existe déjà.')->withInput();
+            }
+
+            // Mettre à jour le niveau
+            $niveau->update([
+                'libelle' => $libelle_formatted,
+                'statut' => $request->statut,
+                'position' => $request->position,
+                'url' => null,
+            ]);
+
+            return redirect()->route('niveau.create')->with('success', 'Niveau modifié avec succès !');
         } catch (\Throwable $e) {
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', 'Erreur lors de la modification: ' . $e->getMessage())->withInput();
         }
     }
 
@@ -172,6 +218,32 @@ class NiveauController extends Controller
             ]);
         } catch (\Throwable $e) {
             return back()->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Mettre à jour les positions via drag and drop
+     */
+    public function updatePositions(Request $request)
+    {
+        try {
+            $updates = $request->input('updates');
+            
+            if (!$updates || !is_array($updates)) {
+                return response()->json(['success' => false, 'message' => 'Données invalides']);
+            }
+
+            foreach ($updates as $update) {
+                if (isset($update['id']) && isset($update['position'])) {
+                    Niveau::where('id', $update['id'])->update([
+                        'position' => $update['position']
+                    ]);
+                }
+            }
+
+            return response()->json(['success' => true, 'message' => 'Positions mises à jour avec succès']);
+        } catch (\Throwable $e) {
+            return response()->json(['success' => false, 'message' => 'Erreur lors de la mise à jour: ' . $e->getMessage()]);
         }
     }
 }
