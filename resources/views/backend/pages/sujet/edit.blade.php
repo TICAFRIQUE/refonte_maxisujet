@@ -51,6 +51,19 @@
                                     </select>
                                 </div>
 
+                                  <div class="mb-3" id="concours-field" style="display: none;">
+                                    <label for="concours_id" class="form-label">Concours</label>
+                                    <select name="concours_id" id="concours_id" class="form-control">
+                                        <option value="">Sélectionner</option>
+                                        @foreach ($concours as $con)
+                                            <option value="{{ $con->id }}"
+                                                {{ $sujet->concours_id == $con->id ? 'selected' : '' }}>
+                                                {{ $con->libelle }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
                                 <div class="mb-3">
                                     <label for="niveaux" class="form-label">Niveaux</label>
                                     <select name="niveaux[]" id="niveaux" class="form-control" data-choices
@@ -76,6 +89,8 @@
                                         @endforeach
                                     </select>
                                 </div>
+
+                              
 
                                 <div class="mb-3">
                                     <label for="description" class="form-label">Description</label>
@@ -167,11 +182,30 @@
 
 
     <script>
-        // $(document).ready(function() {
-        //     $('#niveaux').select2({
-        //         placeholder: "Sélectionner les niveaux",
-        //         allowClear: true
-        //     });
-        // });
+        // Afficher/cacher le champ concours selon la catégorie sélectionnée
+        document.addEventListener('DOMContentLoaded', function() {
+            const categorieSelect = document.getElementById('categorie_id');
+            const concoursField = document.getElementById('concours-field');
+            const concoursSelect = document.getElementById('concours_id');
+
+            // Fonction pour vérifier si la catégorie est "Concours"
+            function toggleConcoursField() {
+                const selectedOption = categorieSelect.options[categorieSelect.selectedIndex];
+                const selectedText = selectedOption.text;
+                
+                if (selectedText.toLowerCase() === 'concours') {
+                    concoursField.style.display = 'block';
+                } else {
+                    concoursField.style.display = 'none';
+                    concoursSelect.value = '';
+                }
+            }
+
+            // Vérifier au chargement de la page
+            toggleConcoursField();
+
+            // Écouter les changements
+            categorieSelect.addEventListener('change', toggleConcoursField);
+        });
     </script>
 @endsection

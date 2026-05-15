@@ -100,6 +100,15 @@
                     </li>
                 @endcan
 
+                @can('voir-concours')
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ Route::is('concours.*') ? 'active' : '' }} "
+                            href="{{ route('concours.index') }}">
+                            <i class="ri-award-line"></i> <span>CONCOURS</span>
+                        </a>
+                    </li>
+                @endcan
+
                 @can('voir-niveau')
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ Route::is('niveau.*') ? 'active' : '' }} "

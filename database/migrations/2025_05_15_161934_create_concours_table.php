@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('niveau_sujet', function (Blueprint $table) {
+        Schema::create('concours', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('niveau_id')->nullable()->constrained('niveaux')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('sujet_id')->nullable()->constrained('sujets')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('libelle')->unique();
+            $table->string('slug')->unique();
+            $table->enum('statut', ['active', 'desactive'])->default('active');
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('niveau_sujet');
+        Schema::dropIfExists('concours');
     }
 };

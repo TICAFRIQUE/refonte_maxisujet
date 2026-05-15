@@ -23,6 +23,7 @@ class Sujet extends Model implements HasMedia
         'annee',
         'categorie_id',
         'matiere_id',
+        'concours_id',
         'user_id',
     ];
 
@@ -51,6 +52,11 @@ class Sujet extends Model implements HasMedia
     {
         return $this->belongsTo(Matiere::class);
     }
+    public function concours()
+    {
+        return $this->belongsTo(Concours::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

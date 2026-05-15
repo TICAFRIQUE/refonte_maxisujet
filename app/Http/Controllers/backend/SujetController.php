@@ -45,6 +45,7 @@ class SujetController extends Controller
             $categories = \App\Models\Categorie::all();
             $matieres = \App\Models\Matiere::all();
             $users = \App\Models\User::all();
+            $concours = \App\Models\Concours::all();
 
 
             $niveaux = Niveau::whereNull('parent_id')
@@ -54,7 +55,7 @@ class SujetController extends Controller
                 ->get();
 
 
-            return view('backend.pages.sujet.create', compact('categories', 'matieres', 'users', 'niveaux'));
+            return view('backend.pages.sujet.create', compact('categories', 'matieres', 'users', 'concours', 'niveaux'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Une erreur est survenue: ' . $e->getMessage());
         }
@@ -68,7 +69,8 @@ class SujetController extends Controller
         try {
             $request->validate([
                 'categorie_id' => 'required|exists:categories,id',
-                'matiere_id' => 'required|exists:matieres,id',
+                'matiere_id' => 'nullable|exists:matieres,id',
+                'concours_id' => 'nullable|exists:concours,id',
                 'description' => '',
                 'statut' => 'required|in:active,desactive',
                 'approuve' => 'required|boolean',
@@ -84,6 +86,7 @@ class SujetController extends Controller
             $sujet = new Sujet();
             $sujet->categorie_id = $request->categorie_id;
             $sujet->matiere_id = $request->matiere_id;
+            $sujet->concours_id = $request->concours_id;
             $sujet->description = $request->description;
             $sujet->statut = $request->statut;
             $sujet->approuve = $request->approuve;
@@ -140,13 +143,14 @@ class SujetController extends Controller
             $categories = \App\Models\Categorie::all();
             $matieres = \App\Models\Matiere::all();
             $users = \App\Models\User::all();
+            $concours = \App\Models\Concours::all();
             $niveaux = \App\Models\Niveau::whereNull('parent_id')
                 ->with('children', fn($q) => $q->orderBy('position', 'ASC'))
                 ->withCount('children')
                 ->orderBy('position', 'ASC')
                 ->get();
 
-            return view('backend.pages.sujet.edit', compact('sujet', 'categories', 'matieres', 'users', 'niveaux'))
+            return view('backend.pages.sujet.edit', compact('sujet', 'categories', 'matieres', 'users', 'concours', 'niveaux'))
                 ->with('selectedNiveaux', $sujet->niveaux->pluck('id')->toArray());
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Une erreur est survenue: ' . $e->getMessage());
@@ -176,7 +180,8 @@ class SujetController extends Controller
         try {
             $request->validate([
                 'categorie_id' => 'required|exists:categories,id',
-                'matiere_id' => 'required|exists:matieres,id',
+                'matiere_id' => 'nullable|exists:matieres,id',
+                'concours_id' => 'nullable|exists:concours,id',
                 'description' => '',
                 'statut' => 'required|in:active,desactive',
                 'approuve' => 'required|boolean',
@@ -190,6 +195,7 @@ class SujetController extends Controller
             $sujet = Sujet::findOrFail($id);
             $sujet->categorie_id = $request->categorie_id;
             $sujet->matiere_id = $request->matiere_id;
+            $sujet->concours_id = $request->concours_id;
             $sujet->description = $request->description;
             $sujet->statut = $request->statut;
             $sujet->approuve = $request->approuve;

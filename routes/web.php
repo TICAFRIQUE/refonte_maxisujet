@@ -12,6 +12,7 @@ use App\Http\Controllers\frontend\HomeControlleur;
 use App\Http\Controllers\frontend\UserControlleur;
 use App\Http\Controllers\frontend\RubriqueFrontController;
 use App\Http\Controllers\backend\MatiereController;
+use App\Http\Controllers\backend\ConcourController;
 use App\Http\Controllers\backend\CategorieController;
 use App\Http\Controllers\backend\DashboardController;
 use App\Http\Controllers\backend\ParametreController;
@@ -101,6 +102,14 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
         route::post('store', 'store')->name('matiere.store')->middleware('can:creer-matiere');
         route::post('update/{id}', 'update')->name('matiere.update')->middleware('can:modifier-matiere');
         route::get('delete/{id}', 'delete')->name('matiere.delete')->middleware('can:supprimer-matiere');
+    });
+
+    // concours
+    Route::prefix('concours')->controller(ConcourController::class)->group(function () {
+        route::get('', 'index')->name('concours.index');
+        route::post('store', 'store')->name('concours.store')->middleware('can:creer-concours');
+        route::post('update/{id}', 'update')->name('concours.update')->middleware('can:modifier-concours');
+        route::get('delete/{id}', 'delete')->name('concours.delete')->middleware('can:supprimer-concours');
     });
 
     //niveau & cycle

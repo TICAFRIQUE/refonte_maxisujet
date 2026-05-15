@@ -236,6 +236,17 @@
                         Rechercher un sujet
                     </div>
                     <form class="row g-3 position-relative" method="GET" action="{{ route('sujet.front.index') }}">
+                       
+                        <div class="col-lg-2 col-md-6">
+                            <select class="form-select" name="categorie" style="border-radius: 12px; border: 2px solid #e2e8f0; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); transition: all 0.3s ease; font-weight: 500;" onmouseover="this.style.borderColor='#4f46e5'; this.style.boxShadow='0 0 0 3px rgba(79, 70, 229, 0.1)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                                <option value="">🏷️ Toutes les catégories</option>
+                                @foreach ($categories as $categorie)
+                                    <option value="{{ $categorie->slug }}" {{ request('categorie') == $categorie->slug ? 'selected' : '' }}>
+                                        {{ $categorie->libelle }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="col-lg-3 col-md-4">
                             <select class="form-select" name="matiere" style="border-radius: 12px; border: 2px solid #e2e8f0; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); transition: all 0.3s ease; font-weight: 500;" onmouseover="this.style.borderColor='#4f46e5'; this.style.boxShadow='0 0 0 3px rgba(79, 70, 229, 0.1)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
                                 <option value="">🎓 Toutes les matières</option>
@@ -277,16 +288,7 @@
                                 @endfor
                             </select>
                         </div>
-                        <div class="col-lg-2 col-md-6">
-                            <select class="form-select" name="categorie" style="border-radius: 12px; border: 2px solid #e2e8f0; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); transition: all 0.3s ease; font-weight: 500;" onmouseover="this.style.borderColor='#4f46e5'; this.style.boxShadow='0 0 0 3px rgba(79, 70, 229, 0.1)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
-                                <option value="">🏷️ Toutes les catégories</option>
-                                @foreach ($categories as $categorie)
-                                    <option value="{{ $categorie->slug }}" {{ request('categorie') == $categorie->slug ? 'selected' : '' }}>
-                                        {{ $categorie->libelle }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                       
                         <div class="col-lg-2 col-md-6">
                             <div class="d-flex gap-2">
                                 <input type="text" class="form-control" name="code" value="{{ request('code') }}" placeholder="🔍 Code" style="border-radius: 12px; border: 2px solid #e2e8f0; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); transition: all 0.3s ease; font-weight: 500;" onmouseover="this.style.borderColor='#4f46e5'; this.style.boxShadow='0 0 0 3px rgba(79, 70, 229, 0.1)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
@@ -386,7 +388,7 @@
                                         </div>
                                         <div class="flex-grow-1">
                                             <div class="d-flex justify-content-between align-items-start mb-2">
-                                                <h6 class="subject-title mb-0 me-2">{{ Str::limit($sujet->libelle, 40) }}</h6>
+                                                <h6 class="subject-title mb-0 me-2">{{ Str::limit($sujet->libelle, 40)  }} <span>{{ $sujet->concours->libelle ?? '' }}</span></h6>
                                                 <span class="modern-badge badge-code">{{ $sujet->code }}</span>
                                             </div>
                                             <p class="subject-description mb-0 small">

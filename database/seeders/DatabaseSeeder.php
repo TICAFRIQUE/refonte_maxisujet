@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
         // Ajout des seeders principaux
         $this->call(CategorieSeeder::class);
         $this->call(MatiereSeeder::class);
+        $this->call(ConcoursSeeder::class);
         $this->call(NiveauxSeeder::class);
         $this->call(SujetSeeder::class);
         $this->call(RubriqueCompleteSeeder::class);

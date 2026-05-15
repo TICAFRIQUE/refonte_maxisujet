@@ -20,9 +20,11 @@ return new class extends Migration
             $table->boolean('approuve')->default(false);
             $table->string('annee')->nullable();
 
-            $table->foreignId('categorie_id')->constrained('categories')->onDelete('cascade')->onUpdate('cascade')->nullable();
-            $table->foreignId('matiere_id')->constrained('matieres')->onDelete('cascade')->onUpdate('cascade')->nullable();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade')->nullable();
+            $table->foreignId('categorie_id')->nullable()->constrained('categories')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('matiere_id')->nullable()->constrained('matieres')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('concours_id')->nullable()->constrained('concours')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade')->onUpdate('cascade')->nullable();
+
             // $table->foreignId('etablissement_id')->constrained('etablissements')->onDelete('cascade')->onUpdate('cascade')->nullable();
 
             $table->timestamps();
