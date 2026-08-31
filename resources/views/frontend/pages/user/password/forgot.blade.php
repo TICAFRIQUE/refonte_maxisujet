@@ -1,22 +1,36 @@
 @extends('frontend.layouts.front_app')
 
 @section('content')
+<style>
+    .auth-card {
+        border: 1px solid var(--ms-border-subtle);
+        border-radius: var(--ms-radius-lg);
+        box-shadow: var(--ms-shadow-rest);
+        overflow: hidden;
+    }
+
+    .auth-header {
+        background: var(--ms-orange);
+        padding: 1.75rem 1.5rem;
+    }
+</style>
 <div class="container my-5">
+    @include('frontend.components.retour')
     <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb bg-white rounded shadow-sm p-4">
-            <li class="breadcrumb-item"><a href="{{ route('accueil') }}" class="text-primary text-decoration-none"><i class="bi bi-house-door"></i> Accueil</a></li>
+        <ol class="breadcrumb bg-light rounded p-3">
+            <li class="breadcrumb-item"><a href="{{ route('accueil') }}"><i class="bi bi-house-door"></i> Accueil</a></li>
             <li class="breadcrumb-item active" aria-current="page">Mot de passe oublié</li>
         </ol>
     </nav>
 
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white text-center">
-                    <h4 class="mb-0">Mot de passe oublié</h4>
-                    <span>Entrez votre email pour recevoir un lien de réinitialisation.</span>
+        <div class="col-md-6 col-lg-5">
+            <div class="card auth-card">
+                <div class="card-header auth-header text-white text-center">
+                    <h4 class="mb-2">Mot de passe oublié</h4>
+                    <p class="mb-0 opacity-90">Entrez votre email pour recevoir un lien de réinitialisation</p>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     @if (session('success'))
                         <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
@@ -39,11 +53,18 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <button type="submit" class="btn btn-primary w-100" id="submitBtn">
-                            <span id="btnText">Envoyer le lien</span>
+                        <button type="submit" class="btn btn-warning w-100" id="submitBtn">
+                            <span id="btnText"><i class="bi bi-send me-2"></i>Envoyer le lien</span>
                             <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                         </button>
                     </form>
+                </div>
+                <div class="card-footer text-center" style="background: var(--ms-bg-soft); border-top: 1px solid var(--ms-border-subtle);">
+                    <p class="text-muted mb-0">
+                        <a href="{{ route('user.loginForm') }}" class="text-decoration-none fw-semibold" style="color: var(--ms-blue);">
+                            <i class="bi bi-arrow-left me-1"></i>Retour à la connexion
+                        </a>
+                    </p>
                 </div>
             </div>
         </div>

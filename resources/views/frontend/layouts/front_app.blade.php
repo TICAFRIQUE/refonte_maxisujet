@@ -52,25 +52,28 @@
     <meta name="msapplication-tooltip" content="Plateforme de documents éducatifs">
 
     <!-- Schema.org structured data -->
-    {{-- <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "EducationalOrganization",
-        "name": "MaxiSujets",
-        "description": "Plateforme de téléchargement de documents éducatifs gratuits",
-        "url": "{{ url('/') }}",
-        "logo": "{{ asset('frontend/images/logo.png') }}",
-        "sameAs": [
-            "https://facebook.com/maxisujets",
-            "https://twitter.com/maxisujets",
-            "https://instagram.com/maxisujets"
-        ],
-        "address": {
-            "@type": "PostalAddress",
-            "addressCountry": "CI"
-        }
-    }
-    </script> --}}
+    @php
+        $ldJson = [
+            '@context' => 'https://schema.org',
+            '@type' => 'EducationalOrganization',
+            'name' => 'MaxiSujets',
+            'description' => 'Plateforme de téléchargement de documents éducatifs gratuits',
+            'url' => url('/'),
+            'logo' => asset('frontend/images/logo.png'),
+            'address' => [
+                '@type' => 'PostalAddress',
+                'addressLocality' => 'Abidjan',
+                'addressCountry' => 'CI',
+            ],
+        ];
+    @endphp
+    <script type="application/ld+json">{!! json_encode($ldJson, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
+
+    <!-- Police unique (Inter, plusieurs graisses) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
@@ -82,451 +85,7 @@
     <!-- Choices.js CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-    <link rel="stylesheet" href="{{ asset('frontend/css/style.css') }}">
-
-    <!-- Styles pour Footer et Boutons Flottants -->
-    <style>
-        /* === FOOTER MODERNE === */
-        .modern-footer {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
-            color: #ffffff;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .modern-footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #f7dc6f);
-        }
-
-        .footer-main {
-            padding: 4rem 0 2rem 0;
-            position: relative;
-        }
-
-        .footer-section {
-            height: 100%;
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .footer-logo-img {
-            height: 50px;
-            width: auto;
-            filter: brightness(1.2);
-        }
-
-        .footer-brand-name {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #ffffff;
-        }
-
-        .footer-description {
-            color: #e1e8f7;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-
-        .footer-stats {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #a8c8ff;
-            font-size: 0.9rem;
-        }
-
-        .stat-item i {
-            color: #4ecdc4;
-        }
-
-        .footer-title {
-            color: #ffffff;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            position: relative;
-            padding-bottom: 0.5rem;
-        }
-
-        .footer-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 30px;
-            height: 2px;
-            background: #4ecdc4;
-            border-radius: 1px;
-        }
-
-        .footer-links {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .footer-links li {
-            margin-bottom: 0.75rem;
-        }
-
-        .footer-links a {
-            color: #e1e8f7;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .footer-links a:hover {
-            color: #4ecdc4;
-            transform: translateX(5px);
-        }
-
-        .footer-contact {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-        }
-
-        .contact-item i {
-            color: #4ecdc4;
-            font-size: 1.2rem;
-            margin-top: 0.2rem;
-            flex-shrink: 0;
-        }
-
-        .contact-item div {
-            flex: 1;
-        }
-
-        .contact-item strong {
-            display: block;
-            color: #ffffff;
-            margin-bottom: 0.25rem;
-            font-size: 0.9rem;
-        }
-
-        .contact-item a {
-            color: #e1e8f7;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .contact-item a:hover {
-            color: #4ecdc4;
-        }
-
-        .contact-item span {
-            color: #e1e8f7;
-        }
-
-        .footer-social {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 1.5rem 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .social-links {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            justify-content: md-end;
-        }
-
-        .social-link {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .social-link::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            transform: scale(0);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .social-link:hover::before {
-            transform: scale(1);
-        }
-
-        .social-link i {
-            font-size: 1.2rem;
-            color: #ffffff;
-            position: relative;
-            z-index: 1;
-            transition: transform 0.3s ease;
-        }
-
-        .social-link:hover i {
-            transform: scale(1.2);
-        }
-
-        .social-link.facebook {
-            border: 2px solid #1877f2;
-        }
-
-        .social-link.facebook::before {
-            background: #1877f2;
-        }
-
-        .social-link.whatsapp {
-            border: 2px solid #25d366;
-        }
-
-        .social-link.whatsapp::before {
-            background: #25d366;
-        }
-
-        .social-link.instagram {
-            border: 2px solid #e4405f;
-        }
-
-        .social-link.instagram::before {
-            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-        }
-
-        .social-link.twitter {
-            border: 2px solid #1da1f2;
-        }
-
-        .social-link.twitter::before {
-            background: #1da1f2;
-        }
-
-        .social-link.linkedin {
-            border: 2px solid #0a66c2;
-        }
-
-        .social-link.linkedin::before {
-            background: #0a66c2;
-        }
-
-        .social-link.youtube {
-            border: 2px solid #ff0000;
-        }
-
-        .social-link.youtube::before {
-            background: #ff0000;
-        }
-
-        .footer-bottom {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 1rem 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .footer-bottom-links {
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            justify-content: md-end;
-            flex-wrap: wrap;
-        }
-
-        .footer-bottom-links a {
-            color: #e1e8f7;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.3s ease;
-        }
-
-        .footer-bottom-links a:hover {
-            color: #4ecdc4;
-        }
-
-        /* === BOUTON BACK TO TOP === */
-        .back-to-top-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 55px;
-            height: 55px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            font-size: 1.2rem;
-            cursor: pointer;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-            transform: scale(0);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .back-to-top-btn.show {
-            transform: scale(1);
-        }
-
-        .back-to-top-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
-        }
-
-        .back-to-top-btn:active {
-            transform: scale(0.95);
-        }
-
-        /* === BOUTON WHATSAPP FLOTTANT === */
-        .whatsapp-float {
-            position: fixed;
-            bottom: 100px;
-            right: 30px;
-            z-index: 1000;
-        }
-
-        .whatsapp-btn {
-            display: flex;
-            align-items: center;
-            background: #25d366;
-            color: white;
-            padding: 0.75rem 1rem;
-            border-radius: 50px;
-            text-decoration: none;
-            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: pulse-whatsapp 2s infinite;
-            gap: 0.75rem;
-            min-width: 60px;
-            justify-content: center;
-        }
-
-        .whatsapp-btn i {
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        .whatsapp-text {
-            font-weight: 600;
-            font-size: 0.9rem;
-            white-space: nowrap;
-            opacity: 0;
-            max-width: 0;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .whatsapp-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 12px 35px rgba(37, 211, 102, 0.4);
-            color: white;
-        }
-
-        .whatsapp-btn:hover .whatsapp-text {
-            opacity: 1;
-            max-width: 120px;
-            margin-left: 0.5rem;
-        }
-
-        @keyframes pulse-whatsapp {
-            0% {
-                box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3), 0 0 0 0 rgba(37, 211, 102, 0.7);
-            }
-
-            70% {
-                box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3), 0 0 0 10px rgba(37, 211, 102, 0);
-            }
-
-            100% {
-                box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3), 0 0 0 0 rgba(37, 211, 102, 0);
-            }
-        }
-
-        /* === RESPONSIVE === */
-        @media (max-width: 768px) {
-            .footer-main {
-                padding: 3rem 0 1.5rem 0;
-            }
-
-            .social-links {
-                justify-content: center;
-            }
-
-            .footer-bottom-links {
-                justify-content: center;
-                margin-top: 1rem;
-            }
-
-            .back-to-top-btn {
-                width: 50px;
-                height: 50px;
-                bottom: 20px;
-                right: 20px;
-            }
-
-            .whatsapp-float {
-                bottom: 80px;
-                right: 20px;
-            }
-
-            .whatsapp-btn {
-                padding: 0.65rem;
-            }
-
-            .whatsapp-text {
-                display: none;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .footer-stats {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-
-            .contact-item {
-                gap: 0.75rem;
-            }
-
-            .social-links {
-                gap: 0.75rem;
-            }
-
-            .footer-bottom-links {
-                flex-direction: column;
-                gap: 0.75rem;
-                text-align: center;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('frontend/css/style.css') }}?v={{ @filemtime(public_path('frontend/css/style.css')) ?: '1' }}">
 
     @stack('styles')
 
@@ -534,15 +93,17 @@
 
 <body>
 
+    <a class="visually-hidden-focusable" href="#main-content">Aller au contenu principal</a>
+
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg fixed-top shadow">
+    <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <!-- Logo seul avec animations améliorées -->
+            <!-- Logo seul -->
             <a class="navbar-brand d-flex align-items-center" href="{{ route('accueil') }}">
                 <img src="{{ asset('frontend/img/logo.png') }}" alt="Logo MaxiSujets" class="logo-animate">
             </a>
 
-            <!-- Hamburger menu amélioré -->
+            <!-- Hamburger menu -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
                 <div class="hamburger-icon">
                     <span></span>
@@ -551,13 +112,14 @@
                 </div>
             </button>
             <div class="collapse navbar-collapse" id="mainNavbar">
-                <ul class="navbar-nav mx-auto mb-2 mb-lg-0"> <!-- Utiliser mx-auto pour centrer -->
-                    <li class="nav-item"><a class="nav-link" href="{{ route('accueil') }}"> <i
-                                class="bi bi-house-door"></i> Accueil</a></li>
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('accueil') ? 'active' : '' }}" href="{{ route('accueil') }}">Accueil</a>
+                    </li>
                     <!-- Catégories -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="catDropdown" role="button"
-                            data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle {{ request()->routeIs('sujet.front.*') && request('categorie') ? 'active' : '' }}"
+                            href="#" id="catDropdown" role="button" data-bs-toggle="dropdown">
                             Catégories
                         </a>
                         <ul class="dropdown-menu">
@@ -573,24 +135,25 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('sujet.front.index') }}">Liste des
-                            sujets</a>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('sujet.front.*') && !request('categorie') ? 'active' : '' }}"
+                            href="{{ route('sujet.front.index') }}">Liste des sujets</a>
                     </li>
 
                     <!-- Actualités -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="actualitesDropdown" role="button"
-                            data-bs-toggle="dropdown">
-                            <i class="bi bi-newspaper me-1"></i>Actualités & Conseils
+                        <a class="nav-link dropdown-toggle {{ request()->routeIs(['actualites.*', 'astuces-conseils.*']) ? 'active' : '' }}"
+                            href="#" id="actualitesDropdown" role="button" data-bs-toggle="dropdown">
+                            Actualités & Conseils
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a class="dropdown-item" href="{{ route('actualites.index') }}">
+                                <a class="dropdown-item {{ request()->routeIs('actualites.*') ? 'text-primary' : '' }}" href="{{ route('actualites.index') }}">
                                     <i class="bi bi-newspaper me-2"></i>Actualités
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="{{ route('astuces-conseils.index') }}">
+                                <a class="dropdown-item {{ request()->routeIs('astuces-conseils.*') ? 'text-primary' : '' }}" href="{{ route('astuces-conseils.index') }}">
                                     <i class="bi bi-lightbulb me-2"></i>Astuces & Conseils
                                 </a>
                             </li>
@@ -598,14 +161,14 @@
                         </ul>
                     </li>
 
-                    {{-- <li class="nav-item"><a class="nav-link" href="#">Forum</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Quizs</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Librairie</a></li> --}}
                 </ul>
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center gap-1">
+                    <a href="{{ route('sujet.front.index') }}" class="navbar-search-icon d-none d-lg-inline-flex" title="Rechercher un sujet">
+                        <i class="bi bi-search"></i>
+                    </a>
                     @guest
-                        <a href="{{ route('user.loginForm') }}" class="btn btn-outline-light me-2">Connexion</a>
-                        <a href="{{ route('user.registerForm') }}" class="btn btn-warning">S’inscrire</a>
+                        <a href="{{ route('user.loginForm') }}" class="btn btn-outline-primary ms-2 me-2">Connexion</a>
+                        <a href="{{ route('user.registerForm') }}" class="btn btn-warning">S'inscrire</a>
                     @else
                         <div class="dropdown">
                             <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center w-100"
@@ -652,7 +215,9 @@
     <!-- Afficher les messages d'alerte -->
     @include('sweetalert::alert')
     <!--Afficher le contenu spécifique de chaque page -->
-    @yield('content')
+    <main id="main-content">
+        @yield('content')
+    </main>
 
     <!-- Footer Moderne -->
     <footer class="modern-footer mt-auto">
@@ -675,11 +240,11 @@
                             <div class="footer-stats">
                                 <div class="stat-item">
                                     <i class="bi bi-file-earmark-text"></i>
-                                    <span>+1000 Documents</span>
+                                    <span>{{ number_format($footer_stats['sujets'] ?? 0) }} sujets</span>
                                 </div>
                                 <div class="stat-item">
                                     <i class="bi bi-people"></i>
-                                    <span>+5000 Étudiants</span>
+                                    <span>{{ number_format($footer_stats['membres'] ?? 0) }} membres</span>
                                 </div>
                             </div>
                         </div>
@@ -766,23 +331,11 @@
                     </div>
                     <div class="col-md-6">
                         <div class="social-links">
-                            <a href="#" class="social-link facebook" title="Facebook">
-                                <i class="bi bi-facebook"></i>
-                            </a>
-                            <a href="https://wa.me/22525220020777" class="social-link whatsapp" title="WhatsApp">
+                            <a href="https://wa.me/22525220020777" class="social-link whatsapp" title="WhatsApp" target="_blank" rel="noopener">
                                 <i class="bi bi-whatsapp"></i>
                             </a>
-                            <a href="#" class="social-link instagram" title="Instagram">
-                                <i class="bi bi-instagram"></i>
-                            </a>
-                            <a href="#" class="social-link twitter" title="Twitter">
-                                <i class="bi bi-twitter"></i>
-                            </a>
-                            <a href="#" class="social-link linkedin" title="LinkedIn">
-                                <i class="bi bi-linkedin"></i>
-                            </a>
-                            <a href="#" class="social-link youtube" title="YouTube">
-                                <i class="bi bi-youtube"></i>
+                            <a href="mailto:info@maxisujets.net" class="social-link email" title="Email">
+                                <i class="bi bi-envelope-fill"></i>
                             </a>
                         </div>
                     </div>
@@ -801,9 +354,8 @@
                     </div>
                     <div class="col-md-6">
                         <div class="footer-bottom-links">
-                            <a href="#">Politique de confidentialité</a>
-                            <a href="#">Conditions d'utilisation</a>
-                            <a href="#">FAQ</a>
+                            <a href="{{ route('confidentialite') }}">Politique de confidentialité</a>
+                            <a href="{{ route('cgu') }}">Conditions d'utilisation</a>
                         </div>
                     </div>
                 </div>
@@ -825,6 +377,31 @@
             <span class="whatsapp-text">Besoin d'aide ?</span>
         </a>
     </div>
+
+    @guest
+        <!-- Modal "connexion requise" partagée (aperçus réservés aux connectés) : placée en fin de <body>
+             pour ne jamais être piégée dans un contexte d'empilement d'une section parente. -->
+        <div class="modal fade" id="loginRequiredModal" tabindex="-1" aria-labelledby="loginRequiredModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="loginRequiredModalLabel"><i class="bi bi-lock me-2" style="color: var(--ms-blue);"></i>Connexion requise</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="mb-0">Créez un compte ou connectez-vous pour voir l'aperçu de ce document — c'est gratuit et ça ne prend qu'une minute.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <a href="{{ route('user.registerForm') }}" class="btn btn-outline-primary">Créer un compte</a>
+                        <a href="{{ route('user.loginForm') }}" class="btn btn-warning">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Se connecter
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endguest
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 

@@ -88,7 +88,19 @@ class SujetFrontController extends Controller
             //     ]);
             // }
 
-            return view('frontend.pages.sujets.show', compact('sujet'));
+            // Sujets similaires : même matière, sinon même catégorie
+            $similaires = Sujet::with(['categorie', 'matiere', 'niveaux'])
+                ->where('id', '!=', $sujet->id)
+                ->active()->approuve()
+                ->where(function ($query) use ($sujet) {
+                    $query->where('matiere_id', $sujet->matiere_id)
+                        ->orWhere('categorie_id', $sujet->categorie_id);
+                })
+                ->orderByDesc('created_at')
+                ->take(4)
+                ->get();
+
+            return view('frontend.pages.sujets.show', compact('sujet', 'similaires'));
         } catch (\Exception $e) {
             Alert::error('Erreur', 'Une erreur est survenue lors de la récupération du sujet.');
             return redirect()->route('sujet.front.index');
@@ -103,7 +115,7 @@ class SujetFrontController extends Controller
         $sujet = Sujet::findOrFail($id);
 
         // Nombre de points à retirer
-        $pointsToRemove = 1;
+        $pointsToRemove = \App\Services\PointsService::COUT_TELECHARGEMENT;
 
         // Vérifier les points
         if ($user->points < $pointsToRemove) {
@@ -149,39 +161,20 @@ class SujetFrontController extends Controller
 
 
     /**
-     * Aperçu du fichier (sujet ou corrigé) si connecté et points suffisants
+     * Aperçu du fichier (sujet ou corrigé) : gratuit, réservé aux utilisateurs connectés.
+     * Seul le téléchargement (download()) consomme un point. Les fichiers vivent sur un
+     * disque privé (voir Sujet::registerMediaCollections) : cette route est le seul moyen
+     * d'y accéder, il n'existe pas d'URL publique à partager.
      */
     public function apercu($id, $type)
     {
-        $user = Auth::user();
         $sujet = Sujet::findOrFail($id);
-        $pointsToRemove = 1;
-
-        if (!$user) {
-            Alert::error('Erreur', 'Vous devez être connecté pour voir l\'aperçu.');
-            return redirect()->route('user.loginForm');
-        }
-
-        if ($user->points < $pointsToRemove) {
-            Alert::error('Erreur', 'Vous n\'avez pas assez de points pour voir l\'aperçu.');
-            return redirect()->route('sujet.front.index');
-        }
 
         $media = $sujet->getMedia($type)->first();
         if (!$media) {
             Alert::error('Erreur', 'Le fichier est introuvable.');
             return redirect()->route('sujet.front.index');
         }
-
-        // Retirer les points et enregistrer l'aperçu
-        User::where('id', $user->id)->decrement('points', $pointsToRemove);
-
-        DownloadLog::create([
-            'user_id' => $user->id,
-            'sujet_id' => $sujet->id,
-            'type' => $type,
-            'created_at' => now(),
-        ]);
 
         // Affiche le fichier dans le navigateur (PDF, DOC, etc.)
         return response()->file($media->getPath());

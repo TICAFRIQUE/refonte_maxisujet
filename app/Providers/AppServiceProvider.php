@@ -2,14 +2,11 @@
 
 namespace App\Providers;
 
-use Throwable;
 use App\Models\Niveau;
 use App\Models\Categorie;
 use App\Models\Parametre;
-use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use Spatie\Permission\Models\Permission;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,29 +31,10 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
 
-        $this->app->booted(function () {
-            try {
-                if (Schema::hasTable('permissions') && Schema::hasTable('roles')) {
-                    $permissions = Permission::pluck('id')->toArray();
-
-                    $developpeurRole = Role::where('name', 'developpeur')->first();
-                    $superadminRole = Role::where('name', 'superadmin')->first();
-
-                    if ($developpeurRole) {
-                        $developpeurRole->permissions()->sync($permissions);
-                    }
-
-                    if ($superadminRole) {
-                        $superadminRole->permissions()->sync($permissions);
-                    }
-                }
-            } catch (\Exception $e) {
-                // Optionnel : log de l'erreur si besoin
-                return back()->withErrors('Une erreur est survenue lors de la synchronisation des permissions.', 'Message d\'erreur:' . $e->getMessage());
-            }
-        });
-
-
+        // Les nouvelles permissions sont désormais attribuées aux rôles à pleins pouvoirs
+        // (superadmin, administrateur, developpeur) au moment de leur création, dans
+        // ModuleController::store() — plus besoin de resynchroniser TOUTES les permissions
+        // sur CHAQUE requête (coûteux et inutile une fois la création à jour).
 
         //recuperer les parametres
         if (Schema::hasTable('parametres')) {
@@ -87,6 +65,16 @@ class AppServiceProvider extends ServiceProvider
             $data_matieres = \App\Models\Matiere::active()->get();
             view()->share([
                 'data_matieres' => $data_matieres ?? null,
+            ]);
+        }
+
+        // Chiffres réels du footer (jamais de chiffres inventés dans les vues)
+        if (Schema::hasTable('sujets') && Schema::hasTable('users')) {
+            view()->share([
+                'footer_stats' => [
+                    'sujets' => \App\Models\Sujet::active()->approuve()->count(),
+                    'membres' => \App\Models\User::where('statut', 'active')->count(),
+                ],
             ]);
         }
     }

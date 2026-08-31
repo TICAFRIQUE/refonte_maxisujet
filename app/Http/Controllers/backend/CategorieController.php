@@ -16,7 +16,7 @@ class CategorieController extends Controller
     {
         //
         try {
-            $categories = Categorie::all();
+            $categories = Categorie::withCount('sujets')->get();
             return view('backend.pages.categorie.index', compact('categories'));
         } catch (\Throwable $th) {
             return back()->with('error', 'Une erreur s\'est produite lors du chargement des catégories');
@@ -37,20 +37,14 @@ class CategorieController extends Controller
     public function store(Request $request)
     {
         try {
-            //
-            $validate = $request->validate([
+            $request->validate([
                 'libelle' => 'required|unique:categories,libelle',
             ]);
 
-
-            // inerrer les donnees dans la table categories
-            $categorie = Categorie::firstOrCreate([
+            Categorie::create([
                 'libelle' => Str::ucfirst(Str::lower($request->libelle)),
-            ], [
                 'statut' => 'active',
             ]);
-
-          
 
             return back()->with('success', 'Catégorie ajoutée avec succès');
         } catch (\Throwable $th) {
@@ -110,16 +104,27 @@ class CategorieController extends Controller
      */
     public function delete(string $id)
     {
-        //
         try {
-            Categorie::find($id)->delete();
-            return response()->json([
-                'status' => 200,
-            ]);
+            $categorie = Categorie::find($id);
+            if (!$categorie) {
+                return response()->json(['status' => 404]);
+            }
+
+            // La suppression d'une catégorie supprime en cascade tous les sujets qui en
+            // dépendent (contrainte de clé étrangère) : on bloque plutôt que de laisser
+            // disparaître des sujets silencieusement.
+            $sujetsCount = \App\Models\Sujet::where('categorie_id', $id)->count();
+            if ($sujetsCount > 0) {
+                return response()->json([
+                    'status' => 409,
+                    'message' => "Impossible de supprimer : {$sujetsCount} sujet(s) utilisent encore cette catégorie. Réaffectez-les d'abord à une autre catégorie.",
+                ]);
+            }
+
+            $categorie->delete();
+            return response()->json(['status' => 200]);
         } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 500,
-            ]);
+            return response()->json(['status' => 500]);
         }
     }
 }

@@ -1,38 +1,45 @@
-<!-- Cycles et Niveaux avec design moderne -->
+<!-- Cycles et Niveaux -->
 <div class="row g-4">
-    @foreach($data_niveaux as $cycle)
+    @foreach($data_niveaux as $cycleIndex => $cycle)
         <div class="col-lg-6 col-md-12">
             <div class="feature-card h-100">
                 <!-- Header du Cycle -->
                 <div class="d-flex align-items-center mb-4">
                     @php
-                        // Définir des icônes et couleurs pour chaque cycle
-                        $cycleStyles = [
-                            'primaire' => ['icon' => 'bi-house-heart', 'color' => '#ff9ff3', 'bg' => 'linear-gradient(45deg, #ff9a9e, #fecfef)'],
-                            'secondaire' => ['icon' => 'bi-mortarboard', 'color' => '#4facfe', 'bg' => 'linear-gradient(45deg, #4facfe, #00f2fe)'],
-                            'supérieur' => ['icon' => 'bi-award', 'color' => '#43e97b', 'bg' => 'linear-gradient(45deg, #43e97b, #38f9d7)'],
-                            'université' => ['icon' => 'bi-building', 'color' => '#fa709a', 'bg' => 'linear-gradient(45deg, #fa709a, #fee140)'],
-                            'concours' => ['icon' => 'bi-trophy', 'color' => '#ffecd2', 'bg' => 'linear-gradient(45deg, #fcb045, #fd1d1d)']
+                        // Icône adaptée au cycle ; couleur cyclée sur la palette de marque.
+                        $cycleIcons = [
+                            'primaire' => 'bi-house-heart',
+                            'secondaire' => 'bi-mortarboard',
+                            'supérieur' => 'bi-award',
+                            'université' => 'bi-building',
+                            'concours' => 'bi-trophy',
                         ];
-                        
+
                         $slug = strtolower($cycle->libelle);
-                        $style = ['icon' => 'bi-book', 'color' => '#667eea', 'bg' => 'linear-gradient(45deg, #667eea, #764ba2)'];
-                        
-                        foreach($cycleStyles as $key => $data) {
-                            if(str_contains($slug, $key)) {
-                                $style = $data;
+                        $icon = 'bi-book';
+                        foreach ($cycleIcons as $key => $iconName) {
+                            if (str_contains($slug, $key)) {
+                                $icon = $iconName;
                                 break;
                             }
                         }
+
+                        $palette = [
+                            ['solid' => '#ff6b35', 'bg' => 'var(--ms-orange)'],
+                            ['solid' => '#0d6efd', 'bg' => 'var(--ms-blue)'],
+                            ['solid' => '#1e3a8a', 'bg' => 'var(--ms-navy)'],
+                        ];
+                        $tone = $palette[$cycleIndex % 3];
+                        $style = ['icon' => $icon, 'color' => $tone['solid'], 'bg' => $tone['bg']];
                     @endphp
-                    
-                    <div class="rounded-circle d-flex align-items-center justify-content-center me-3" 
+
+                    <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
                          style="width: 60px; height: 60px; background: {{ $style['bg'] }};">
                         <i class="bi {{ $style['icon'] ?? 'bi-book' }} text-white display-6"></i>
                     </div>
-                    
+
                     <div>
-                        <h4 class="fw-bold mb-1" style="color: {{ $style['color'] }};">{{ $cycle->libelle }}</h4>
+                        <h4 class="fw-bold mb-1" style="color: var(--ms-ink);">{{ $cycle->libelle }}</h4>
                         <p class="text-muted mb-0">{{ $cycle->children->count() }} niveaux disponibles</p>
                     </div>
                 </div>
@@ -59,10 +66,10 @@
                                     </div>
                                 @endif
                                 
-                                <a href="{{ route('sujet.front.index', ['niveau' => $niveau->slug]) }}" 
-                                   class="btn btn-sm rounded-pill px-3" 
+                                <a href="{{ route('sujet.front.index', ['niveau' => $niveau->slug]) }}"
+                                   class="btn btn-sm px-3"
                                    style="background: {{ $style['color'] }}; color: white; border: none;">
-                                    <i class="bi bi-arrow-right me-1"></i>Voir les cours
+                                    <i class="bi bi-arrow-right me-1"></i>Voir les sujets
                                 </a>
                             </div>
                         </div>

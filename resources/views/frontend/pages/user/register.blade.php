@@ -4,97 +4,71 @@
 @section('content')
 <style>
     .auth-card {
-        border: none;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border: 1px solid var(--ms-border-subtle);
+        border-radius: var(--ms-radius-lg);
+        box-shadow: var(--ms-shadow-rest);
         overflow: hidden;
     }
-    
+
     .auth-header {
-        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%) !important;
-        padding: 2rem 1.5rem;
+        background: var(--ms-orange) !important;
+        padding: 1.75rem 1.5rem;
     }
-    
+
     .auth-body {
         padding: 2rem 1.5rem;
     }
-    
-    .form-control, .form-select {
-        border-radius: 10px;
-        border: 2px solid #e2e8f0;
-        padding: 0.75rem 1rem;
-        transition: all 0.3s ease;
-    }
-    
+
     .form-control:focus, .form-select:focus {
-        border-color: #ff6b35;
-        box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.1);
+        border-color: var(--ms-orange);
+        box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.15);
     }
-    
+
     .btn-auth {
-        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        background: var(--ms-orange);
         border: none;
-        border-radius: 10px;
         padding: 0.75rem 1.5rem;
         font-weight: 600;
-        transition: all 0.3s ease;
     }
-    
+
     .btn-auth:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        background: var(--ms-orange-dark);
     }
-    
-    .form-label {
-        font-weight: 500;
-        color: #374151;
-        margin-bottom: 0.5rem;
-    }
-    
+
     .auth-link {
-        color: #ff6b35;
+        color: var(--ms-blue);
         text-decoration: none;
-        font-weight: 500;
+        font-weight: 600;
     }
-    
+
     .auth-link:hover {
-        color: #e55a2b;
+        color: var(--ms-blue-dark);
         text-decoration: underline;
     }
-    
-    .input-group .btn {
-        border-radius: 0 10px 10px 0;
-        border: 2px solid #e2e8f0;
-        border-left: none;
-    }
-    
-    .input-group .form-control {
-        border-radius: 10px 0 0 10px;
-        border-right: none;
-    }
-    
+
     .password-toggle:hover {
-        background-color: #ff6b35;
+        background-color: var(--ms-orange);
         color: white;
-        border-color: #ff6b35;
+        border-color: var(--ms-orange);
     }
-    
-    .alert {
-        border: none;
-        border-radius: 10px;
-    }
-    
+
     .form-check-input:checked {
-        background-color: #ff6b35;
-        border-color: #ff6b35;
+        background-color: var(--ms-orange);
+        border-color: var(--ms-orange);
     }
-    
+
     .form-check-input:focus {
-        box-shadow: 0 0 0 0.25rem rgba(255, 107, 53, 0.1);
+        box-shadow: 0 0 0 0.25rem rgba(255, 107, 53, 0.15);
+    }
+
+    .password-match-feedback {
+        font-size: 0.85rem;
+        margin-top: 0.35rem;
     }
 </style>
     <div class="container py-5 min-vh-100 d-flex flex-column">
         <!-- Breadcrumb -->
+        @include('frontend.components.retour')
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb bg-light rounded p-3">
                 <li class="breadcrumb-item">
@@ -110,9 +84,12 @@
         <div class="row justify-content-center flex-grow-1">
             <div class="col-md-6 d-flex align-items-center">
                 <div class="card auth-card">
-                    <div class="card-header auth-header bg-primary text-white text-center">
+                    <div class="card-header auth-header text-white text-center">
                         <h4 class="mb-2">Rejoignez MaxiSujets</h4>
-                        <p class="mb-0 opacity-90">Inscrivez-vous gratuitement pour accéder aux ressources et publier des sujets</p>
+                        <p class="mb-3 opacity-90">Inscrivez-vous gratuitement pour accéder aux ressources et publier des sujets</p>
+                        <span class="badge bg-white px-3 py-2" style="color: var(--ms-orange-dark); font-size: 0.9rem;">
+                            <i class="bi bi-star-fill me-1"></i>+50 points offerts à l'inscription
+                        </span>
                     </div>
                     <div class="card-body auth-body">
                         @if ($errors->any())
@@ -162,9 +139,9 @@
                                 <label for="phone" class="form-label">
                                     <i class="bi bi-telephone me-2"></i>Téléphone
                                 </label>
-                                <input type="text" name="phone" id="phone" class="form-control @error('phone') is-invalid @enderror" 
-                                    value="{{ old('phone') }}" placeholder="Ex: +2250700000000" autocomplete="tel">
-                                <div class="form-text">Inclure l'indicatif international (ex: +33, +221, +225).</div>
+                                <input type="text" name="phone" id="phone" class="form-control @error('phone') is-invalid @enderror"
+                                    value="{{ old('phone', '+225 ') }}" placeholder="+225 07 00 00 00 00" autocomplete="tel">
+                                <div class="form-text">Hors de Côte d'Ivoire ? Remplacez le préfixe par le vôtre (ex: +33, +221).</div>
                                 @error('phone')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -205,6 +182,7 @@
                                 </label>
                                 <input type="password" name="password_confirmation" id="password_confirmation"
                                     class="form-control" required autocomplete="new-password" placeholder="Confirmez votre mot de passe">
+                                <div class="password-match-feedback" id="passwordMatchFeedback"></div>
                             </div>
 
                             <input type="text" name="role" value="auteur" hidden>
@@ -230,7 +208,7 @@
                         </form>
                     </div>
                     
-                    <div class="card-footer text-center" style="background: #f8fafc; border-top: 1px solid #e5e7eb; padding: 1.5rem;">
+                    <div class="card-footer text-center" style="background: var(--ms-bg-soft); border-top: 1px solid var(--ms-border-subtle); padding: 1.5rem;">
                         <p class="text-muted mb-0">
                             Déjà un compte ? <a href="{{ route('user.loginForm') }}" class="auth-link">Se connecter</a>
                         </p>
@@ -283,6 +261,25 @@
     }
     pwd?.addEventListener('input', refreshStrength);
     refreshStrength();
+
+    // Retour en temps réel sur la correspondance des mots de passe
+    const pwdConfirm = document.getElementById('password_confirmation');
+    const matchFeedback = document.getElementById('passwordMatchFeedback');
+    function refreshMatch() {
+        if (!pwdConfirm.value) {
+            matchFeedback.textContent = '';
+            return;
+        }
+        if (pwd.value === pwdConfirm.value) {
+            matchFeedback.textContent = 'Les mots de passe correspondent';
+            matchFeedback.className = 'password-match-feedback text-success';
+        } else {
+            matchFeedback.textContent = 'Les mots de passe ne correspondent pas';
+            matchFeedback.className = 'password-match-feedback text-danger';
+        }
+    }
+    pwd?.addEventListener('input', refreshMatch);
+    pwdConfirm?.addEventListener('input', refreshMatch);
 
     // Empêcher la soumission si des champs obligatoires sont vides
     $('#registerForm').on('submit', function(e) {

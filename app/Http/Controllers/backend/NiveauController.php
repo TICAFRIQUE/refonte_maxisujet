@@ -126,7 +126,9 @@ class NiveauController extends Controller
                 'url' => null,
             ]);
 
-            return redirect()->route('niveau.create')->with('success', 'Niveau créé avec succès dans le cycle "' . $niveau_parent->libelle . '" !');
+            // Reste sur la même page d'ajout de niveau pour ce cycle : permet d'ajouter
+            // plusieurs niveaux à la suite (ex. CP, CE1, CE2...) sans re-naviguer.
+            return redirect()->route('niveau.add-subCat', $niveau_parent->id)->with('success', 'Niveau créé avec succès dans le cycle "' . $niveau_parent->libelle . '" !');
         } catch (\Throwable $e) {
             return back()->with('error', 'Erreur lors de la création du niveau: ' . $e->getMessage())->withInput();
         }
@@ -202,8 +204,28 @@ class NiveauController extends Controller
     public function delete($id)
     {
         try {
-            //reeorganiser l'ordre
             $data_niveau_edit = Niveau::find($id);
+            if (!$data_niveau_edit) {
+                return response()->json(['status' => 404]);
+            }
+
+            $childrenCount = Niveau::where('parent_id', $id)->count();
+            if ($childrenCount > 0) {
+                return response()->json([
+                    'status' => 409,
+                    'message' => "Impossible de supprimer : ce cycle contient encore {$childrenCount} niveau(x). Supprimez-les d'abord.",
+                ]);
+            }
+
+            $sujetsCount = $data_niveau_edit->sujets()->count();
+            if ($sujetsCount > 0) {
+                return response()->json([
+                    'status' => 409,
+                    'message' => "Impossible de supprimer : {$sujetsCount} sujet(s) sont encore rattachés à ce niveau. Retirez-le d'abord de ces sujets.",
+                ]);
+            }
+
+            //reeorganiser l'ordre
             $data_niveau = Niveau::where('parent_id', $data_niveau_edit['parent_id'])->get();
             foreach ($data_niveau as $key => $value) {
                 Niveau::whereId($value['id'])->update([

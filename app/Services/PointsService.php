@@ -13,6 +13,9 @@ class PointsService
     const POINTS_PUBLICATION_SUJET = 100;
     const POINTS_CONNEXION_QUOTIDIENNE = 10;
 
+    // Coût d'une action de dépense (l'aperçu est gratuit, seul le téléchargement coûte un point)
+    const COUT_TELECHARGEMENT = 1;
+
     /**
      * Ajouter des points à un utilisateur
      */
@@ -40,11 +43,24 @@ class PointsService
     }
 
     /**
-     * Points pour la publication d'un sujet
+     * Points pour la publication d'un sujet (à appeler uniquement quand le sujet est
+     * approuvé, pas à la simple soumission).
      */
     public function givePublicationPoints(User $user)
     {
-        return $this->addPoints($user, self::POINTS_PUBLICATION_SUJET, 'Publication d\'un sujet');
+        return $this->addPoints($user, self::POINTS_PUBLICATION_SUJET, 'Publication d\'un sujet approuvé');
+    }
+
+    /**
+     * Reprendre les points d'une publication (sujet dont l'approbation est retirée).
+     * Le solde ne descend jamais sous 0.
+     */
+    public function revokePublicationPoints(User $user)
+    {
+        $newTotal = max(0, ($user->points ?? 0) - self::POINTS_PUBLICATION_SUJET);
+        $user->update(['points' => $newTotal]);
+
+        return $user->fresh();
     }
 
     /**
@@ -56,8 +72,8 @@ class PointsService
         $lastLogin = $user->last_login_at ? Carbon::parse($user->last_login_at) : null;
         $today = Carbon::today();
 
-        // Si c'est la première connexion ou si la dernière connexion était hier ou avant
-        if (!$lastLogin || $lastLogin->diffInDays($today) >= 1) {
+        // Si c'est la première connexion ou si la dernière connexion date d'au moins 2 jours
+        if (!$lastLogin || $lastLogin->diffInDays($today) >= 2) {
             // Mettre à jour la date de dernière connexion
             $user->update(['last_login_at' => now()]);
             

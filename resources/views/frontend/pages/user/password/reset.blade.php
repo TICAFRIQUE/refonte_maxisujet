@@ -1,21 +1,35 @@
 @extends('frontend.layouts.front_app')
 
 @section('content')
+<style>
+    .auth-card {
+        border: 1px solid var(--ms-border-subtle);
+        border-radius: var(--ms-radius-lg);
+        box-shadow: var(--ms-shadow-rest);
+        overflow: hidden;
+    }
+
+    .auth-header {
+        background: var(--ms-orange);
+        padding: 1.75rem 1.5rem;
+    }
+</style>
 <div class="container my-5">
+    @include('frontend.components.retour')
     <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb bg-white rounded shadow-sm p-4">
-            <li class="breadcrumb-item"><a href="{{ route('accueil') }}" class="text-primary text-decoration-none"><i class="bi bi-house-door"></i> Accueil</a></li>
+        <ol class="breadcrumb bg-light rounded p-3">
+            <li class="breadcrumb-item"><a href="{{ route('accueil') }}"><i class="bi bi-house-door"></i> Accueil</a></li>
             <li class="breadcrumb-item active" aria-current="page">Réinitialiser le mot de passe</li>
         </ol>
     </nav>
 
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white text-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card auth-card">
+                <div class="card-header auth-header text-white text-center">
                     <h4 class="mb-0">Réinitialiser le mot de passe</h4>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     @if ($errors->any())
                         <div class="alert alert-danger">
                             <ul class="mb-0">
@@ -47,7 +61,9 @@
                             <label for="password_confirmation" class="form-label">Confirmer le mot de passe</label>
                             <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required autocomplete="new-password">
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Réinitialiser</button>
+                        <button type="submit" class="btn btn-warning w-100">
+                            <i class="bi bi-check-circle me-2"></i>Réinitialiser le mot de passe
+                        </button>
                     </form>
                 </div>
             </div>

@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="container">
+    @include('frontend.components.retour')
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb bg-light rounded p-3">
             <li class="breadcrumb-item"><a href="{{ route('accueil') }}" class="text-primary text-decoration-none"><i class="bi bi-house-door"></i> Accueil</a></li>

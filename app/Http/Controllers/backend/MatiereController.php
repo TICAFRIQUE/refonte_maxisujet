@@ -16,7 +16,7 @@ class MatiereController extends Controller
     {
         //
         try {
-            $matieres = Matiere::all();
+            $matieres = Matiere::withCount('sujets')->get();
             return view('backend.pages.matiere.index', compact('matieres'));
         } catch (\Throwable $th) {
             return back()->with('error', 'Une erreur s\'est produite lors du chargement des matieres');
@@ -38,15 +38,12 @@ class MatiereController extends Controller
     {
         //
         try {
-            $validate = $request->validate([
+            $request->validate([
                 'libelle' => 'required|unique:matieres,libelle',
             ]);
 
-            // inerrer les donnees dans la table categories
-            $matiere = Matiere::firstOrCreate([
+            Matiere::create([
                 'libelle' => Str::ucfirst(Str::lower($request->libelle)),
-            ], [
-
                 'statut' => 'active',
             ]);
 
@@ -102,16 +99,24 @@ class MatiereController extends Controller
      */
     public function delete(string $id)
     {
-        //
         try {
-            Matiere::find($id)->delete();
-            return response()->json([
-                'status' => 200,
-            ]);
+            $matiere = Matiere::find($id);
+            if (!$matiere) {
+                return response()->json(['status' => 404]);
+            }
+
+            $sujetsCount = \App\Models\Sujet::where('matiere_id', $id)->count();
+            if ($sujetsCount > 0) {
+                return response()->json([
+                    'status' => 409,
+                    'message' => "Impossible de supprimer : {$sujetsCount} sujet(s) utilisent encore cette matière. Réaffectez-les d'abord à une autre matière.",
+                ]);
+            }
+
+            $matiere->delete();
+            return response()->json(['status' => 200]);
         } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 500,
-            ]);
+            return response()->json(['status' => 500]);
         }
     }
 }

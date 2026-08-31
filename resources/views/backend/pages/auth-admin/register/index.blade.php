@@ -1,7 +1,6 @@
 @extends('backend.layouts.master')
 @section('title')
-    {{-- @lang('translation.datatables') --}}
-    Admin
+    Équipe admin
 @endsection
 @section('css')
     <!--datatable css-->
@@ -14,10 +13,10 @@
 @section('content')
     @component('backend.components.breadcrumb')
         @slot('li_1')
-            Liste des adminisitrateurs
+            Équipe admin
         @endslot
         @slot('title')
-            Administrateurs
+            Équipe admin
         @endslot
     @endcomponent
 
@@ -28,9 +27,9 @@
             @include('backend.components.alertMessage');
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
-                    <h5 class="card-title mb-0">Liste des administrateurs</h5>
-                    <button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#myModal">Créer
-                        un administrateur</button>
+                    <h5 class="card-title mb-0">Équipe admin</h5>
+                    <button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#myModal">Ajouter
+                        un membre</button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

@@ -1,32 +1,13 @@
 @extends('frontend.layouts.front_app')
 
 @section('content')
-    <!-- Header avec gradient -->
-    <div class="container-fluid py-4" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); min-height: 200px;">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h1 class="text-white mb-2 fw-bold">
-                        <i class="bi bi-collection me-2"></i>Mes sujets publiés
-                    </h1>
-                    <p class="text-white-50 mb-0">Gérez et modifiez vos contributions à la communauté</p>
-                </div>
-                <div class="col-md-4 text-end">
-                    <a href="{{ route('user.sujet.create') }}" 
-                       class="btn btn-light btn-lg rounded-pill px-4 py-2 fw-bold">
-                        <i class="bi bi-plus-circle me-2"></i>Nouveau sujet
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container my-5">
-        <!-- Breadcrumb moderne -->
+    <div class="container mt-4">
+        <!-- Breadcrumb -->
+        @include('frontend.components.retour')
         <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb bg-light rounded-pill shadow-sm px-4 py-3">
+            <ol class="breadcrumb bg-light rounded p-3 mb-0">
                 <li class="breadcrumb-item">
-                    <a href="{{ route('user.dashboard') }}" class="text-primary text-decoration-none">
+                    <a href="{{ route('user.dashboard') }}" class="text-decoration-none">
                         <i class="bi bi-speedometer2 me-1"></i>Mon espace
                     </a>
                 </li>
@@ -34,62 +15,64 @@
             </ol>
         </nav>
 
+        <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 mb-4 gap-2">
+            <div>
+                <h1 class="fw-bold mb-1">Mes sujets publiés</h1>
+                <p class="text-muted mb-0">Gérez et modifiez vos contributions à la communauté</p>
+            </div>
+            <a href="{{ route('user.sujet.create') }}" class="btn btn-warning">
+                <i class="bi bi-plus-circle me-2"></i>Nouveau sujet
+            </a>
+        </div>
+
         @if (session('success'))
-            <div class="alert alert-success border-0 rounded-3 shadow-sm mb-4">
-                <div class="d-flex align-items-center">
-                    <div class="bg-success bg-opacity-25 rounded-circle p-2 me-3">
-                        <i class="bi bi-check-circle-fill text-success"></i>
-                    </div>
-                    <div>
-                        <h6 class="mb-1 fw-bold text-success">Succès !</h6>
-                        <div class="text-muted small">{{ session('success') }}</div>
-                    </div>
-                </div>
+            <div class="alert alert-success mb-4">
+                <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
             </div>
         @endif
 
-        <!-- Statistiques rapides -->
+        <!-- Statistiques rapides : icônes colorées, chiffres neutres -->
         <div class="row g-3 mb-5">
             <div class="col-md-3">
-                <div class="card border-0 shadow-sm h-100">
+                <div class="card h-100">
                     <div class="card-body text-center">
-                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">
-                            <i class="bi bi-files text-primary"></i>
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px; background: var(--ms-blue-light);">
+                            <i class="bi bi-files" style="color: var(--ms-blue);"></i>
                         </div>
-                        <h4 class="fw-bold text-primary">{{ $sujets->total() ?? $sujets->count() }}</h4>
+                        <h4 class="fw-bold mb-0">{{ $sujets->total() ?? $sujets->count() }}</h4>
                         <small class="text-muted">Total des sujets</small>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card border-0 shadow-sm h-100">
+                <div class="card h-100">
                     <div class="card-body text-center">
-                        <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">
-                            <i class="bi bi-check-circle text-success"></i>
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px; background: var(--ms-success-bg);">
+                            <i class="bi bi-check-circle" style="color: var(--ms-success);"></i>
                         </div>
-                        <h4 class="fw-bold text-success">{{ $sujets->where('approuve', 1)->count() ?? 0 }}</h4>
+                        <h4 class="fw-bold mb-0">{{ $sujets->where('approuve', 1)->count() ?? 0 }}</h4>
                         <small class="text-muted">Approuvés</small>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card border-0 shadow-sm h-100">
+                <div class="card h-100">
                     <div class="card-body text-center">
-                        <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">
-                            <i class="bi bi-clock text-warning"></i>
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px; background: var(--ms-orange-light);">
+                            <i class="bi bi-clock" style="color: var(--ms-orange-dark);"></i>
                         </div>
-                        <h4 class="fw-bold text-warning">{{ $sujets->where('approuve', 0)->count() ?? 0 }}</h4>
+                        <h4 class="fw-bold mb-0">{{ $sujets->where('approuve', 0)->count() ?? 0 }}</h4>
                         <small class="text-muted">En attente</small>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card border-0 shadow-sm h-100">
+                <div class="card h-100">
                     <div class="card-body text-center">
-                        <div class="bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">
-                            <i class="bi bi-calendar-month text-info"></i>
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px; background: var(--ms-bg-soft);">
+                            <i class="bi bi-calendar-month" style="color: var(--ms-muted);"></i>
                         </div>
-                        <h4 class="fw-bold text-info">{{ $sujets->where('created_at', '>=', now()->startOfMonth())->count() ?? 0 }}</h4>
+                        <h4 class="fw-bold mb-0">{{ $sujets->where('created_at', '>=', now()->startOfMonth())->count() ?? 0 }}</h4>
                         <small class="text-muted">Ce mois</small>
                     </div>
                 </div>
@@ -97,25 +80,25 @@
         </div>
 
         @if ($sujets->isEmpty())
-            <!-- État vide moderne -->
+            <!-- État vide -->
             <div class="row">
                 <div class="col-12">
-                    <div class="card border-0 shadow-lg">
+                    <div class="card">
                         <div class="card-body text-center py-5">
                             <div class="mb-4">
-                                <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
-                                    <i class="bi bi-file-earmark-plus text-primary" style="font-size: 3rem;"></i>
+                                <div class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px; background: var(--ms-orange-light);">
+                                    <i class="bi bi-file-earmark-plus" style="font-size: 3rem; color: var(--ms-orange);"></i>
                                 </div>
                             </div>
-                            <h3 class="fw-bold text-primary mb-3">Aucun sujet publié</h3>
+                            <h3 class="fw-bold mb-3">Aucun sujet publié</h3>
                             <p class="text-muted mb-4 lead">
                                 Vous n'avez pas encore publié de sujet. Commencez à partager vos ressources pédagogiques avec la communauté !
                             </p>
                             <div class="d-flex justify-content-center gap-3">
-                                <a href="{{ route('user.sujet.create') }}" class="btn btn-primary btn-lg rounded-pill px-5">
+                                <a href="{{ route('user.sujet.create') }}" class="btn btn-warning btn-lg px-5">
                                     <i class="bi bi-plus-circle me-2"></i>Publier mon premier sujet
                                 </a>
-                                <a href="{{ route('user.dashboard') }}" class="btn btn-outline-secondary btn-lg rounded-pill px-5">
+                                <a href="{{ route('user.dashboard') }}" class="btn btn-outline-secondary btn-lg px-5">
                                     <i class="bi bi-arrow-left me-2"></i>Retour au dashboard
                                 </a>
                             </div>
@@ -174,29 +157,24 @@
                          data-category="{{ $sujet->categorie_id }}" 
                          data-created="{{ $sujet->created_at->timestamp }}"
                          data-name="{{ strtolower($sujet->libelle) }}">
-                        <div class="card border-0 shadow-lg h-100 position-relative overflow-hidden">
+                        <div class="card h-100 position-relative overflow-hidden">
                             <!-- Badge de statut -->
-                            <div class="position-absolute top-0 end-0 z-3">
+                            <div class="position-absolute top-0 end-0 z-3 m-2">
                                 @if($sujet->approuve == 1)
-                                    <span class="badge bg-success rounded-bottom-start px-3 py-2">
-                                        <i class="bi bi-check-circle me-1"></i>Approuvé
-                                    </span>
+                                    <span class="status-badge status-approved"><i class="bi bi-check-circle-fill"></i> Approuvé</span>
                                 @else
-                                    <span class="badge bg-warning rounded-bottom-start px-3 py-2">
-                                        <i class="bi bi-clock me-1"></i>En attente
-                                    </span>
+                                    <span class="status-badge status-pending"><i class="bi bi-hourglass-split"></i> En attente</span>
                                 @endif
                             </div>
 
-                            <!-- En-tête coloré -->
-                            <div class="card-header border-0 p-0 position-relative" 
-                                 style="background: linear-gradient(135deg, {{ $sujet->approuve ? '#28a745' : '#ffc107' }} 0%, {{ $sujet->approuve ? '#20c997' : '#fd7e14' }} 100%); height: 80px;">
-                                <div class="position-absolute bottom-0 start-0 p-3 text-white">
+                            <!-- En-tête -->
+                            <div class="card-header border-0 p-0 position-relative" style="background: var(--ms-bg-soft); height: 80px;">
+                                <div class="position-absolute bottom-0 start-0 p-3">
                                     <div class="d-flex align-items-center">
-                                        <div class="bg-white bg-opacity-25 rounded-circle p-2 me-2">
-                                            <i class="bi bi-file-earmark-text"></i>
+                                        <div class="rounded-circle p-2 me-2" style="background: white;">
+                                            <i class="bi bi-file-earmark-text" style="color: var(--ms-blue);"></i>
                                         </div>
-                                        <small class="fw-semibold opacity-90">{{ $sujet->code ?? 'N/A' }}</small>
+                                        <small class="fw-semibold text-muted">{{ $sujet->code ?? 'N/A' }}</small>
                                     </div>
                                 </div>
                             </div>
@@ -205,14 +183,14 @@
                                 <h5 class="card-title fw-bold mb-3 text-truncate" title="{{ $sujet->libelle }}">
                                     {{ $sujet->libelle }}
                                 </h5>
-                                
+
                                 <div class="row g-2 mb-3 small text-muted">
                                     <div class="col-12">
-                                        <i class="bi bi-folder me-1 text-primary"></i>
+                                        <i class="bi bi-folder me-1"></i>
                                         <strong>{{ $sujet->categorie->libelle ?? 'N/A' }}</strong>
                                     </div>
                                     <div class="col-12">
-                                        <i class="bi bi-calendar3 me-1 text-success"></i>
+                                        <i class="bi bi-calendar3 me-1"></i>
                                         {{ $sujet->created_at->format('d/m/Y à H:i') }}
                                     </div>
                                 </div>
@@ -228,25 +206,25 @@
                             <div class="card-footer bg-light border-0 p-3">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="d-flex gap-1">
-                                        <a href="{{ route('sujet.front.show', $sujet->libelle) }}" 
-                                           class="btn btn-outline-primary btn-sm rounded-pill" title="Consulter">
+                                        <a href="{{ route('sujet.front.show', $sujet->libelle) }}"
+                                           class="btn btn-outline-secondary btn-sm" title="Consulter">
                                             <i class="bi bi-eye"></i>
                                         </a>
-                                        <a href="{{ route('user.sujet.edit', $sujet->id) }}" 
-                                           class="btn btn-outline-warning btn-sm rounded-pill" title="Modifier">
+                                        <a href="{{ route('user.sujet.edit', $sujet->id) }}"
+                                           class="btn btn-outline-secondary btn-sm" title="Modifier">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <button type="button" 
-                                                class="btn btn-outline-danger btn-sm rounded-pill delete-btn" 
-                                                data-id="{{ $sujet->id }}" 
-                                                data-name="{{ $sujet->libelle }}" 
+                                        <button type="button"
+                                                class="btn btn-outline-danger btn-sm delete-btn"
+                                                data-id="{{ $sujet->id }}"
+                                                data-name="{{ $sujet->libelle }}"
                                                 title="Supprimer">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>
                                     <div class="text-end">
-                                        <small class="text-muted">
-                                            <i class="bi bi-eye me-1"></i>{{ rand(10, 150) }}
+                                        <small class="text-muted" title="Nombre de téléchargements">
+                                            <i class="bi bi-download me-1"></i>{{ $sujet->downloads_count ?? 0 }}
                                         </small>
                                     </div>
                                 </div>

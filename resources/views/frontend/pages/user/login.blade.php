@@ -3,14 +3,14 @@
 @section('content')
     <style>
         .auth-card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--ms-border-subtle);
+            border-radius: var(--ms-radius-lg);
+            box-shadow: var(--ms-shadow-rest);
             overflow: hidden;
         }
 
         .auth-header {
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%) !important;
+            background: var(--ms-orange) !important;
             padding: 2rem 1.5rem;
         }
 
@@ -18,66 +18,45 @@
             padding: 2rem 1.5rem;
         }
 
-        .form-control {
-            border-radius: 10px;
-            border: 2px solid #e2e8f0;
-            padding: 0.75rem 1rem;
-            transition: all 0.3s ease;
-        }
-
         .form-control:focus {
-            border-color: #ff6b35;
-            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.1);
+            border-color: var(--ms-orange);
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.15);
         }
 
         .btn-auth {
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            background: var(--ms-orange);
             border: none;
-            border-radius: 10px;
             padding: 0.75rem 1.5rem;
             font-weight: 600;
-            transition: all 0.3s ease;
         }
 
         .btn-auth:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
-        }
-
-        .form-label {
-            font-weight: 500;
-            color: #374151;
-            margin-bottom: 0.5rem;
+            background: var(--ms-orange-dark);
         }
 
         .auth-link {
-            color: #ff6b35;
+            color: var(--ms-blue);
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .auth-link:hover {
-            color: #e55a2b;
+            color: var(--ms-blue-dark);
             text-decoration: underline;
         }
 
         .forgot-link {
-            color: #6b7280;
+            color: var(--ms-muted);
             text-decoration: none;
-            transition: color 0.3s ease;
         }
 
         .forgot-link:hover {
-            color: #ff6b35;
-        }
-
-        .alert {
-            border: none;
-            border-radius: 10px;
+            color: var(--ms-blue);
         }
     </style>
     <div class="container my-2">
         <!-- Breadcrumb -->
+        @include('frontend.components.retour')
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb bg-light rounded p-3">
                 <li class="breadcrumb-item">
@@ -93,7 +72,7 @@
         <div class="row justify-content-center">
             <div class="col-md-6 col-lg-5">
                 <div class="card auth-card">
-                    <div class="card-header auth-header bg-primary text-white text-center">
+                    <div class="card-header auth-header text-white text-center">
                         <h4 class="mb-2">Bon retour !</h4>
                         <p class="mb-0 opacity-90">Connectez-vous pour accéder à votre espace</p>
                     </div>
@@ -143,7 +122,7 @@
                             </button>
                         </form>
                     </div>
-                    <div class="card-footer text-center" style="background: #f8fafc; border-top: 1px solid #e5e7eb;">
+                    <div class="card-footer text-center" style="background: var(--ms-bg-soft); border-top: 1px solid var(--ms-border-subtle);">
                         <p class="text-muted mb-0">
                             Pas encore de compte ?
                             <a href="{{ route('user.registerForm') }}" class="auth-link">Inscrivez-vous gratuitement</a>

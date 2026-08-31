@@ -103,12 +103,12 @@
                                 <div class="mb-3">
                                     <label for="non_corrige" class="form-label">Fichier non corrigé</label>
                                     <input type="file" name="non_corrige" id="non_corrige" class="form-control">
-                                    @if ($sujet->getFirstMediaUrl('non_corrige'))
+                                    @if ($sujet->getFirstMedia('non_corrige'))
                                         <div class="mt-2">
-                                            <iframe src="{{ $sujet->getFirstMediaUrl('non_corrige') }}" width="100%"
-                                                height="150"></iframe>
-                                            <a href="{{ $sujet->getFirstMediaUrl('non_corrige') }}" target="_blank"
-                                                class="btn btn-link">Voir le fichier actuel</a>
+                                            <iframe src="{{ route('sujet.preview', ['id' => $sujet->id, 'type' => 'non_corrige']) }}"
+                                                width="100%" height="150"></iframe>
+                                            <a href="{{ route('sujet.preview', ['id' => $sujet->id, 'type' => 'non_corrige']) }}"
+                                                target="_blank" class="btn btn-link">Voir le fichier actuel</a>
                                         </div>
                                     @endif
                                 </div>
@@ -116,12 +116,12 @@
                                 <div class="mb-3">
                                     <label for="corrige" class="form-label">Fichier corrigé</label>
                                     <input type="file" name="corrige" id="corrige" class="form-control">
-                                    @if ($sujet->getFirstMediaUrl('corrige'))
+                                    @if ($sujet->getFirstMedia('corrige'))
                                         <div class="mt-2">
-                                            <iframe src="{{ $sujet->getFirstMediaUrl('corrige') }}" width="100%"
-                                                height="150"></iframe>
-                                            <a href="{{ $sujet->getFirstMediaUrl('corrige') }}" target="_blank"
-                                                class="btn btn-link">Voir le fichier actuel</a>
+                                            <iframe src="{{ route('sujet.preview', ['id' => $sujet->id, 'type' => 'corrige']) }}"
+                                                width="100%" height="150"></iframe>
+                                            <a href="{{ route('sujet.preview', ['id' => $sujet->id, 'type' => 'corrige']) }}"
+                                                target="_blank" class="btn btn-link">Voir le fichier actuel</a>
                                         </div>
                                     @endif
                                 </div>

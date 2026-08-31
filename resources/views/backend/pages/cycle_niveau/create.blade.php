@@ -82,7 +82,7 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-4">
+        <div class="col-lg-4 order-lg-2">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-primary text-white">
                     <h5 class="card-title mb-0 text-white">

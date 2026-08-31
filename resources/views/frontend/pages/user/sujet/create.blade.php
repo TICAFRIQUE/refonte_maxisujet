@@ -1,32 +1,13 @@
 @extends('frontend.layouts.front_app')
 
 @section('content')
-    <!-- Header avec gradient -->
-    <div class="container-fluid py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 200px;">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h1 class="text-white mb-2 fw-bold">
-                        <i class="bi bi-file-earmark-plus me-2"></i>Publier un sujet
-                    </h1>
-                    <p class="text-white-50 mb-0">Partagez vos ressources pédagogiques avec la communauté</p>
-                </div>
-                <div class="col-md-4 text-end">
-                    <div class="bg-white bg-opacity-25 rounded-pill px-4 py-2 d-inline-block">
-                        <i class="bi bi-star-fill text-warning me-1"></i>
-                        <span class="text-white fw-bold">+10 points par sujet</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container my-5">
-        <!-- Breadcrumb moderne -->
+    <div class="container mt-4">
+        <!-- Breadcrumb -->
+        @include('frontend.components.retour')
         <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb bg-light rounded-pill shadow-sm px-4 py-3">
+            <ol class="breadcrumb bg-light rounded p-3 mb-0">
                 <li class="breadcrumb-item">
-                    <a href="{{ route('user.dashboard') }}" class="text-primary text-decoration-none">
+                    <a href="{{ route('user.dashboard') }}" class="text-decoration-none">
                         <i class="bi bi-speedometer2 me-1"></i>Mon espace
                     </a>
                 </li>
@@ -34,26 +15,36 @@
             </ol>
         </nav>
 
+        <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 mb-4 gap-2">
+            <div>
+                <h1 class="fw-bold mb-1">Publier un sujet</h1>
+                <p class="text-muted mb-0">Partagez vos ressources pédagogiques avec la communauté</p>
+            </div>
+            <span class="points-pill">
+                <i class="bi bi-star-fill"></i> +100 points par sujet approuvé
+            </span>
+        </div>
+
         <!-- Guide d'aide -->
-        <div class="row mb-5">
+        <div class="row mb-4">
             <div class="col-12">
-                <div class="card border-0 shadow-sm bg-light">
+                <div class="card">
                     <div class="card-body p-4">
                         <div class="row align-items-center">
                             <div class="col-md-8">
-                                <h6 class="text-primary fw-bold mb-2">
-                                    <i class="bi bi-lightbulb me-2"></i>Conseils pour une publication réussie
+                                <h6 class="fw-bold mb-2">
+                                    <i class="bi bi-lightbulb me-2" style="color: var(--ms-blue);"></i>Conseils pour une publication réussie
                                 </h6>
                                 <p class="text-muted mb-0 small">
-                                    Vérifiez la qualité de vos fichiers • Ajoutez une description détaillée • 
+                                    Vérifiez la qualité de vos fichiers • Ajoutez une description détaillée •
                                     Sélectionnez les niveaux appropriés • Respectez les formats PDF/DOC
                                 </p>
                             </div>
                             <div class="col-md-4 text-end">
                                 <div class="d-flex justify-content-end gap-2">
-                                    <span class="badge bg-success rounded-pill">PDF</span>
-                                    <span class="badge bg-success rounded-pill">DOC</span>
-                                    <span class="badge bg-success rounded-pill">DOCX</span>
+                                    <span class="badge" style="background: var(--ms-blue-light); color: var(--ms-blue-dark);">PDF</span>
+                                    <span class="badge" style="background: var(--ms-blue-light); color: var(--ms-blue-dark);">DOC</span>
+                                    <span class="badge" style="background: var(--ms-blue-light); color: var(--ms-blue-dark);">DOCX</span>
                                 </div>
                             </div>
                         </div>
@@ -61,21 +52,21 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="row justify-content-center">
             <div class="col-xl-10">
-                <div class="card border-0 shadow-lg">
+                <div class="card">
                     <div class="card-header bg-white border-0 p-4">
                         <div class="row align-items-center">
                             <div class="col-md-8">
-                                <h4 class="mb-1 fw-bold text-primary">
-                                    <i class="bi bi-file-earmark-plus me-2"></i>Nouveau sujet
+                                <h4 class="mb-1 fw-bold">
+                                    <i class="bi bi-file-earmark-plus me-2" style="color: var(--ms-orange);"></i>Nouveau sujet
                                 </h4>
                                 <small class="text-muted">Remplissez tous les champs obligatoires pour publier votre sujet</small>
                             </div>
                             <div class="col-md-4 text-end">
                                 <div class="progress" style="height: 6px;">
-                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 0%" id="formProgress"></div>
+                                    <div class="progress-bar" role="progressbar" style="width: 0%; background: var(--ms-blue);" id="formProgress"></div>
                                 </div>
                                 <small class="text-muted mt-1 d-block">Progression : <span id="progressText">0%</span></small>
                             </div>
@@ -85,11 +76,11 @@
                         @if ($errors->any())
                             <div class="alert alert-danger border-0 rounded-3 shadow-sm">
                                 <div class="d-flex align-items-center mb-3">
-                                    <div class="bg-danger bg-opacity-10 rounded-circle p-2 me-3">
-                                        <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                                    <div class="rounded-circle p-2 me-3" style="background: var(--ms-danger-bg);">
+                                        <i class="bi bi-exclamation-triangle-fill" style="color: var(--ms-danger);"></i>
                                     </div>
                                     <div>
-                                        <h6 class="mb-1 fw-bold text-danger">Erreurs de validation</h6>
+                                        <h6 class="mb-1 fw-bold" style="color: var(--ms-danger);">Erreurs de validation</h6>
                                         <small class="text-muted">Veuillez corriger les erreurs ci-dessous</small>
                                     </div>
                                 </div>
@@ -108,8 +99,8 @@
                             <!-- Section Informations générales -->
                             <div class="mb-5">
                                 <div class="d-flex align-items-center mb-4">
-                                    <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
-                                        <i class="bi bi-info-circle-fill text-primary"></i>
+                                    <div class="rounded-circle p-2 me-3" style="background: var(--ms-blue-light);">
+                                        <i class="bi bi-info-circle-fill" style="color: var(--ms-blue);"></i>
                                     </div>
                                     <div>
                                         <h5 class="mb-1 fw-bold">Informations générales</h5>
@@ -196,8 +187,8 @@
                             <!-- Section Contenu -->
                             <div class="mb-5">
                                 <div class="d-flex align-items-center mb-4">
-                                    <div class="bg-info bg-opacity-10 rounded-circle p-2 me-3">
-                                        <i class="bi bi-file-text-fill text-info"></i>
+                                    <div class="rounded-circle p-2 me-3" style="background: var(--ms-blue-light);">
+                                        <i class="bi bi-file-text-fill" style="color: var(--ms-blue);"></i>
                                     </div>
                                     <div>
                                         <h5 class="mb-1 fw-bold">Description du sujet</h5>
@@ -208,7 +199,7 @@
                                 <div class="row">
                                     <div class="col-12">
                                         <label for="description" class="form-label fw-semibold">
-                                            <i class="bi bi-card-text me-1 text-info"></i>Description
+                                            <i class="bi bi-card-text me-1"></i>Description
                                         </label>
                                         <textarea name="description" id="description" 
                                                   class="form-control form-control-lg rounded-3 border-2 @error('description') is-invalid @enderror" 
@@ -224,8 +215,8 @@
                             <!-- Section Fichiers -->
                             <div class="mb-5">
                                 <div class="d-flex align-items-center mb-4">
-                                    <div class="bg-success bg-opacity-10 rounded-circle p-2 me-3">
-                                        <i class="bi bi-cloud-upload-fill text-success"></i>
+                                    <div class="rounded-circle p-2 me-3" style="background: var(--ms-orange-light);">
+                                        <i class="bi bi-cloud-upload-fill" style="color: var(--ms-orange);"></i>
                                     </div>
                                     <div>
                                         <h5 class="mb-1 fw-bold">Fichiers du sujet</h5>
@@ -236,17 +227,17 @@
                                 <div class="row g-4">
                                     <div class="col-md-6">
                                         <label for="fichier_sujet" class="form-label fw-semibold">
-                                            <i class="bi bi-file-earmark-pdf me-1 text-success"></i>Fichier du sujet *
+                                            <i class="bi bi-file-earmark-pdf me-1"></i>Fichier du sujet *
                                         </label>
                                         <div class="upload-area border-2 border-dashed rounded-3 p-4 text-center position-relative" id="uploadArea1">
                                             <div class="upload-content">
                                                 <i class="bi bi-cloud-upload text-muted" style="font-size: 2rem;"></i>
                                                 <p class="mt-2 mb-1 fw-semibold text-muted">Glissez votre fichier ici</p>
                                                 <p class="small text-muted">ou cliquez pour parcourir</p>
-                                                <small class="text-success">PDF, DOC, DOCX • Max 10 MB</small>
+                                                <small class="text-muted">PDF, DOC, DOCX • Max 10 MB</small>
                                             </div>
-                                            <input type="file" name="non_corrige" id="fichier_sujet" 
-                                                   class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0 @error('non_corrige') is-invalid @enderror" 
+                                            <input type="file" name="non_corrige" id="fichier_sujet"
+                                                   class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0 @error('non_corrige') is-invalid @enderror"
                                                    accept=".pdf,.doc,.docx" required onchange="updateProgress(); handleFileSelect(this, 1)">
                                         </div>
                                         @error('fichier_sujet')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
@@ -254,17 +245,17 @@
 
                                     <div class="col-md-6">
                                         <label for="fichier_corrige" class="form-label fw-semibold">
-                                            <i class="bi bi-file-earmark-check me-1 text-success"></i>Corrigé (optionnel)
+                                            <i class="bi bi-file-earmark-check me-1"></i>Corrigé (optionnel)
                                         </label>
                                         <div class="upload-area border-2 border-dashed rounded-3 p-4 text-center position-relative" id="uploadArea2">
                                             <div class="upload-content">
                                                 <i class="bi bi-cloud-upload text-muted" style="font-size: 2rem;"></i>
                                                 <p class="mt-2 mb-1 fw-semibold text-muted">Glissez votre corrigé ici</p>
                                                 <p class="small text-muted">ou cliquez pour parcourir</p>
-                                                <small class="text-success">PDF, DOC, DOCX • Max 10 MB</small>
+                                                <small class="text-muted">PDF, DOC, DOCX • Max 10 MB</small>
                                             </div>
-                                            <input type="file" name="corrige" id="fichier_corrige" 
-                                                   class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0 @error('corrige') is-invalid @enderror" 
+                                            <input type="file" name="corrige" id="fichier_corrige"
+                                                   class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0 @error('corrige') is-invalid @enderror"
                                                    accept=".pdf,.doc,.docx" onchange="handleFileSelect(this, 2)">
                                         </div>
                                         @error('fichier_corrige')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
@@ -277,8 +268,8 @@
                             <!-- Section Métadonnées -->
                             <div class="mb-5">
                                 <div class="d-flex align-items-center mb-4">
-                                    <div class="bg-warning bg-opacity-10 rounded-circle p-2 me-3">
-                                        <i class="bi bi-calendar-event-fill text-warning"></i>
+                                    <div class="rounded-circle p-2 me-3" style="background: var(--ms-blue-light);">
+                                        <i class="bi bi-calendar-event-fill" style="color: var(--ms-blue);"></i>
                                     </div>
                                     <div>
                                         <h5 class="mb-1 fw-bold">Informations complémentaires</h5>
@@ -289,7 +280,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label for="annee" class="form-label fw-semibold">
-                                            <i class="bi bi-calendar3 me-1 text-warning"></i>Année
+                                            <i class="bi bi-calendar3 me-1"></i>Année
                                         </label>
                                         <select name="annee" id="annee" 
                                                 class="form-select form-select-lg rounded-3 border-2 @error('annee') is-invalid @enderror">
@@ -308,10 +299,10 @@
                             <!-- Actions -->
                             <div class="text-center pt-4 border-top">
                                 <div class="d-flex justify-content-center gap-3">
-                                    <a href="{{ route('user.dashboard') }}" class="btn btn-outline-secondary btn-lg rounded-pill px-5">
+                                    <a href="{{ route('user.dashboard') }}" class="btn btn-outline-secondary btn-lg px-5">
                                         <i class="bi bi-arrow-left me-2"></i>Annuler
                                     </a>
-                                    <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold" id="submitBtn">
+                                    <button type="submit" class="btn btn-warning btn-lg px-5 fw-bold" id="submitBtn">
                                         <i class="bi bi-send me-2"></i>Publier le sujet
                                     </button>
                                 </div>
@@ -336,17 +327,16 @@
         cursor: pointer;
     }
     .upload-area:hover {
-        border-color: #0d6efd !important;
-        background-color: rgba(13, 110, 253, 0.05);
+        border-color: var(--ms-blue) !important;
+        background-color: var(--ms-blue-light);
     }
     .upload-area.drag-over {
-        border-color: #0d6efd !important;
-        background-color: rgba(13, 110, 253, 0.1);
-        transform: scale(1.02);
+        border-color: var(--ms-blue) !important;
+        background-color: var(--ms-blue-light);
     }
     .file-selected {
-        border-color: #198754 !important;
-        background-color: rgba(25, 135, 84, 0.05);
+        border-color: var(--ms-success) !important;
+        background-color: var(--ms-success-bg);
     }
     .select2-container--default .select2-selection--multiple {
         border: 2px solid #dee2e6 !important;

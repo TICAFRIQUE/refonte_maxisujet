@@ -1,0 +1,66 @@
+/* =========================================================================
+   MaxiSujets — surcharge de la palette Velzon pour reprendre l'identité
+   orange/bleu du logo (au lieu de l'indigo par défaut du thème). Fichier
+   chargé après app.min.css : toutes les valeurs sont donc prioritaires
+   sans avoir à toucher au thème compilé lui-même.
+   ========================================================================= */
+
+:root,
+html[data-theme-colors] {
+    /* Couleur d'action principale (boutons, liens, focus) : bleu de marque */
+    --vz-primary: #0d6efd !important;
+    --vz-primary-rgb: 13, 110, 253 !important;
+    --vz-primary-text-emphasis: #0b5ed7 !important;
+    --vz-primary-bg-subtle: #e7f1ff !important;
+    --vz-primary-border-subtle: #9ec5fe !important;
+
+    --vz-link-color: #0d6efd !important;
+    --vz-link-color-rgb: 13, 110, 253 !important;
+    --vz-link-hover-color: #0b5ed7 !important;
+
+    /* Police unique (Inter), cohérente avec le site public */
+    --vz-font-sans-serif: 'Inter', system-ui, sans-serif !important;
+    --vz-font-family-primary: 'Inter', system-ui, sans-serif !important;
+    --vz-font-family-secondary: 'Inter', system-ui, sans-serif !important;
+    --vz-vertical-menu-item-font-family: 'Inter', system-ui, sans-serif !important;
+    --vz-vertical-menu-sub-item-font-family: 'Inter', system-ui, sans-serif !important;
+}
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Menu latéral : dégradé navy (au lieu de l'indigo Velzon), surbrillance orange
+   sur l'élément actif/survolé — les deux couleurs du logo, réparties comme sur
+   le site public (bleu = structure, orange = accent/action). */
+html[data-sidebar="dark"] {
+    --vz-vertical-menu-bg: linear-gradient(180deg, #1e3a8a 0%, #16296b 100%) !important;
+    --vz-vertical-menu-border: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Certaines règles du thème posent la couleur via background-color (qui ignore un
+   dégradé) : on force donc aussi directement le conteneur du menu, en s'appuyant
+   sur la classe réelle plutôt que sur la seule variable CSS. */
+html[data-sidebar="dark"] .app-menu.navbar-menu {
+    background: linear-gradient(180deg, #1e3a8a 0%, #16296b 100%) !important;
+    --vz-vertical-menu-item-color: rgba(255, 255, 255, 0.65) !important;
+    --vz-vertical-menu-item-hover-color: #ff9d6c !important;
+    --vz-vertical-menu-item-active-color: #ffffff !important;
+    --vz-vertical-menu-item-active-bg: rgba(255, 107, 53, 0.18) !important;
+    --vz-vertical-menu-sub-item-color: rgba(255, 255, 255, 0.55) !important;
+    --vz-vertical-menu-sub-item-hover-color: #ff9d6c !important;
+    --vz-vertical-menu-sub-item-active-color: #ff9d6c !important;
+    --vz-vertical-menu-title-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+#navbar-nav .nav-link.active,
+#navbar-nav .nav-link.active svg {
+    color: #ff9d6c !important;
+}
+
+/* Logo dans le menu latéral : fond blanc pour rester lisible sur le dégradé navy */
+.navbar-brand-box .logo {
+    background: #fff;
+    border-radius: 8px;
+    padding: 4px 8px;
+}

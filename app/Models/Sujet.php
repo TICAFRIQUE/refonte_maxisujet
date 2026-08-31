@@ -6,7 +6,6 @@ use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Sujet extends Model implements HasMedia
 {
@@ -75,30 +74,16 @@ class Sujet extends Model implements HasMedia
 
 
     /**
-     * Registers the media collections used by the model.
-     * 
-     * In this case, the model uses two collections:
-     * - 'corrige' for the corrected file
-     * - 'non_corrige' for the uncorrected file
-     * 
-     * The custom path for each collection is set to "sujets/{id}/corrige" and "sujets/{id}/non_corrige" respectively.
-     * The disk used is the "public" disk.
+     * Sujets et corrigés sont des fichiers payants (1 point/téléchargement) : ils vivent sur le
+     * disque "local" (storage/app/private, non exposé publiquement), jamais sur "public". Tout
+     * accès passe donc obligatoirement par un contrôleur authentifié (apercu()/download() côté
+     * front, preview() côté admin) qui lit le fichier avec Media::getPath(), pas par une URL.
      */
-    // public function registerMediaCollections(): void
-    // {
-    //     // // Collection pour corrigé
-    //     // $this->addMediaCollection('corrige')
-    //     //     ->useDisk('public')
-    //     //     ->useCustomPath(fn(Media $media) => "sujets/{$this->id}/corrige");
-
-    //     // // Collection pour non corrigé
-    //     // $this->addMediaCollection('non_corrige')
-    //     //     ->useDisk('public')
-    //     //     ->useCustomPath(fn(Media $media) => "sujets/{$this->id}/non_corrige");
-
-    //     $this->addMediaCollection('corrige')->useDisk('public');
-    //     $this->addMediaCollection('non_corrige')->useDisk('public');
-    // }
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('corrige')->useDisk('local');
+        $this->addMediaCollection('non_corrige')->useDisk('local');
+    }
 
 
     // scopes

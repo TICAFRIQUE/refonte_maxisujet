@@ -40,7 +40,28 @@ function delete_row(route){
 
                             $('#row_' + Id).remove();
                             location.reload();
+                        } else {
+                            Swal.fire({
+                                title: 'Suppression impossible',
+                                text: response.message || "Une erreur est survenue lors de la suppression.",
+                                icon: 'error',
+                                customClass: {
+                                    confirmButton: 'btn btn-primary w-xs mt-2',
+                                },
+                                buttonsStyling: false
+                            });
                         }
+                    },
+                    error: function() {
+                        Swal.fire({
+                            title: 'Erreur',
+                            text: "Une erreur est survenue lors de la suppression.",
+                            icon: 'error',
+                            customClass: {
+                                confirmButton: 'btn btn-primary w-xs mt-2',
+                            },
+                            buttonsStyling: false
+                        });
                     }
                 });
             }

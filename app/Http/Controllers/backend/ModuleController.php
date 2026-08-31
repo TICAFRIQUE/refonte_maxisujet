@@ -17,8 +17,7 @@ class ModuleController extends Controller
     public function index()
     {
 
-        $data_module = Module::get();
-        $data_module->sortBy('name');
+        $data_module = Module::orderBy('name')->get();
 
 
         // $title = 'Delete User!';
@@ -29,8 +28,20 @@ class ModuleController extends Controller
     }
 
 
+    /**
+     * Rôles qui reçoivent automatiquement toute nouvelle permission créée : ce sont les
+     * rôles d'administration "pleins pouvoirs" du back-office. Les autres rôles (créés via
+     * la page Permissions) doivent se voir attribuer les permissions manuellement, et
+     * peuvent alors les utiliser normalement — rien dans le code ne limite l'usage d'une
+     * permission aux seuls rôles listés ici.
+     */
+    const ROLES_PLEINS_POUVOIRS = ['superadmin', 'administrateur', 'developpeur'];
+
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|string|max:255|unique:modules,name',
+        ]);
 
         // Créer ou récupérer le module
         $module = Module::firstOrCreate([
@@ -38,7 +49,7 @@ class ModuleController extends Controller
         ]);
 
         // Définir les permissions pour ce module
-        $permissions = [
+        $permissionsNames = [
             'creer-' . $module->name,
             'voir-' . $module->name,
             'modifier-' . $module->name,
@@ -46,17 +57,19 @@ class ModuleController extends Controller
         ];
 
         // Créer les permissions et les associer au module
-        foreach ($permissions as $permissionName) {
-            $permission = Permission::firstOrCreate([
+        $permissions = collect();
+        foreach ($permissionsNames as $permissionName) {
+            $permissions->push(Permission::firstOrCreate([
                 'name' => $permissionName,
-                'module_id' => $module->id,  // Associer à un module                
+                'module_id' => $module->id,  // Associer à un module
                 'guard_name' => 'web',
-            ]);
+            ]));
         }
 
-        // // Attribuer les permissions au rôle développeur par défaut
-        // $role = Role::where('name', 'developpeur')->first();
-        // $role->syncPermissions($permissions);
+        // Attribuer automatiquement les nouvelles permissions aux rôles à pleins pouvoirs.
+        Role::whereIn('name', self::ROLES_PLEINS_POUVOIRS)->get()->each(function ($role) use ($permissions) {
+            $role->givePermissionTo($permissions);
+        });
 
         Alert::success('Operation réussi', 'Success Message');
 

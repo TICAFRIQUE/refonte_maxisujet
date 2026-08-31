@@ -16,7 +16,7 @@ class ConcourController extends Controller
     {
         //
         try {
-            $concours = Concours::all();
+            $concours = Concours::withCount('sujets')->get();
             return view('backend.pages.concours.index', compact('concours'));
         } catch (\Throwable $th) {
             return back()->with('error', 'Une erreur s\'est produite lors du chargement des concours');
@@ -38,15 +38,12 @@ class ConcourController extends Controller
     {
         //
         try {
-            $validate = $request->validate([
+            $request->validate([
                 'libelle' => 'required|unique:concours,libelle',
             ]);
 
-            // inserer les donnees dans la table concours
-            $concours = Concours::firstOrCreate([
+            Concours::create([
                 'libelle' => Str::ucfirst(Str::lower($request->libelle)),
-            ], [
-
                 'statut' => 'active',
             ]);
 
@@ -102,13 +99,18 @@ class ConcourController extends Controller
      */
     public function delete(string $id)
     {
-        //
         try {
             $concours = Concours::find($id);
 
             if (!$concours) {
                 return back()->with('error', 'Concours non trouvé');
             }
+
+            $sujetsCount = \App\Models\Sujet::where('concours_id', $id)->count();
+            if ($sujetsCount > 0) {
+                return back()->with('error', "Impossible de supprimer : {$sujetsCount} sujet(s) utilisent encore ce concours. Réaffectez-les d'abord à un autre concours.");
+            }
+
             $concours->delete();
 
             return back()->with('success', 'Concours supprimé avec succès');

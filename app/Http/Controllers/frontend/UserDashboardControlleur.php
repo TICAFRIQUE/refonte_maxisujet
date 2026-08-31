@@ -26,12 +26,18 @@ class UserDashboardControlleur extends Controller
             // Historique téléchargements
             $downloads = DownloadLog::where('user_id', $user->id)->with('sujet')->paginate(4)->withQueryString();
 
-            // Compter les éléments
-            $downloadsCount = $downloads->count(); // Nombre de téléchargements
+            // Compter les éléments (total réel, pas la taille de la page paginée)
+            $downloadsCount = DownloadLog::where('user_id', $user->id)->count();
             $publishedSubjectsCount = Sujet::where('user_id', $user->id)->count(); // Nombre de sujets publiés
             $points = $user->points ?? 0; // Assurez-vous que le modèle User a un attribut points
 
-            return view('frontend.pages.user.dashboard', compact('user', 'downloads', 'downloadsCount', 'publishedSubjectsCount', 'points'));
+            // Aperçu des derniers sujets publiés par l'utilisateur, avec leur statut d'approbation
+            $mySujets = Sujet::where('user_id', $user->id)
+                ->orderByDesc('created_at')
+                ->take(3)
+                ->get();
+
+            return view('frontend.pages.user.dashboard', compact('user', 'downloads', 'downloadsCount', 'publishedSubjectsCount', 'points', 'mySujets'));
         } catch (\Throwable $e) {
             return $e->getMessage(); // redirect()->back()->with('error', 'Une erreur est survenue: ' . $e->getMessage());
         }
@@ -146,12 +152,10 @@ class UserDashboardControlleur extends Controller
                 $sujet->addMediaFromRequest('corrige')->toMediaCollection('corrige');
             }
 
-            // Donner des points pour la publication
-            $pointsService = new \App\Services\PointsService();
-            $pointsService->givePublicationPoints(Auth::user());
+            // Les points ne sont crédités qu'à l'approbation du sujet par un admin
+            // (voir SujetController::approuve), pas à la simple soumission.
 
-
-            Alert::success('Sujet créé', 'Le sujet a été créé avec succès.');
+            Alert::success('Sujet créé', 'Le sujet a été créé avec succès et sera examiné avant publication.');
             return redirect()->route('user.sujet.index');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Une erreur est survenue: ' . $th->getMessage())->withInput();
@@ -225,7 +229,7 @@ class UserDashboardControlleur extends Controller
     {
         //
         try {
-            Sujet::find($id)->delete();
+            Sujet::where('id', $id)->where('user_id', Auth::id())->firstOrFail()->delete();
             return response()->json([
                 'status' => 200,
             ]);

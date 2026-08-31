@@ -4,10 +4,13 @@ namespace App\Http\Controllers\backend;
 
 use App\Models\Sujet;
 use App\Models\Niveau;
+use App\Models\Matiere;
+use App\Models\Concours;
 use App\Models\Categorie;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class SujetController extends Controller
@@ -22,6 +25,18 @@ class SujetController extends Controller
         if ($request->filled('approuve')) {
             $query->where('approuve', $request->approuve);
         }
+        if ($request->filled('categorie_id')) {
+            $query->where('categorie_id', $request->categorie_id);
+        }
+        if ($request->filled('matiere_id')) {
+            $query->where('matiere_id', $request->matiere_id);
+        }
+        if ($request->filled('concours_id')) {
+            $query->where('concours_id', $request->concours_id);
+        }
+        if ($request->filled('code')) {
+            $query->where('code', 'like', '%' . $request->code . '%');
+        }
         if ($request->filled('date_debut')) {
             $query->whereDate('created_at', '>=', $request->date_debut);
         }
@@ -29,10 +44,17 @@ class SujetController extends Controller
             $query->whereDate('created_at', '<=', $request->date_fin);
         }
 
-        $sujets = $query->with(['categorie', 'matiere', 'user'])->get();
+        $sujets = $query->with(['categorie', 'matiere', 'concours', 'user'])
+            ->withCount('downloads')
+            ->latest()
+            ->get();
         $sujetsNonApprouves = Sujet::where('approuve', 0)->count();
 
-        return view('backend.pages.sujet.index', compact('sujets', 'sujetsNonApprouves'));
+        $categories = Categorie::orderBy('libelle')->get();
+        $matieres = Matiere::orderBy('libelle')->get();
+        $concoursList = Concours::orderBy('libelle')->get();
+
+        return view('backend.pages.sujet.index', compact('sujets', 'sujetsNonApprouves', 'categories', 'matieres', 'concoursList'));
     }
 
     /**
@@ -99,7 +121,16 @@ class SujetController extends Controller
             $sujet->libelle = $categorie->libelle . substr(str_shuffle('ABCDEFGHJKLMNPQRSTUVWXYZ' . '0123456789'), 0, 5);
             $sujet->code = 'MS' . substr(str_shuffle('ABCDEFGHJKLMNPQRSTUVWXYZ' . '0123456789'), 0, 5);
 
-            $sujet->save();
+            // Créé directement approuvé par un admin : créditer les points tout de suite.
+            // En transaction pour ne pas créditer les points si la sauvegarde échoue.
+            DB::transaction(function () use ($sujet) {
+                if ($sujet->approuve && $sujet->user) {
+                    (new \App\Services\PointsService())->givePublicationPoints($sujet->user);
+                    $sujet->points_attribues = true;
+                }
+
+                $sujet->save();
+            });
 
             // Attacher les niveaux (relation many-to-many)
             $sujet->niveaux()->sync($request->niveaux);
@@ -119,13 +150,41 @@ class SujetController extends Controller
     }
 
     /**
+     * Affiche le fichier (sujet ou corrigé) dans le navigateur pour la modération admin.
+     * Les fichiers vivent sur un disque privé : ce contrôleur, protégé par la permission
+     * "voir-sujet", est le seul moyen d'y accéder côté back-office.
+     */
+    public function preview($id, $type)
+    {
+        $sujet = Sujet::findOrFail($id);
+        $media = $sujet->getMedia($type)->first();
+
+        if (!$media) {
+            abort(404, 'Fichier introuvable.');
+        }
+
+        return response()->file($media->getPath());
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show($id)
     {
         try {
-            $sujet = Sujet::with(['categorie', 'matiere', 'user', 'niveaux', 'media'])->findOrFail($id);
-            return view('backend.pages.sujet.show', compact('sujet'));
+            $sujet = Sujet::with(['categorie', 'matiere', 'concours', 'user', 'niveaux', 'media'])
+                ->withCount('downloads')
+                ->withCount(['downloads as downloads_non_corrige_count' => function ($q) {
+                    $q->where('type', 'non_corrige');
+                }])
+                ->withCount(['downloads as downloads_corrige_count' => function ($q) {
+                    $q->where('type', 'corrige');
+                }])
+                ->findOrFail($id);
+
+            $derniersTelechargements = $sujet->downloads()->with('user')->latest()->take(10)->get();
+
+            return view('backend.pages.sujet.show', compact('sujet', 'derniersTelechargements'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Une erreur est survenue: ' . $e->getMessage());
         }
@@ -163,10 +222,29 @@ class SujetController extends Controller
     public function approuve($id, $etat)
     {
         try {
-            $sujet = Sujet::findOrFail($id);
-            $sujet->approuve = $etat;
-            $sujet->save();
-            return back()->with('success', 'Statut mis à jour.');
+            $sujet = Sujet::with('user')->findOrFail($id);
+            $etat = (bool) $etat;
+
+            // Transaction : le crédit/reprise de points et la sauvegarde du sujet doivent
+            // réussir ensemble, sinon un échec de sauvegarde laisserait les points
+            // crédités sans que l'approbation soit réellement enregistrée.
+            DB::transaction(function () use ($sujet, $etat) {
+                if ($sujet->user) {
+                    $pointsService = new \App\Services\PointsService();
+                    if ($etat && !$sujet->points_attribues) {
+                        $pointsService->givePublicationPoints($sujet->user);
+                        $sujet->points_attribues = true;
+                    } elseif (!$etat && $sujet->points_attribues) {
+                        $pointsService->revokePublicationPoints($sujet->user);
+                        $sujet->points_attribues = false;
+                    }
+                }
+
+                $sujet->approuve = $etat;
+                $sujet->save();
+            });
+
+            return back()->with('success', $etat ? 'Sujet approuvé, points crédités à l\'auteur.' : 'Approbation retirée, points repris à l\'auteur.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Une erreur est survenue: ' . $e->getMessage());
         }
@@ -192,19 +270,36 @@ class SujetController extends Controller
                 'corrige' => 'nullable|file|mimes:pdf,doc,docx',
             ]);
 
-            $sujet = Sujet::findOrFail($id);
+            $sujet = Sujet::with('user')->findOrFail($id);
             $sujet->categorie_id = $request->categorie_id;
             $sujet->matiere_id = $request->matiere_id;
             $sujet->concours_id = $request->concours_id;
             $sujet->description = $request->description;
             $sujet->statut = $request->statut;
-            $sujet->approuve = $request->approuve;
             $sujet->annee = $request->annee;
 
-
+            // Idem que sur approuve() : ne créditer/reprendre les points que si le
+            // statut d'approbation change réellement, jamais deux fois. En transaction
+            // pour ne pas créditer/reprendre les points si la sauvegarde échoue.
+            $nouvelEtat = (bool) $request->approuve;
             $categorie = Categorie::find($request->categorie_id);
-            $sujet->libelle = $categorie->libelle . substr(str_shuffle('ABCDEFGHJKLMNPQRSTUVWXYZ' . '0123456789'), 0, 5);
-            $sujet->save();
+
+            DB::transaction(function () use ($sujet, $nouvelEtat, $categorie) {
+                if ($sujet->user) {
+                    $pointsService = new \App\Services\PointsService();
+                    if ($nouvelEtat && !$sujet->points_attribues) {
+                        $pointsService->givePublicationPoints($sujet->user);
+                        $sujet->points_attribues = true;
+                    } elseif (!$nouvelEtat && $sujet->points_attribues) {
+                        $pointsService->revokePublicationPoints($sujet->user);
+                        $sujet->points_attribues = false;
+                    }
+                }
+                $sujet->approuve = $nouvelEtat;
+
+                $sujet->libelle = $categorie->libelle . substr(str_shuffle('ABCDEFGHJKLMNPQRSTUVWXYZ' . '0123456789'), 0, 5);
+                $sujet->save();
+            });
 
             // Met à jour les niveaux liés
             $sujet->niveaux()->sync($request->niveaux);

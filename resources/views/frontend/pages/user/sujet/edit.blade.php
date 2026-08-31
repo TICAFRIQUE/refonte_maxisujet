@@ -23,6 +23,7 @@
 
     <div class="container my-5">
         <!-- Breadcrumb moderne -->
+        @include('frontend.components.retour')
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb bg-light rounded-pill shadow-sm px-4 py-3">
                 <li class="breadcrumb-item">
@@ -221,7 +222,7 @@
                                             <i class="bi bi-file-earmark-pdf me-1 text-success"></i>Fichier du sujet
                                         </label>
                                         
-                                        @if($sujet->getFirstMediaUrl('non_corrige'))
+                                        @if($sujet->getFirstMedia('non_corrige'))
                                             <div class="card border-success border-2 mb-3">
                                                 <div class="card-body p-3 bg-success bg-opacity-5">
                                                     <div class="d-flex align-items-center">
@@ -230,7 +231,7 @@
                                                             <h6 class="mb-1 text-success">Fichier actuel</h6>
                                                             <small class="text-muted">Cliquez pour consulter le fichier existant</small>
                                                         </div>
-                                                        <a href="{{ $sujet->getFirstMediaUrl('non_corrige') }}" target="_blank" 
+                                                        <a href="{{ route('sujet.front.apercu', ['id' => $sujet->id, 'type' => 'non_corrige']) }}" target="_blank"
                                                            class="btn btn-outline-success btn-sm">
                                                             <i class="bi bi-eye me-1"></i>Voir
                                                         </a>
@@ -258,7 +259,7 @@
                                             <i class="bi bi-file-earmark-check me-1 text-success"></i>Corrigé (optionnel)
                                         </label>
                                         
-                                        @if($sujet->getFirstMediaUrl('corrige'))
+                                        @if($sujet->getFirstMedia('corrige'))
                                             <div class="card border-success border-2 mb-3">
                                                 <div class="card-body p-3 bg-success bg-opacity-5">
                                                     <div class="d-flex align-items-center">
@@ -267,7 +268,7 @@
                                                             <h6 class="mb-1 text-success">Corrigé actuel</h6>
                                                             <small class="text-muted">Cliquez pour consulter le corrigé existant</small>
                                                         </div>
-                                                        <a href="{{ $sujet->getFirstMediaUrl('corrige') }}" target="_blank" 
+                                                        <a href="{{ route('sujet.front.apercu', ['id' => $sujet->id, 'type' => 'corrige']) }}" target="_blank"
                                                            class="btn btn-outline-success btn-sm">
                                                             <i class="bi bi-eye me-1"></i>Voir
                                                         </a>
@@ -279,7 +280,7 @@
                                         <div class="upload-area border-2 border-dashed rounded-3 p-4 text-center position-relative" id="uploadArea2">
                                             <div class="upload-content">
                                                 <i class="bi bi-cloud-upload text-muted" style="font-size: 2rem;"></i>
-                                                <p class="mt-2 mb-1 fw-semibold text-muted">{{ $sujet->getFirstMediaUrl('corrige') ? 'Remplacer' : 'Ajouter' }} le corrigé</p>
+                                                <p class="mt-2 mb-1 fw-semibold text-muted">{{ $sujet->getFirstMedia('corrige') ? 'Remplacer' : 'Ajouter' }} le corrigé</p>
                                                 <p class="small text-muted">ou cliquez pour parcourir</p>
                                                 <small class="text-success">PDF, DOC, DOCX • Max 10 MB</small>
                                             </div>

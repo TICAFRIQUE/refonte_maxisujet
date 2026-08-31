@@ -22,9 +22,9 @@
     @endcomponent
 
     <div class="row mb-3">
-        <div class="col-lg-8">
+        <div class="col-lg-9">
             <form method="GET" action="{{ route('sujet.index') }}" class="row g-2 align-items-end">
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label for="approuve" class="form-label mb-0">Approuvé</label>
                     <select name="approuve" id="approuve" class="form-select">
                         <option value="">Tous</option>
@@ -32,20 +32,56 @@
                         <option value="0" {{ request('approuve') === '0' ? 'selected' : '' }}>Non</option>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
+                    <label for="categorie_id" class="form-label mb-0">Catégorie</label>
+                    <select name="categorie_id" id="categorie_id" class="form-select">
+                        <option value="">Toutes</option>
+                        @foreach ($categories as $cat)
+                            <option value="{{ $cat->id }}" {{ (string) request('categorie_id') === (string) $cat->id ? 'selected' : '' }}>{{ $cat->libelle }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="matiere_id" class="form-label mb-0">Matière</label>
+                    <select name="matiere_id" id="matiere_id" class="form-select">
+                        <option value="">Toutes</option>
+                        @foreach ($matieres as $mat)
+                            <option value="{{ $mat->id }}" {{ (string) request('matiere_id') === (string) $mat->id ? 'selected' : '' }}>{{ $mat->libelle }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="concours_id" class="form-label mb-0">Concours</label>
+                    <select name="concours_id" id="concours_id" class="form-select">
+                        <option value="">Tous</option>
+                        @foreach ($concoursList as $conc)
+                            <option value="{{ $conc->id }}" {{ (string) request('concours_id') === (string) $conc->id ? 'selected' : '' }}>{{ $conc->libelle }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
                     <label for="date_debut" class="form-label mb-0">Date début</label>
                     <input type="date" name="date_debut" id="date_debut" class="form-control" value="{{ request('date_debut') }}">
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label for="date_fin" class="form-label mb-0">Date fin</label>
                     <input type="date" name="date_fin" id="date_fin" class="form-control" value="{{ request('date_fin') }}">
                 </div>
                 <div class="col-md-3">
+                    <label for="code" class="form-label mb-0">Code</label>
+                    <input type="text" name="code" id="code" class="form-control" placeholder="Ex: MS4F7B2" value="{{ request('code') }}">
+                </div>
+                <div class="col-md-2">
                     <button type="submit" class="btn btn-primary w-100"><i class="ri-search-line"></i> Filtrer</button>
                 </div>
+                @if (request()->anyFilled(['approuve', 'categorie_id', 'matiere_id', 'concours_id', 'code', 'date_debut', 'date_fin']))
+                    <div class="col-md-2">
+                        <a href="{{ route('sujet.index') }}" class="btn btn-outline-secondary w-100">Réinitialiser</a>
+                    </div>
+                @endif
             </form>
         </div>
-        <div class="col-lg-4 text-end">
+        <div class="col-lg-3 text-end">
             <div class="alert alert-warning py-2 px-3 mb-0 d-inline-block">
                 <i class="ri-error-warning-line"></i>
                 <strong>{{ $sujetsNonApprouves ?? 0 }}</strong> sujet(s) non approuvé(s)
@@ -68,14 +104,12 @@
                                     <th>#</th>
                                     <th>Approuvé</th>
                                     <th>Code</th>
-                                    <th>Libelle</th>
-                                    <th>Description</th>
-                                    <th>Statut</th>
-                                    <th>Année</th>
+                                    <th>Libellé</th>
                                     <th>Catégorie</th>
                                     <th>Matière</th>
                                     <th>Auteur</th>
-                                    <th>Date création</th>
+                                    <th>Téléch.</th>
+                                    <th>Date</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -85,38 +119,57 @@
                                         <td>{{ ++$key }}</td>
                                         <td> <span class="badge {{ $item->approuve == 1 ? 'bg-success' : 'bg-danger' }}">{{ $item->approuve == 1 ? 'Oui' : 'Non' }}</span></td>
                                         <td>{{ $item->code }}</td>
-                                        <td>{{ $item->libelle }}</td>
-                                        <td>{{ $item->description }}</td>
-                                        <td>{{ $item->statut }}</td>
-                                        <td>{{ $item->annee }}</td>
+                                        <td>
+                                            <a href="{{ route('sujet.show', $item->id) }}">{{ Str::limit($item->libelle, 35) }}</a>
+                                        </td>
                                         <td>{{ $item->categorie ? $item->categorie->libelle : '' }}</td>
                                         <td>{{ $item->matiere ? $item->matiere->libelle : '' }}</td>
                                         <td>{{ $item->user ? $item->user->username : '' }}</td>
-                                        <td>{{ $item->created_at }}</td>
+                                        <td><span class="badge bg-primary-subtle text-primary">{{ $item->downloads_count }}</span></td>
+                                        <td>{{ $item->created_at->format('d/m/Y') }}</td>
                                         <td>
-                                            <!-- Actions (modifier/supprimer) -->
-                                            <div class="dropdown d-inline-block">
-                                                <button class="btn btn-soft-secondary btn-sm dropdown" type="button"
-                                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="ri-more-fill align-middle"></i>
-                                                </button>
-                                                <ul class="dropdown-menu dropdown-menu-end">
-                                                    <li><a href="{{ route('sujet.show', $item->id) }}" type="button"
-                                                            class="dropdown-item edit-item-btn"><i
-                                                                class="ri-eye-fill align-bottom me-2 text-muted"></i>
-                                                            Details</a></li>
-                                                    <li><a href="{{ route('sujet.edit', $item->id) }}" type="button"
-                                                            class="dropdown-item edit-item-btn"><i
-                                                                class="ri-pencil-fill align-bottom me-2 text-muted"></i>
-                                                            Modifier</a></li>
-                                                    <li>
-                                                        <a href="#" class="dropdown-item remove-item-btn delete"
-                                                            data-id={{ $item->id }}>
-                                                            <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
-                                                            Supprimer
-                                                        </a>
-                                                    </li>
-                                                </ul>
+                                            <div class="d-flex align-items-center gap-1">
+                                                @if ($item->approuve == 1)
+                                                    <form action="{{ route('sujet.approuve', ['id' => $item->id, 'etat' => 0]) }}" method="POST" class="d-inline approuve-form"
+                                                        data-message="Retirer l'approbation de « {{ $item->libelle }} » ? L'auteur perdra les points gagnés pour ce sujet.">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-soft-warning btn-sm" title="Retirer l'approbation">
+                                                            <i class="ri-close-circle-line align-bottom"></i> Retirer
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <form action="{{ route('sujet.approuve', ['id' => $item->id, 'etat' => 1]) }}" method="POST" class="d-inline approuve-form"
+                                                        data-message="Approuver « {{ $item->libelle }} » ? Le sujet sera publié et son auteur gagnera des points.">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-soft-success btn-sm" title="Approuver ce sujet">
+                                                            <i class="ri-check-line align-bottom"></i> Approuver
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                                <!-- Actions (voir/modifier/supprimer) -->
+                                                <div class="dropdown d-inline-block">
+                                                    <button class="btn btn-soft-secondary btn-sm dropdown" type="button"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="ri-more-fill align-middle"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-end">
+                                                        <li><a href="{{ route('sujet.show', $item->id) }}" type="button"
+                                                                class="dropdown-item edit-item-btn"><i
+                                                                        class="ri-eye-fill align-bottom me-2 text-muted"></i>
+                                                                Details</a></li>
+                                                        <li><a href="{{ route('sujet.edit', $item->id) }}" type="button"
+                                                                class="dropdown-item edit-item-btn"><i
+                                                                        class="ri-pencil-fill align-bottom me-2 text-muted"></i>
+                                                                Modifier</a></li>
+                                                        <li>
+                                                            <a href="#" class="dropdown-item remove-item-btn delete"
+                                                                data-id={{ $item->id }}>
+                                                                <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
+                                                                Supprimer
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>
@@ -152,6 +205,28 @@
         $(document).ready(function() {
             var route = "sujet"
             delete_row(route);
+
+            $('.approuve-form').on('submit', function(e) {
+                e.preventDefault();
+                const form = this;
+                Swal.fire({
+                    title: 'Confirmer ?',
+                    text: $(form).data('message'),
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Confirmer',
+                    cancelButtonText: 'Annuler',
+                    customClass: {
+                        confirmButton: 'btn btn-primary w-xs me-2 mt-2',
+                        cancelButton: 'btn btn-secondary w-xs mt-2',
+                    },
+                    buttonsStyling: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
         })
     </script>
 @endsection

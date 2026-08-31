@@ -16,8 +16,9 @@ class Admin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Si l'utilisateur est authentifié et n'est pas un client
-        if (Auth::check() && Auth::user()->role !== 'auteur') {
+        // Autorise uniquement les comptes ayant un rôle d'administration réel (Spatie),
+        // jamais sur la seule base de la colonne texte "role" (falsifiable côté inscription).
+        if (Auth::check() && Auth::user()->hasAnyRole(['administrateur', 'developpeur', 'superadmin'])) {
             return $next($request);
         }
 

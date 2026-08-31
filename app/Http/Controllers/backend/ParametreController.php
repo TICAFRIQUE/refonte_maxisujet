@@ -53,24 +53,22 @@ class ParametreController extends Controller
     public function store(Request $request)
     {
         try {
-            //request validation................
-            // dd($request->all());
+            $request->validate([
+                'nom_projet' => 'nullable|string|max:255',
+                'email1' => 'nullable|email|max:255',
+                'email2' => 'nullable|email|max:255',
+                'cover' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+                'logo_header' => 'nullable|image|mimes:jpg,jpeg,png,svg,webp|max:2048',
+                'logo_footer' => 'nullable|image|mimes:jpg,jpeg,png,svg,webp|max:2048',
+            ]);
 
             //verify if data exist
             $data_exist = Parametre::with('media')->first();
 
-
             if ($data_exist) {
-                // dd($request->all());
-
-                $data_exist_ = Parametre::with('media')->first();
-                $media = $data_exist_->media;
-                // dd(count($data_exist_->media));
-
-
                 //insert data
                 //update data if record exist
-                $data_parametre = tap(Parametre::find($data_exist_['id']))->update([
+                $data_parametre = tap($data_exist)->update([
                     'lien_facebook' => $request['lien_facebook'],
                     'lien_instagram' => $request['lien_instagram'],
                     'lien_twitter' => $request['lien_twitter'],
@@ -95,28 +93,13 @@ class ParametreController extends Controller
                     // 'mode_maintenance'=>'',
                 ]);
 
-                //insert image logo
-
-                if ($request->has('cover') && count($media) > 0) {
-                    $data_parametre->clearMediaCollection('cover');
-                    $data_parametre->addMediaFromRequest('cover')->toMediaCollection('cover');
-                } elseif ($request->has('cover')) {
-                    $data_parametre->addMediaFromRequest('cover')->toMediaCollection('cover');
-                }
-
-                if ($request->has('logo_header') && count($media) > 0) {
-                    $data_parametre->clearMediaCollection('logo_header');
-                    $data_parametre->addMediaFromRequest('logo_header')->toMediaCollection('logo_header');
-                } elseif ($request->has('logo_header')) {
-                    $data_parametre->addMediaFromRequest('logo_header')->toMediaCollection('logo_header');
-                }
-
-
-                if ($request->has('logo_footer') && count($media) > 0) {
-                    $data_parametre->clearMediaCollection('logo_footer');
-                    $data_parametre->addMediaFromRequest('logo_footer')->toMediaCollection('logo_footer');
-                } elseif ($request->has('logo_footer')) {
-                    $data_parametre->addMediaFromRequest('logo_footer')->toMediaCollection('logo_footer');
+                // Remplace le fichier existant de chaque collection (clearMediaCollection
+                // est un no-op sans danger si la collection est déjà vide).
+                foreach (['cover', 'logo_header', 'logo_footer'] as $collection) {
+                    if ($request->hasFile($collection)) {
+                        $data_parametre->clearMediaCollection($collection);
+                        $data_parametre->addMediaFromRequest($collection)->toMediaCollection($collection);
+                    }
                 }
             } else {
                 $data_parametre = Parametre::create([
@@ -144,14 +127,10 @@ class ParametreController extends Controller
                     // 'mode_maintenance'=>'',
                 ]);
 
-                //insert image logo
-                if ($request->has('logo_header')) {
-                    $data_parametre->addMediaFromRequest('logo_header')->toMediaCollection('logo_header');
-                }
-
-
-                if ($request->has('logo_footer')) {
-                    $data_parametre->addMediaFromRequest('logo_footer')->toMediaCollection('logo_footer');
+                foreach (['cover', 'logo_header', 'logo_footer'] as $collection) {
+                    if ($request->hasFile($collection)) {
+                        $data_parametre->addMediaFromRequest($collection)->toMediaCollection($collection);
+                    }
                 }
             }
 
@@ -161,7 +140,7 @@ class ParametreController extends Controller
 
             return back();
         } catch (\Throwable $th) {
-            return back()->withError($th->getMessage());
+            return back()->with('error', $th->getMessage())->withInput();
         }
     }
 

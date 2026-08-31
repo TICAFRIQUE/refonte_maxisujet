@@ -1,7 +1,6 @@
 @extends('backend.layouts.master')
 @section('title')
-    {{-- @lang('translation.datatables') --}}
-    Matiere
+    Matières
 @endsection
 @section('css')
     <!--datatable css-->
@@ -14,10 +13,10 @@
 @section('content')
     @component('backend.components.breadcrumb')
         @slot('li_1')
-            matiere
+            Matières
         @endslot
         @slot('title')
-            Matiere
+            Matières
         @endslot
     @endcomponent
 
@@ -27,9 +26,9 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
-                    <h5 class="card-title mb-0">Liste des matiere</h5>
+                    <h5 class="card-title mb-0">Liste des matières</h5>
                     <button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#myModal">Créer
-                        une matiere</button>
+                        une matière</button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -37,9 +36,10 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>statut</th>
-                                    <th>Libelle</th>
-                                    <th>Date creation</th>
+                                    <th>Statut</th>
+                                    <th>Libellé</th>
+                                    <th>Sujets</th>
+                                    <th>Date création</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -47,8 +47,19 @@
                                 @foreach ($matieres as $key => $item)
                                     <tr id="row_{{ $item['id'] }}">
                                         <td> {{ ++$key }} </td>
-                                        <td>{{ $item['statut'] }}</td>
+                                        <td>
+                                            @if ($item->statut === 'active')
+                                                <span class="badge bg-success-subtle text-success">Active</span>
+                                            @else
+                                                <span class="badge bg-danger-subtle text-danger">Désactivée</span>
+                                            @endif
+                                        </td>
                                         <td> {{ $item['libelle'] }}</td>
+                                        <td>
+                                            <a href="{{ route('sujet.index', ['matiere_id' => $item->id]) }}" class="badge bg-primary-subtle text-primary text-decoration-none">
+                                                {{ $item->sujets_count }} sujet(s)
+                                            </a>
+                                        </td>
                                         <td> {{ $item['created_at'] }} </td>
                                         <td>
                                             <div class="dropdown d-inline-block">
@@ -63,8 +74,9 @@
                                                                 class="ri-pencil-fill align-bottom me-2 text-muted"></i>
                                                             Modifier</a></li>
                                                     <li>
-                                                        <a href="#" class="dropdown-item remove-item-btn delete"
-                                                            data-id={{ $item['id'] }}>
+                                                        <a href="#" class="dropdown-item remove-item-btn delete {{ $item->sujets_count > 0 ? 'disabled' : '' }}"
+                                                            data-id={{ $item['id'] }}
+                                                            title="{{ $item->sujets_count > 0 ? 'Réaffectez d\'abord les sujets liés' : '' }}">
                                                             <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
                                                             Supprimer
                                                         </a>
@@ -74,7 +86,6 @@
                                         </td>
                                     </tr>
                                     @include('backend.pages.matiere.edit')
-                                    {{-- @include('backend.pages.matiere.position') --}}
                                 @endforeach
 
 

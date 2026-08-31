@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\backend;
 
 use App\Models\User;
-use App\Models\Caisse;
-use App\Models\Setting;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
-use App\Models\HistoriqueCaisse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
@@ -28,7 +25,7 @@ class AdminController extends Controller
                 'password' => ['required'],
             ]);
             if (Auth::attempt($credentials)) {
-                Alert::success('Connexion réussi,  Bienvenue  ' . Auth::user()->first_name, 'Success Message');
+                Alert::success('Connexion réussie, bienvenue ' . Auth::user()->username, 'Success Message');
                 return redirect()->route('dashboard.index');
             } else {
                 // Alert::error('Email ou mot de passe incorrect' , 'Error Message');
@@ -58,14 +55,13 @@ class AdminController extends Controller
     public function index()
     {
 
-        $data_role = Role::get();
+        // Seuls les rôles d'administration : les auteurs (contributeurs inscrits
+        // publiquement) ont leur propre écran de gestion, voir AuteurController.
+        $data_role = Role::where('name', '!=', 'auteur')->get();
 
-        // $data_admin = User::with('roles')->whereHas('roles', function ($query) {
-        //     $query->where('name', '!=', 'client');
-        // })->get();
-
-          $data_admin = User::with('roles')->get();
-        // dd($data_admin->toArray());
+        $data_admin = User::with('roles')->whereHas('roles', function ($query) {
+            $query->where('name', '!=', 'auteur');
+        })->get();
 
         return view('backend.pages.auth-admin.register.index', compact('data_admin', 'data_role'));
     }
@@ -164,7 +160,36 @@ class AdminController extends Controller
     public function delete($id)
     {
         try {
-            User::find($id)->forceDelete();
+            if ((string) $id === (string) Auth::id()) {
+                return response()->json([
+                    'status' => 409,
+                    'message' => 'Vous ne pouvez pas supprimer votre propre compte.',
+                ]);
+            }
+
+            $user = User::whereHas('roles', function ($query) {
+                $query->where('name', '!=', 'auteur');
+            })->find($id);
+
+            if (!$user) {
+                return response()->json(['status' => 404]);
+            }
+
+            $remainingAdmins = User::whereHas('roles', function ($query) {
+                $query->where('name', '!=', 'auteur');
+            })->where('id', '!=', $id)->count();
+
+            if ($remainingAdmins === 0) {
+                return response()->json([
+                    'status' => 409,
+                    'message' => 'Impossible de supprimer le dernier compte administrateur.',
+                ]);
+            }
+
+            // Suppression douce (récupérable) : jamais de forceDelete depuis cet écran,
+            // ce compte peut avoir publié des sujets qu'on ne veut pas perdre en cascade.
+            $user->delete();
+
             return response()->json([
                 'status' => 200,
             ]);

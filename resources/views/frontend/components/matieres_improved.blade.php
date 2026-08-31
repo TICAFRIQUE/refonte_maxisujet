@@ -7,10 +7,10 @@
         </h3>
 
         <div class="carousel-controls d-flex gap-2">
-            <button class="carousel-btn carousel-prev" onclick="prevSlide('matieres-carousel')" disabled>
+            <button class="carousel-btn carousel-prev" onclick="prevSlide('matieres-carousel')" disabled aria-label="Matières précédentes">
                 <i class="bi bi-chevron-left"></i>
             </button>
-            <button class="carousel-btn carousel-next" onclick="nextSlide('matieres-carousel')">
+            <button class="carousel-btn carousel-next" onclick="nextSlide('matieres-carousel')" aria-label="Matières suivantes">
                 <i class="bi bi-chevron-right"></i>
             </button>
         </div>
@@ -23,40 +23,45 @@
                     <div class="feature-card text-center h-100">
                         <div class="mb-3">
                             @php
-                                // Définir des icônes et couleurs pour chaque matière
+                                // Icône adaptée à la matière ; couleur cyclée sur la palette de marque
+                                // (orange / bleu / navy) plutôt qu'un arc-en-ciel déconnecté du logo.
                                 $matiereIcons = [
-                                    'mathématiques' => ['icon' => 'bi-calculator', 'color' => '#ff6b6b'],
-                                    'physique' => ['icon' => 'bi-lightning', 'color' => '#4ecdc4'],
-                                    'chimie' => ['icon' => 'bi-droplet', 'color' => '#45b7d1'],
-                                    'français' => ['icon' => 'bi-book', 'color' => '#f7dc6f'],
-                                    'anglais' => ['icon' => 'bi-globe', 'color' => '#bb8fce'],
-                                    'histoire' => ['icon' => 'bi-clock-history', 'color' => '#f1948a'],
-                                    'géographie' => ['icon' => 'bi-globe-americas', 'color' => '#85c1e9'],
-                                    'svt' => ['icon' => 'bi-tree', 'color' => '#82e0aa'],
-                                    'sciences' => ['icon' => 'bi-atom', 'color' => '#fad7a0'],
-                                    'informatique' => ['icon' => 'bi-laptop', 'color' => '#a9def9'],
+                                    'mathématiques' => 'bi-calculator',
+                                    'physique' => 'bi-lightning',
+                                    'chimie' => 'bi-droplet',
+                                    'français' => 'bi-book',
+                                    'anglais' => 'bi-globe',
+                                    'histoire' => 'bi-clock-history',
+                                    'géographie' => 'bi-globe-americas',
+                                    'svt' => 'bi-tree',
+                                    'sciences' => 'bi-atom',
+                                    'informatique' => 'bi-laptop',
                                 ];
 
                                 $slug = strtolower($matiere->libelle);
                                 $icon = 'bi-book';
-                                $color = '#667eea';
-
-                                foreach ($matiereIcons as $key => $data) {
+                                foreach ($matiereIcons as $key => $iconName) {
                                     if (str_contains($slug, $key)) {
-                                        $icon = $data['icon'];
-                                        $color = $data['color'];
+                                        $icon = $iconName;
                                         break;
                                     }
                                 }
+
+                                $palette = [
+                                    ['solid' => 'var(--ms-orange)', 'light' => 'var(--ms-orange-light)'],
+                                    ['solid' => 'var(--ms-blue)', 'light' => 'var(--ms-blue-light)'],
+                                    ['solid' => 'var(--ms-navy)', 'light' => 'rgba(30, 58, 138, 0.1)'],
+                                ];
+                                $tone = $palette[$index % 3];
                             @endphp
 
                             <div class="d-inline-flex align-items-center justify-content-center rounded-circle icon-container"
-                                style="width: 80px; height: 80px; background: linear-gradient(45deg, {{ $color }}, {{ $color }}33);">
-                                <i class="bi {{ $icon }} display-5" style="color: {{ $color }};"></i>
+                                style="width: 80px; height: 80px; background: {{ $tone['light'] }};">
+                                <i class="bi {{ $icon }} display-5" style="color: {{ $tone['solid'] }};"></i>
                             </div>
                         </div>
 
-                        <h5 class="fw-bold mb-3" style="color: {{ $color }};">{{ $matiere->libelle }}</h5>
+                        <h5 class="fw-bold mb-3" style="color: var(--ms-ink);">{{ $matiere->libelle }}</h5>
 
                         <p class="text-muted mb-4">
                             Découvrez les ressources en {{ strtolower($matiere->libelle) }} pour tous les niveaux
@@ -64,8 +69,8 @@
                         </p>
 
                         <a href="{{ route('sujet.front.index', ['matiere' => $matiere->slug]) }}"
-                            class="btn rounded-pill px-4"
-                            style="background: linear-gradient(45deg, {{ $color }}, {{ $color }}cc); color: white; border: none;">
+                            class="btn px-4"
+                            style="background: {{ $tone['solid'] }}; color: white; border: none;">
                             <i class="bi bi-arrow-right me-2"></i>Explorer
                         </a>
                     </div>
@@ -149,7 +154,7 @@
         left: 0;
         right: 0;
         height: 4px;
-        background: linear-gradient(90deg, #667eea, #764ba2);
+        background: var(--ms-flag-stripe);
         opacity: 0;
         transition: opacity 0.3s ease;
     }
@@ -170,33 +175,30 @@
         width: 45px;
         height: 45px;
         border-radius: 50%;
-        border: 2px solid #e3f2fd;
+        border: 1.5px solid var(--ms-blue-light);
         background: white;
-        color: #1976d2;
+        color: var(--ms-blue);
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+        box-shadow: var(--ms-shadow-rest);
     }
 
     .carousel-btn:hover {
-        background: #1976d2;
+        background: var(--ms-blue);
         color: white;
-        transform: scale(1.1);
-        box-shadow: 0 6px 20px rgba(25, 118, 210, 0.3);
     }
 
     .carousel-btn:disabled {
         opacity: 0.5;
         cursor: not-allowed;
-        transform: none;
     }
 
     .carousel-btn:disabled:hover {
         background: white;
-        color: #1976d2;
+        color: var(--ms-blue);
     }
 
     .carousel-indicators {
@@ -216,13 +218,13 @@
     }
 
     .carousel-indicator.active {
-        background: #1976d2;
-        border-color: #1976d2;
+        background: var(--ms-blue);
+        border-color: var(--ms-blue);
         transform: scale(1.2);
     }
 
     .carousel-indicator:hover {
-        border-color: #1976d2;
+        border-color: var(--ms-blue);
     }
 
     /* Responsive Design */

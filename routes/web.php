@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\backend\RoleController;
 use App\Http\Controllers\backend\AdminController;
 use App\Http\Controllers\backend\SujetController;
 use App\Http\Controllers\backend\ModuleController;
@@ -61,12 +60,11 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
         route::post('change-password', 'changePassword')->name('admin-register.new-password');
     });
 
-    //role
-    Route::prefix('role')->controller(RoleController::class)->group(function () {
-        route::get('', 'index')->name('role.index');
-        route::post('store', 'store')->name('role.store');
-        route::post('update/{id}', 'update')->name('role.update');
-        route::get('delete/{id}', 'delete')->name('role.delete');
+    // auteurs (contributeurs inscrits publiquement) : séparés de l'équipe admin
+    Route::prefix('auteur')->controller(\App\Http\Controllers\backend\AuteurController::class)->group(function () {
+        route::get('', 'index')->name('auteur.index');
+        route::get('show/{id}', 'show')->name('auteur.show');
+        route::get('toggle-statut/{id}', 'toggleStatut')->name('auteur.toggle-statut');
     });
 
     //permission
@@ -130,7 +128,8 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
         route::get('create', 'create')->name('sujet.create')->middleware('can:creer-sujet');
         route::post('store', 'store')->name('sujet.store')->middleware('can:creer-sujet');
         route::get('show/{id}', 'show')->name('sujet.show')->middleware('can:voir-sujet');
-        Route::post('sujet/{id}/approuve/{etat}', [SujetController::class, 'approuve'])->name('sujet.approuve');
+        route::get('preview/{id}/{type}', 'preview')->name('sujet.preview')->middleware('can:voir-sujet');
+        Route::post('{id}/approuve/{etat}', [SujetController::class, 'approuve'])->name('sujet.approuve')->middleware('can:modifier-sujet');
         route::get('edit/{id}', 'edit')->name('sujet.edit')->middleware('can:modifier-sujet');
         route::post('update/{id}', 'update')->name('sujet.update')->middleware('can:modifier-sujet');
         route::get('delete/{id}', 'delete')->name('sujet.delete')->middleware('can:supprimer-sujet');

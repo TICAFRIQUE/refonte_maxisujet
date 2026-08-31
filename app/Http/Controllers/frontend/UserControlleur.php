@@ -77,12 +77,14 @@ class UserControlleur extends Controller
             $user->username = trim($request->username);
             $user->phone = $request->phone;
             $user->email = strtolower(trim($request->email));
-            $user->role = $request->role ?? 'auteur';
+            // Le rôle d'un utilisateur qui s'inscrit publiquement est toujours "auteur" :
+            // ne jamais faire confiance à une valeur "role" envoyée par le client.
+            $user->role = 'auteur';
             $user->password = Hash::make($request->password);
             $user->save();
 
             //assign role
-            $user->assignRole($request->role ?? 'auteur');
+            $user->assignRole('auteur');
 
             // Donner des points d'inscription
             $pointsService = new \App\Services\PointsService();

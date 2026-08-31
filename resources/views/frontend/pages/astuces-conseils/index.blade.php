@@ -7,10 +7,11 @@
 @section('content')
     <div class="container">
         <!-- Breadcrumb -->
+        @include('frontend.components.retour')
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb bg-light rounded p-3">
                 <li class="breadcrumb-item">
-                    <a href="{{ route('accueil') }}" class="text-decoration-none">
+                    <a href="{{ route('accueil') }}">
                         <i class="bi bi-house-door"></i> Accueil
                     </a>
                 </li>
@@ -21,7 +22,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="text-center mb-5">
-                    <h1 class="display-4 fw-bold text-dark">💡 Astuces & Conseils</h1>
+                    <h1 class="display-4 fw-bold">Astuces & Conseils</h1>
                     <p class="lead text-muted">Nos meilleurs conseils pour vous accompagner vers la réussite</p>
                 </div>
             </div>
@@ -32,12 +33,12 @@
             <div class="col-12">
                 <form method="GET" action="{{ route('astuces-conseils.index') }}" class="d-flex">
                     <div class="input-group">
-                        <span class="input-group-text bg-warning text-dark">
+                        <span class="input-group-text" style="background: var(--ms-orange); color: #fff; border-color: var(--ms-orange);">
                             <i class="bi bi-search"></i>
                         </span>
                         <input type="text" name="search" class="form-control" placeholder="Rechercher des conseils..."
                             value="{{ request('search') }}">
-                        <button type="submit" class="btn btn-warning text-dark">Rechercher</button>
+                        <button type="submit" class="btn btn-warning">Rechercher</button>
                     </div>
                 </form>
             </div>
@@ -47,37 +48,37 @@
         @if ($astucesConseilsFeatured->count() > 0)
             <div class="row mb-5">
                 <div class="col-12">
-                    <h3 class="h4 mb-4 fw-bold">🌟 Conseils Populaires</h3>
+                    <h3 class="h4 mb-4 fw-bold"><i class="bi bi-star-fill me-2" style="color: var(--ms-orange);"></i>Conseils populaires</h3>
                     <div class="row g-4">
                         @foreach ($astucesConseilsFeatured as $astuce)
                             <div class="col-lg-4 col-md-6">
-                                <div class="card h-100 border-0 shadow-sm" style="border-radius: 15px; overflow: hidden;">
+                                <div class="card h-100">
                                     @if ($astuce->getFirstMediaUrl('image_principale'))
                                         <img src="{{ $astuce->getFirstMediaUrl('image_principale', 'medium') }}"
                                             class="card-img-top" alt="{{ $astuce->titre }}"
                                             style="height: 220px; object-fit: cover;">
                                     @else
-                                        <div class="card-img-top d-flex align-items-center justify-content-center bg-gradient"
-                                            style="height: 220px; background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);">
+                                        <div class="card-img-top d-flex align-items-center justify-content-center"
+                                            style="height: 220px; background: var(--ms-gradient-orange);">
                                             <i class="bi bi-lightbulb text-white" style="font-size: 4rem;"></i>
                                         </div>
                                     @endif
                                     <div class="card-body p-4">
                                         <div class="d-flex justify-content-between align-items-center mb-3">
-                                            <span class="badge bg-warning text-dark rounded-pill">
-                                                <i class="bi bi-star me-1"></i>Populaire
+                                            <span class="badge" style="background: var(--ms-orange-light); color: var(--ms-orange-dark);">
+                                                <i class="bi bi-star-fill me-1"></i>Populaire
                                             </span>
                                             <small class="text-muted">
                                                 {{ $astuce->date_publication ? $astuce->date_publication->format('d M Y') : $astuce->created_at->format('d M Y') }}
                                             </small>
                                         </div>
-                                        <h5 class="card-title fw-bold mb-3">{{ $astuce->titre }}</h5>
+                                        <h5 class="card-title mb-3">{{ $astuce->titre }}</h5>
                                         @if ($astuce->resume)
                                             <p class="card-text text-muted mb-3">{{ Str::limit($astuce->resume, 120) }}</p>
                                         @endif
                                         <div class="d-flex justify-content-between align-items-center">
                                             <a href="{{ route('rubrique.show', $astuce->slug) }}"
-                                                class="btn btn-warning rounded-pill px-4 text-dark">
+                                                class="btn btn-warning btn-sm">
                                                 <i class="bi bi-arrow-right me-1"></i>Découvrir
                                             </a>
                                             <small class="text-muted">
@@ -93,8 +94,6 @@
             </div>
         @endif
 
-
-
         <!-- Liste des astuces et conseils -->
         <div class="row">
             <div class="col-12">
@@ -103,10 +102,7 @@
                     <div class="row g-4">
                         @foreach ($astucesConseils as $astuce)
                             <div class="col-lg-6 col-md-6">
-                                <div class="card h-100 border-0 shadow-sm"
-                                    style="border-radius: 15px; overflow: hidden; transition: all 0.3s ease;"
-                                    onmouseover="this.style.transform='translateY(-5px)'"
-                                    onmouseout="this.style.transform='translateY(0)'">
+                                <div class="card h-100">
                                     <div class="row g-0 h-100">
                                         <div class="col-4">
                                             @if ($astuce->getFirstMediaUrl('image_principale'))
@@ -114,8 +110,8 @@
                                                     class="img-fluid h-100" alt="{{ $astuce->titre }}"
                                                     style="object-fit: cover;">
                                             @else
-                                                <div class="h-100 d-flex align-items-center justify-content-center bg-gradient"
-                                                    style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);">
+                                                <div class="h-100 d-flex align-items-center justify-content-center"
+                                                    style="background: var(--ms-gradient-orange);">
                                                     <i class="bi bi-lightbulb text-white" style="font-size: 2rem;"></i>
                                                 </div>
                                             @endif
@@ -123,8 +119,7 @@
                                         <div class="col-8">
                                             <div class="card-body p-3 h-100 d-flex flex-column">
                                                 <div class="d-flex justify-content-between align-items-start mb-2">
-                                                    <span
-                                                        class="badge bg-warning text-dark rounded-pill small">Conseil</span>
+                                                    <span class="badge small" style="background: var(--ms-orange-light); color: var(--ms-orange-dark);">Conseil</span>
                                                     <small class="text-muted">
                                                         {{ $astuce->date_publication ? $astuce->date_publication->format('d/m/Y') : $astuce->created_at->format('d/m/Y') }}
                                                     </small>
@@ -138,7 +133,7 @@
                                                 @endif
                                                 <div class="d-flex justify-content-between align-items-center mt-auto">
                                                     <a href="{{ route('rubrique.show', $astuce->slug) }}"
-                                                        class="btn btn-outline-warning btn-sm rounded-pill text-dark">
+                                                        class="btn btn-outline-warning btn-sm">
                                                         Découvrir
                                                     </a>
                                                     <small class="text-muted">
@@ -165,7 +160,7 @@
                         <h4 class="text-muted">Aucun conseil trouvé</h4>
                         @if (request('search'))
                             <p class="text-muted">Aucun résultat pour "{{ request('search') }}"</p>
-                            <a href="{{ route('astuces-conseils.index') }}" class="btn btn-warning text-dark">Voir tous les
+                            <a href="{{ route('astuces-conseils.index') }}" class="btn btn-warning">Voir tous les
                                 conseils</a>
                         @else
                             <p class="text-muted">Les conseils apparaîtront ici prochainement.</p>

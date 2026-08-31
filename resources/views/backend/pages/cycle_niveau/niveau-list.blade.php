@@ -1,4 +1,4 @@
-  <div class="col-lg-8">
+  <div class="col-lg-8 order-lg-1">
       <div class="card border-0 shadow-sm">
           <div class="card-header bg-light border-bottom">
               <div class="d-flex justify-content-between align-items-center">
@@ -230,6 +230,16 @@
                                           buttonsStyling: false
                                       }).then(() => {
                                           location.reload();
+                                      });
+                                  } else {
+                                      Swal.fire({
+                                          title: 'Suppression impossible',
+                                          text: response.message || 'Une erreur est survenue lors de la suppression.',
+                                          icon: 'error',
+                                          customClass: {
+                                              confirmButton: 'btn btn-danger w-xs mt-2',
+                                          },
+                                          buttonsStyling: false
                                       });
                                   }
                               },
