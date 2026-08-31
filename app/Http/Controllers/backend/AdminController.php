@@ -71,10 +71,10 @@ class AdminController extends Controller
     {
         try {
             $request->validate([
-                'username' => 'required',
-                'email' => 'required|email',
-                'phone' => 'required|',
-                'role' => 'required',
+                'username' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'phone' => 'required|regex:/^[0-9]{10}$/|unique:users,phone',
+                'role' => 'required|exists:roles,name',
                 'password' => 'required|min:6',
             ]);
 
@@ -130,6 +130,14 @@ class AdminController extends Controller
 
         try {
             $user = User::findOrFail($id);
+
+            $request->validate([
+                'username' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,' . $user->id,
+                'phone' => 'required|regex:/^[0-9]{10}$/|unique:users,phone,' . $user->id,
+                'role' => 'required|exists:roles,name',
+                'password' => 'nullable|string|min:6',
+            ]);
 
             $updateData = [
                 'username' => $request['username'],

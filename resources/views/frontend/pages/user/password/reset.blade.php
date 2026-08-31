@@ -15,13 +15,15 @@
     }
 </style>
 <div class="container my-5">
-    @include('frontend.components.retour')
-    <nav aria-label="breadcrumb" class="mb-4">
+    <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
+        @include('frontend.components.retour')
+    <nav aria-label="breadcrumb" class="mb-0 flex-grow-1">
         <ol class="breadcrumb bg-light rounded p-3">
             <li class="breadcrumb-item"><a href="{{ route('accueil') }}"><i class="bi bi-house-door"></i> Accueil</a></li>
             <li class="breadcrumb-item active" aria-current="page">Réinitialiser le mot de passe</li>
         </ol>
     </nav>
+    </div>
 
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-5">

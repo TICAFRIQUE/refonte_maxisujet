@@ -23,8 +23,9 @@
 
     <div class="container my-5">
         <!-- Breadcrumb moderne -->
-        @include('frontend.components.retour')
-        <nav aria-label="breadcrumb" class="mb-4">
+        <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
+            @include('frontend.components.retour')
+        <nav aria-label="breadcrumb" class="mb-0 flex-grow-1">
             <ol class="breadcrumb bg-light rounded-pill shadow-sm px-4 py-3">
                 <li class="breadcrumb-item">
                     <a href="{{ route('user.dashboard') }}" class="text-primary text-decoration-none">
@@ -37,6 +38,7 @@
                 <li class="breadcrumb-item active" aria-current="page">Modifier</li>
             </ol>
         </nav>
+        </div>
 
         <!-- Information du sujet -->
         <div class="row mb-4">

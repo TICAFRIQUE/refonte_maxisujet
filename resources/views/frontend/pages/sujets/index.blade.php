@@ -146,8 +146,9 @@
 
     <div class="container mt-4">
         <!-- Breadcrumb -->
-        @include('frontend.components.retour')
-        <nav aria-label="breadcrumb" class="mb-3">
+        <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
+            @include('frontend.components.retour')
+        <nav aria-label="breadcrumb" class="mb-0 flex-grow-1">
             <ol class="breadcrumb bg-light rounded p-3 mb-0">
                 <li class="breadcrumb-item">
                     <a href="{{ route('accueil') }}" class="text-decoration-none">
@@ -157,6 +158,7 @@
                 <li class="breadcrumb-item active" aria-current="page">Sujets</li>
             </ol>
         </nav>
+        </div>
 
         <!-- Bandeau points : contexte visible dès l'arrivée sur le catalogue -->
         @auth

@@ -89,7 +89,7 @@ class SujetFrontController extends Controller
             // }
 
             // Sujets similaires : même matière, sinon même catégorie
-            $similaires = Sujet::with(['categorie', 'matiere', 'niveaux'])
+            $similaires = Sujet::with(['categorie', 'matiere', 'niveaux', 'media'])
                 ->where('id', '!=', $sujet->id)
                 ->active()->approuve()
                 ->where(function ($query) use ($sujet) {

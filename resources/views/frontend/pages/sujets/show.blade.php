@@ -48,14 +48,16 @@
 
     <div class="container mt-4">
         <!-- Breadcrumb -->
-        @include('frontend.components.retour')
-        <nav aria-label="breadcrumb" class="mb-4">
+        <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
+            @include('frontend.components.retour')
+        <nav aria-label="breadcrumb" class="mb-0 flex-grow-1">
             <ol class="breadcrumb bg-light rounded p-3">
                 <li class="breadcrumb-item"><a href="{{ route('accueil') }}" class="text-decoration-none"><i class="bi bi-house-door"></i> Accueil</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('sujet.front.index') }}" class="text-decoration-none">Sujets</a></li>
                 <li class="breadcrumb-item active" aria-current="page">{{ Str::limit($sujet->libelle, 30) }}</li>
             </ol>
         </nav>
+        </div>
 
         <div class="row">
             <!-- Informations du sujet -->
@@ -280,10 +282,44 @@
                         <div class="col-md-6 col-xl-3">
                             <div class="card similar-card">
                                 <div class="card-body">
-                                    <h6 class="mb-2">{{ Str::limit($similaire->libelle, 35) }}</h6>
-                                    <div class="mb-2">
-                                        <span class="simple-badge primary">{{ $similaire->matiere->libelle ?? '' }}</span>
-                                        <span class="simple-badge warning">{{ $similaire->annee }}</span>
+                                    <div class="d-flex align-items-start mb-3">
+                                        <div class="flex-shrink-0 me-3">
+                                            @php
+                                                $mediaSimilaire = $similaire->getFirstMedia('non_corrige');
+                                                $extSimilaire = $mediaSimilaire ? strtolower($mediaSimilaire->extension) : null;
+                                                $isPdfSimilaire = $extSimilaire === 'pdf';
+                                                $isDocSimilaire = in_array($extSimilaire, ['doc', 'docx']);
+                                            @endphp
+                                            <div class="d-flex align-items-center justify-content-center bg-light rounded"
+                                                style="width:60px; height:60px; overflow:hidden; position:relative;">
+                                                @auth
+                                                    @if ($mediaSimilaire && $isPdfSimilaire)
+                                                        <iframe src="{{ route('sujet.front.apercu', ['id' => $similaire->id, 'type' => 'non_corrige']) }}#toolbar=0&navpanes=0&scrollbar=0&view=FitH"
+                                                            style="position:absolute; top:0; left:0; width: 260px; height: 260px; border: none; transform: scale(0.23); transform-origin: top left; pointer-events: none;"
+                                                            tabindex="-1" title="Aperçu du sujet"></iframe>
+                                                    @elseif ($isDocSimilaire)
+                                                        <i class="bi bi-filetype-doc text-primary" style="font-size: 1.5rem;"></i>
+                                                    @else
+                                                        <i class="bi bi-file-earmark-text text-muted" style="font-size: 1.5rem;"></i>
+                                                    @endif
+                                                @else
+                                                    @if ($isPdfSimilaire)
+                                                        <i class="bi bi-filetype-pdf text-danger" style="font-size: 1.5rem;"></i>
+                                                    @elseif ($isDocSimilaire)
+                                                        <i class="bi bi-filetype-doc text-primary" style="font-size: 1.5rem;"></i>
+                                                    @else
+                                                        <i class="bi bi-file-earmark-text text-muted" style="font-size: 1.5rem;"></i>
+                                                    @endif
+                                                @endauth
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-2">{{ Str::limit($similaire->libelle, 35) }}</h6>
+                                            <div>
+                                                <span class="simple-badge primary">{{ $similaire->matiere->libelle ?? '' }}</span>
+                                                <span class="simple-badge warning">{{ $similaire->annee }}</span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <a href="{{ route('sujet.front.show', $similaire->libelle) }}" class="btn btn-sm btn-outline-primary w-100">
                                         Voir ce sujet

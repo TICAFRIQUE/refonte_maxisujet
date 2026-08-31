@@ -1,4 +1,4 @@
-<a href="javascript:void(0);" id="frontGoBack" class="d-inline-flex align-items-center gap-1 text-decoration-none fw-semibold mb-2" style="color: var(--ms-blue-dark);">
+<a href="javascript:void(0);" id="frontGoBack" class="d-inline-flex align-items-center gap-1 text-decoration-none fw-semibold flex-shrink-0" style="color: var(--ms-blue-dark);">
     <i class="bi bi-arrow-left"></i> Retour
 </a>
 
