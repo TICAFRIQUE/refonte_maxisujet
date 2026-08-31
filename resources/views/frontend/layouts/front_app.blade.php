@@ -198,6 +198,16 @@
                                 <span>{{ Auth::user()->username ?? Auth::user()->email }}</span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end w-100" aria-labelledby="userMenu">
+                                @if (Auth::user()->hasAnyRole(['administrateur', 'developpeur', 'superadmin']))
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('dashboard.index') }}">
+                                            <i class="bi bi-shield-lock-fill me-2"></i> Espace Administration
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                @endif
                                 <li>
                                     <a class="dropdown-item" href="{{ route('user.dashboard') }}">
                                         <i class="bi bi-speedometer2 me-2"></i> Tableau de bord
