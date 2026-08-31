@@ -139,8 +139,27 @@ class UserControlleur extends Controller
             // Déterminer si le login est un email ou un username
             $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-            if (Auth::attempt([$field => $login, 'password' => $password])) {
+            $connecte = false;
+            $user = User::where($field, $login)->first();
+            $drupalHasher = new \App\Services\DrupalPasswordHasher();
 
+            if ($user && $drupalHasher->isDrupalHash($user->password)) {
+                // Compte importé depuis l'ancien site (Drupal) : le mot de passe est encore
+                // au format Drupal ($S$...). Hash::check()/Auth::attempt() ne le reconnaissent
+                // pas (Laravel lève même une exception sur un hash non-bcrypt) : on vérifie donc
+                // avec l'algorithme d'origine, puis on migre discrètement vers bcrypt pour que
+                // ce contournement ne serve qu'une seule fois par compte.
+                if ($drupalHasher->verify($password, $user->password)) {
+                    $user->password = Hash::make($password);
+                    $user->save();
+                    Auth::login($user);
+                    $connecte = true;
+                }
+            } elseif (Auth::attempt([$field => $login, 'password' => $password])) {
+                $connecte = true;
+            }
+
+            if ($connecte) {
                 // Donner des points de connexion quotidienne
                 $user = Auth::user();
                 $pointsAvant = $user->points ?? 0;
