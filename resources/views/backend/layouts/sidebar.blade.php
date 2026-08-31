@@ -154,6 +154,13 @@
                     </li>
                 {{-- @endcan --}}
 
+                <li class="nav-item">
+                    <a class="nav-link menu-link {{ Route::is('info-flash.*') ? 'active' : '' }}"
+                        href="{{ route('info-flash.index') }}">
+                        <i class="ri-megaphone-line"></i> <span>INFOS FLASH</span>
+                    </a>
+                </li>
+
                 @if (Auth::user()->hasAnyRole(['administrateur', 'superadmin', 'developpeur']) || Auth::user()->can('voir-parametre'))
                     <li class="nav-item">
                         <a class="nav-link menu-link" href="#sidebarAuth" data-bs-toggle="collapse" role="button"

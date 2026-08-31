@@ -95,6 +95,25 @@
 
     <a class="visually-hidden-focusable" href="#main-content">Aller au contenu principal</a>
 
+    @if (isset($info_flashes) && $info_flashes->isNotEmpty())
+        <div id="infoFlashBanner" class="info-flash-banner" role="region" aria-label="Annonces">
+            @foreach ($info_flashes as $flash)
+                <div class="info-flash-item info-flash-{{ $flash->type }} {{ $loop->first ? 'is-active' : '' }}">
+                    <div class="info-flash-content">
+                        <i class="bi bi-megaphone-fill info-flash-icon"></i>
+                        <span class="info-flash-message">{{ $flash->message }}</span>
+                        @if ($flash->lien)
+                            <a href="{{ $flash->lien }}" class="info-flash-link">{{ $flash->lien_texte ?: 'En savoir plus' }} <i class="bi bi-arrow-right"></i></a>
+                        @endif
+                    </div>
+                </div>
+            @endforeach
+            <button type="button" class="info-flash-close" id="infoFlashClose" aria-label="Fermer les annonces">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+    @endif
+
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
@@ -407,6 +426,42 @@
 
     <!-- Script d'animations navbar -->
     <script src="{{ asset('frontend/js/navbar-animations.js') }}"></script>
+
+    <!-- Bandeau infos flash : fermeture (mémorisée pour la session) + rotation + décalage de la navbar fixe -->
+    <script>
+        (function () {
+            const banner = document.getElementById('infoFlashBanner');
+            if (!banner) return;
+
+            if (sessionStorage.getItem('infoFlashClosed') === '1') {
+                banner.remove();
+                return;
+            }
+
+            function majDecalage() {
+                document.documentElement.style.setProperty('--info-flash-height', banner.offsetHeight + 'px');
+            }
+            majDecalage();
+            window.addEventListener('resize', majDecalage);
+
+            const closeBtn = document.getElementById('infoFlashClose');
+            closeBtn && closeBtn.addEventListener('click', function () {
+                banner.remove();
+                document.documentElement.style.setProperty('--info-flash-height', '0px');
+                sessionStorage.setItem('infoFlashClosed', '1');
+            });
+
+            const items = banner.querySelectorAll('.info-flash-item');
+            if (items.length > 1) {
+                let index = 0;
+                setInterval(function () {
+                    items[index].classList.remove('is-active');
+                    index = (index + 1) % items.length;
+                    items[index].classList.add('is-active');
+                }, 5000);
+            }
+        })();
+    </script>
 
     <!-- Scripts d'améliorations pour la page d'accueil -->
     @if (Route::currentRouteName() === 'accueil')

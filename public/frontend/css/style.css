@@ -50,13 +50,111 @@
     --ms-flag-stripe: linear-gradient(90deg, var(--ms-orange) 0%, var(--ms-orange) 50%, var(--ms-blue) 50%, var(--ms-blue) 100%);
 }
 
+:root {
+    --info-flash-height: 0px;
+}
+
 body {
     background: var(--ms-bg-soft);
     font-family: var(--ms-font-body);
     color: var(--ms-ink);
     line-height: 1.55;
-    padding-top: 100px;
-    /* seul point d'ancrage pour compenser la navbar fixe */
+    padding-top: calc(100px + var(--info-flash-height));
+    /* seul point d'ancrage pour compenser la navbar fixe (+ le bandeau infos flash, s'il est présent) */
+}
+
+.navbar.fixed-top {
+    top: var(--info-flash-height);
+}
+
+/* Bandeau infos flash : au-dessus de la navbar fixe, une annonce visible à la fois (rotation en JS).
+   La couleur est portée par l'item actif lui-même (pas par le conteneur) pour rester compatible
+   avec tous les navigateurs, sans dépendre du sélecteur CSS :has(). */
+.info-flash-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1031;
+    min-height: 40px;
+}
+
+.info-flash-item {
+    display: none;
+    width: 100%;
+    padding: 0.4rem 3rem 0.4rem 1rem;
+    animation: infoFlashFade 0.4s ease;
+}
+
+.info-flash-item.is-active {
+    display: block;
+}
+
+.info-flash-item.info-flash-info { background: var(--ms-blue); }
+.info-flash-item.info-flash-succes { background: #198754; }
+.info-flash-item.info-flash-attention { background: var(--ms-orange); }
+.info-flash-item.info-flash-urgent { background: #dc3545; }
+
+@keyframes infoFlashFade {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.info-flash-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.info-flash-icon {
+    flex-shrink: 0;
+    opacity: 0.9;
+}
+
+.info-flash-link {
+    color: #fff;
+    text-decoration: underline;
+    white-space: nowrap;
+    font-weight: 700;
+}
+
+.info-flash-link:hover {
+    color: #fff;
+    opacity: 0.85;
+}
+
+.info-flash-close {
+    position: absolute;
+    top: 50%;
+    right: 0.75rem;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #fff;
+    opacity: 0.8;
+    font-size: 0.85rem;
+    line-height: 1;
+    padding: 0.25rem;
+    z-index: 1;
+}
+
+.info-flash-close:hover {
+    opacity: 1;
+}
+
+@media (max-width: 767.98px) {
+    .info-flash-banner {
+        padding-right: 2.5rem;
+    }
+    .info-flash-content {
+        font-size: 0.8rem;
+    }
 }
 
 h1, h2, h3, h4, h5, h6,

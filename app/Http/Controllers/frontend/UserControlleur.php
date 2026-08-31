@@ -102,7 +102,7 @@ class UserControlleur extends Controller
             // });
 
             SendPHPMailerJob::dispatch($user->email, 'Bienvenue sur MaxiSujets !', $htmlContent);
-            Alert::success('Inscription réussie', 'Bienvenue sur MaxiSujets !');
+            Alert::success('Félicitations !', 'Bienvenue sur MaxiSujets ! Vous avez gagné ' . \App\Services\PointsService::POINTS_INSCRIPTION . ' points pour votre inscription.');
             return redirect()->route('accueil');
         } catch (\Exception $e) {
             Alert::error('Erreur', 'Erreur lors de l\'inscription : ' . $e->getMessage());
@@ -143,10 +143,15 @@ class UserControlleur extends Controller
 
                 // Donner des points de connexion quotidienne
                 $user = Auth::user();
+                $pointsAvant = $user->points ?? 0;
                 $pointsService = new \App\Services\PointsService();
                 $pointsService->giveDailyLoginPoints($user);
 
-                Alert::success('Bienvenue', 'Connexion réussie.');
+                if ($user->points > $pointsAvant) {
+                    Alert::success('Félicitations !', 'Bienvenue ! Vous avez gagné ' . \App\Services\PointsService::POINTS_CONNEXION_QUOTIDIENNE . ' points pour votre connexion.');
+                } else {
+                    Alert::success('Bienvenue', 'Connexion réussie.');
+                }
                 return redirect()->intended(route('accueil'));
             }
 

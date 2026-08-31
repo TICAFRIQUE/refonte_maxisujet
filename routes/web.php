@@ -6,6 +6,7 @@ use App\Http\Controllers\backend\SujetController;
 use App\Http\Controllers\backend\ModuleController;
 use App\Http\Controllers\backend\NiveauController;
 use App\Http\Controllers\backend\SliderController;
+use App\Http\Controllers\backend\InfoFlashController;
 use App\Http\Controllers\backend\RubriqueController;
 use App\Http\Controllers\frontend\HomeControlleur;
 use App\Http\Controllers\frontend\UserControlleur;
@@ -144,6 +145,16 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
         route::get('edit/{id}', 'edit')->name('slider.edit')->middleware('can:modifier-slider');
         route::post('update/{id}', 'update')->name('slider.update')->middleware('can:modifier-slider');
         route::get('delete/{id}', 'delete')->name('slider.delete')->middleware('can:supprimer-slider');
+    });
+
+    // infos flash (bandeau d'annonces affiché en header du site public)
+    Route::prefix('info-flash')->controller(InfoFlashController::class)->group(function () {
+        route::get('', 'index')->name('info-flash.index');
+        route::get('create', 'create')->name('info-flash.create')->middleware('can:creer-info-flash');
+        route::post('store', 'store')->name('info-flash.store')->middleware('can:creer-info-flash');
+        route::get('edit/{id}', 'edit')->name('info-flash.edit')->middleware('can:modifier-info-flash');
+        route::post('update/{id}', 'update')->name('info-flash.update')->middleware('can:modifier-info-flash');
+        route::get('delete/{id}', 'delete')->name('info-flash.delete')->middleware('can:supprimer-info-flash');
     });
 
     // rubriques (actualités et astuces & conseils)

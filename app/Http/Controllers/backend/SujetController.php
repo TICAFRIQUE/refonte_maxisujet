@@ -127,6 +127,7 @@ class SujetController extends Controller
                 if ($sujet->approuve && $sujet->user) {
                     (new \App\Services\PointsService())->givePublicationPoints($sujet->user);
                     $sujet->points_attribues = true;
+                    $sujet->felicitations_vues = false;
                 }
 
                 $sujet->save();
@@ -234,9 +235,11 @@ class SujetController extends Controller
                     if ($etat && !$sujet->points_attribues) {
                         $pointsService->givePublicationPoints($sujet->user);
                         $sujet->points_attribues = true;
+                        $sujet->felicitations_vues = false;
                     } elseif (!$etat && $sujet->points_attribues) {
                         $pointsService->revokePublicationPoints($sujet->user);
                         $sujet->points_attribues = false;
+                        $sujet->felicitations_vues = true;
                     }
                 }
 
@@ -290,9 +293,11 @@ class SujetController extends Controller
                     if ($nouvelEtat && !$sujet->points_attribues) {
                         $pointsService->givePublicationPoints($sujet->user);
                         $sujet->points_attribues = true;
+                        $sujet->felicitations_vues = false;
                     } elseif (!$nouvelEtat && $sujet->points_attribues) {
                         $pointsService->revokePublicationPoints($sujet->user);
                         $sujet->points_attribues = false;
+                        $sujet->felicitations_vues = true;
                     }
                 }
                 $sujet->approuve = $nouvelEtat;

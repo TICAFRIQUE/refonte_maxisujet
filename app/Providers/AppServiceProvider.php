@@ -36,6 +36,13 @@ class AppServiceProvider extends ServiceProvider
         // ModuleController::store() — plus besoin de resynchroniser TOUTES les permissions
         // sur CHAQUE requête (coûteux et inutile une fois la création à jour).
 
+        // infos flash actives, affichées en bandeau dans l'en-tête du site public
+        if (Schema::hasTable('info_flashes')) {
+            view()->share([
+                'info_flashes' => \App\Models\InfoFlash::active()->ordered()->get(),
+            ]);
+        }
+
         //recuperer les parametres
         if (Schema::hasTable('parametres')) {
             $data_parametre = Parametre::with('media')->first();
@@ -77,5 +84,35 @@ class AppServiceProvider extends ServiceProvider
                 ],
             ]);
         }
+
+        // Félicite l'auteur (une seule fois) pour les points gagnés sur ses sujets
+        // approuvés depuis sa dernière visite. Déclenché sur le layout public, pas
+        // le back-office, pour ne pas surprendre un admin qui approuve son propre sujet.
+        \Illuminate\Support\Facades\View::composer('frontend.layouts.front_app', function ($view) {
+            if (!\Illuminate\Support\Facades\Auth::check()) {
+                return;
+            }
+
+            $sujetsAFeliciter = \App\Models\Sujet::where('user_id', \Illuminate\Support\Facades\Auth::id())
+                ->where('points_attribues', true)
+                ->where('felicitations_vues', false)
+                ->get();
+
+            if ($sujetsAFeliciter->isEmpty()) {
+                return;
+            }
+
+            $points = $sujetsAFeliciter->count() * \App\Services\PointsService::POINTS_PUBLICATION_SUJET;
+
+            if ($sujetsAFeliciter->count() === 1) {
+                $message = 'Votre sujet « ' . $sujetsAFeliciter->first()->libelle . ' » a été approuvé, vous avez gagné ' . $points . ' points !';
+            } else {
+                $message = $sujetsAFeliciter->count() . ' de vos sujets ont été approuvés, vous avez gagné ' . $points . ' points au total !';
+            }
+
+            \RealRashid\SweetAlert\Facades\Alert::success('Félicitations !', $message);
+
+            \App\Models\Sujet::whereIn('id', $sujetsAFeliciter->pluck('id'))->update(['felicitations_vues' => true]);
+        });
     }
 }
