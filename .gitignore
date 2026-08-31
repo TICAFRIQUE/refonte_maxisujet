@@ -21,3 +21,6 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+# Exports/sauvegardes de données utilisateurs réelles : jamais dans git
+/recovery
