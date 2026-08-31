@@ -8,8 +8,9 @@
     <div class="container">
         <!-- Breadcrumb -->
         <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
-            @include('frontend.components.retour')
         <nav aria-label="breadcrumb" class="mb-0 flex-grow-1">
+            @include('frontend.components.retour')
+
             <ol class="breadcrumb bg-light rounded p-3">
                 <li class="breadcrumb-item">
                     <a href="{{ route('accueil') }}">

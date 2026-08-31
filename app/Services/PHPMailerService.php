@@ -15,7 +15,7 @@ class PHPMailerService
             $mail->Host       = env('MAIL_HOST', 'mail.maxisujets.net');
             $mail->SMTPAuth   = true;
             $mail->Username   = env('MAIL_USERNAME', 'info@maxisujets.net');
-            $mail->Password   = env('SMTP_PASSWORD');
+            $mail->Password   = env('MAIL_PASSWORD');
             $mail->SMTPSecure = env('MAIL_ENCRYPTION', 'ssl');
             $mail->Port       = env('MAIL_PORT', 465);
             $mail->CharSet    = 'UTF-8';
