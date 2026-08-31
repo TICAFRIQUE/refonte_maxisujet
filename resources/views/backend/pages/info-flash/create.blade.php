@@ -25,9 +25,10 @@
                         @csrf
                         <div class="mb-3">
                             <label for="message" class="form-label">Message <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('message') is-invalid @enderror"
-                                   id="message" name="message" value="{{ old('message') }}" maxlength="255" required
-                                   placeholder="Ex: Les inscriptions pour le concours 2026 sont ouvertes !">
+                            <textarea class="form-control @error('message') is-invalid @enderror"
+                                   id="message" name="message" maxlength="500" rows="2" required
+                                   placeholder="Ex: Les inscriptions pour le concours 2026 sont ouvertes !">{{ old('message') }}</textarea>
+                            <div class="form-text">500 caractères maximum. Un message court reste plus lisible en bandeau.</div>
                             @error('message')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

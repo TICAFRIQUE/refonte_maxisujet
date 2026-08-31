@@ -100,7 +100,9 @@
             @foreach ($info_flashes as $flash)
                 <div class="info-flash-item info-flash-{{ $flash->type }} {{ $loop->first ? 'is-active' : '' }}">
                     <div class="info-flash-content">
-                        <i class="bi bi-megaphone-fill info-flash-icon"></i>
+                        <span class="info-flash-label">
+                            <i class="bi bi-megaphone-fill"></i> Info
+                        </span>
                         <span class="info-flash-message">{{ $flash->message }}</span>
                         @if ($flash->lien)
                             <a href="{{ $flash->lien }}" class="info-flash-link">{{ $flash->lien_texte ?: 'En savoir plus' }} <i class="bi bi-arrow-right"></i></a>

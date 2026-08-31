@@ -27,7 +27,7 @@ class InfoFlashController extends Controller
     {
         try {
             $request->validate([
-                'message' => 'required|string|max:255',
+                'message' => 'required|string|max:500',
                 'lien' => 'nullable|url',
                 'lien_texte' => 'nullable|string|max:50',
                 'type' => 'required|in:info,succes,attention,urgent',
@@ -59,7 +59,7 @@ class InfoFlashController extends Controller
             $infoFlash = InfoFlash::findOrFail($id);
 
             $request->validate([
-                'message' => 'required|string|max:255',
+                'message' => 'required|string|max:500',
                 'lien' => 'nullable|url',
                 'lien_texte' => 'nullable|string|max:50',
                 'type' => 'required|in:info,succes,attention,urgent',
