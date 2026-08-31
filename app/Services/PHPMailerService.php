@@ -4,6 +4,7 @@ namespace App\Services;
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use Illuminate\Support\Facades\Log;
 
 class PHPMailerService
 {
@@ -36,9 +37,12 @@ class PHPMailerService
             $mail->send();
             return true;
         } catch (Exception $e) {
-            // Tu peux logger l'erreur ici si besoin
+            Log::error('Échec envoi email (PHPMailer)', [
+                'to' => $to,
+                'subject' => $subject,
+                'error' => $mail->ErrorInfo ?: $e->getMessage(),
+            ]);
             return false;
-
         }
     }
 }

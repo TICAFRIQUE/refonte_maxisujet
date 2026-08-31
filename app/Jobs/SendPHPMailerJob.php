@@ -33,6 +33,12 @@ class SendPHPMailerJob implements ShouldQueue
     public function handle(): void
     {
         $mailer = new PHPMailerService();
-        $mailer->send($this->to, $this->subject, $this->htmlContent, $this->from, $this->fromName);
+        $envoye = $mailer->send($this->to, $this->subject, $this->htmlContent, $this->from, $this->fromName);
+
+        if (!$envoye) {
+            // Fait échouer le job (visible dans failed_jobs, réessayé selon la config de
+            // retry) au lieu de le marquer "traité" silencieusement malgré l'échec d'envoi.
+            throw new \RuntimeException("Échec de l'envoi de l'email à " . (is_array($this->to) ? implode(',', $this->to) : $this->to));
+        }
     }
 }
