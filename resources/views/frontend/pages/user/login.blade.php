@@ -54,7 +54,7 @@
             color: var(--ms-blue);
         }
     </style>
-    <div class="container my-2">
+    <div class="container mb-2">
         <!-- Breadcrumb -->
         <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
             @include('frontend.components.retour')

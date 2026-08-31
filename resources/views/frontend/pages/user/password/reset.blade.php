@@ -14,7 +14,7 @@
         padding: 1.75rem 1.5rem;
     }
 </style>
-<div class="container my-5">
+<div class="container mb-5">
     <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
         @include('frontend.components.retour')
     <nav aria-label="breadcrumb" class="mb-0 flex-grow-1">

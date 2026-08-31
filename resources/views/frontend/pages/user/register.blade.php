@@ -66,7 +66,7 @@
         margin-top: 0.35rem;
     }
 </style>
-    <div class="container py-5 min-vh-100 d-flex flex-column">
+    <div class="container pb-5 min-vh-100 d-flex flex-column">
         <!-- Breadcrumb -->
         <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
             @include('frontend.components.retour')

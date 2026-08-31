@@ -144,7 +144,7 @@
         </style>
     @endpush
 
-    <div class="container mt-4">
+    <div class="container">
         <!-- Breadcrumb -->
         <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
             @include('frontend.components.retour')

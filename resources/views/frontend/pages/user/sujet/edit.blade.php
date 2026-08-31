@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <div class="container my-5">
+    <div class="container mb-5">
         <!-- Breadcrumb moderne -->
         <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
             @include('frontend.components.retour')
