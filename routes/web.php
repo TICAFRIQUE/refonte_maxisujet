@@ -128,6 +128,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
         route::get('', 'index')->name('sujet.index');
         route::get('create', 'create')->name('sujet.create')->middleware('can:creer-sujet');
         route::post('store', 'store')->name('sujet.store')->middleware('can:creer-sujet');
+        route::post('analyser', 'analyser')->name('sujet.analyser')->middleware(['can:creer-sujet', 'throttle:6,1']);
         route::get('show/{id}', 'show')->name('sujet.show')->middleware('can:voir-sujet');
         route::get('preview/{id}/{type}', 'preview')->name('sujet.preview')->middleware('can:voir-sujet');
         Route::post('{id}/approuve/{etat}', [SujetController::class, 'approuve'])->name('sujet.approuve')->middleware('can:modifier-sujet');

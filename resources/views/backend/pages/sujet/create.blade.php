@@ -35,6 +35,7 @@
                     <form method="POST" action="{{ route('sujet.store') }}" enctype="multipart/form-data" novalidate
                         class="needs-validation">
                         @csrf
+                        <input type="hidden" name="ai_new_taxonomy" id="ai_new_taxonomy" value="">
 
                         <div class="row">
                             <!---col-md-8--->
@@ -124,6 +125,16 @@
                                     <input type="file" name="non_corrige" id="non_corrige" class="form-control" required>
                                 </div>
 
+                                @if (config('services.gemini.key'))
+                                    <div class="mb-3 ai-sujet-analyse" data-analyse-url="{{ route('sujet.analyser') }}"
+                                        data-file-input="#non_corrige" data-has-concours="true">
+                                        <button type="button" class="btn btn-outline-primary btn-sm w-100 ai-analyse-btn" disabled>
+                                            <i class="ri-sparkling-2-line align-middle"></i> Analyser avec l'IA
+                                        </button>
+                                        <div class="ai-analyse-status small mt-2"></div>
+                                    </div>
+                                @endif
+
                                 <div class="mb-3">
                                     <label for="corrige" class="form-label">Fichier corrigé</label>
                                     <input type="file" name="corrige" id="corrige" class="form-control">
@@ -177,6 +188,7 @@
     <script src="{{ URL::asset('build/libs/dropzone/dropzone-min.js') }}"></script>
     <script src="{{ URL::asset('build/js/pages/ecommerce-product-create.init.js') }}"></script>
     <script src="{{ URL::asset('build/js/app.js') }}"></script>
+    <script src="{{ URL::asset('build/js/pages/sujet-ai-analyse.js') }}"></script>
 
 
     <script>

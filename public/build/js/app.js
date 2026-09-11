@@ -239,7 +239,9 @@ File: Main Js File
             if (isChoicesVal["data-choices-text-disabled-true"]) {
                 choiceData.addItems = false;
             }
-            isChoicesVal["data-choices-text-disabled-true"]
+            // Garde une référence à l'instance sur l'élément d'origine, pour que d'autres
+            // scripts (ex. suggestions IA) puissent la piloter après coup sans réinitialiser.
+            item.choicesInstance = isChoicesVal["data-choices-text-disabled-true"]
                 ? new Choices(item, choiceData).disable()
                 : new Choices(item, choiceData);
         });

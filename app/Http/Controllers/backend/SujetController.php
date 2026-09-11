@@ -7,14 +7,28 @@ use App\Models\Niveau;
 use App\Models\Matiere;
 use App\Models\Concours;
 use App\Models\Categorie;
+use App\Rules\ExistsOrNewTaxonomy;
+use App\Rules\NiveauIdOrNewSentinel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\HandlesAiSujetAnalysis;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class SujetController extends Controller
 {
+    use HandlesAiSujetAnalysis;
+
+    /**
+     * Analyse IA (Gemini) d'un fichier PDF avant enregistrement : ne crée
+     * rien, renvoie des suggestions de catégorie/matière/niveau/concours.
+     */
+    public function analyser(Request $request)
+    {
+        return $this->runAiAnalysis($request, includeConcours: true);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -90,25 +104,29 @@ class SujetController extends Controller
     {
         try {
             $request->validate([
-                'categorie_id' => 'required|exists:categories,id',
-                'matiere_id' => 'nullable|exists:matieres,id',
-                'concours_id' => 'nullable|exists:concours,id',
+                'categorie_id' => ['required', new ExistsOrNewTaxonomy('categories')],
+                'matiere_id' => ['nullable', new ExistsOrNewTaxonomy('matieres')],
+                'concours_id' => ['nullable', new ExistsOrNewTaxonomy('concours')],
                 'description' => '',
                 'statut' => 'required|in:active,desactive',
                 'approuve' => 'required|boolean',
                 'annee' => '',
                 'niveaux' => 'required|array',
-                'niveaux.*' => 'exists:niveaux,id',
+                'niveaux.*' => [new NiveauIdOrNewSentinel()],
                 'non_corrige' => 'required|file|mimes:pdf,doc,docx',
                 'corrige' => 'nullable|file|mimes:pdf,doc,docx',
             ]);
 
+            // Résout les éventuelles suggestions IA non encore en base (catégorie/matière/
+            // concours/niveau) en créant ce qui manque, avant de créer le sujet lui-même.
+            $resolved = $this->resolveAiTaxonomySentinels($request);
+
             //generer le libelle a partir de la categorie et matiere
 
             $sujet = new Sujet();
-            $sujet->categorie_id = $request->categorie_id;
-            $sujet->matiere_id = $request->matiere_id;
-            $sujet->concours_id = $request->concours_id;
+            $sujet->categorie_id = $resolved['categorie_id'];
+            $sujet->matiere_id = $resolved['matiere_id'];
+            $sujet->concours_id = $resolved['concours_id'];
             $sujet->description = $request->description;
             $sujet->statut = $request->statut;
             $sujet->approuve = $request->approuve;
@@ -117,7 +135,7 @@ class SujetController extends Controller
 
 
             // Générer le libelle à partir de la catégorie
-            $categorie = Categorie::find($request->categorie_id);
+            $categorie = Categorie::find($resolved['categorie_id']);
             $sujet->libelle = $categorie->libelle . substr(str_shuffle('ABCDEFGHJKLMNPQRSTUVWXYZ' . '0123456789'), 0, 5);
             $sujet->code = 'MS' . substr(str_shuffle('ABCDEFGHJKLMNPQRSTUVWXYZ' . '0123456789'), 0, 5);
 
@@ -134,7 +152,7 @@ class SujetController extends Controller
             });
 
             // Attacher les niveaux (relation many-to-many)
-            $sujet->niveaux()->sync($request->niveaux);
+            $sujet->niveaux()->sync($resolved['niveaux']);
 
             // Gestion des fichiers avec MediaLibrary
             if ($request->hasFile('non_corrige')) {
@@ -260,23 +278,25 @@ class SujetController extends Controller
     {
         try {
             $request->validate([
-                'categorie_id' => 'required|exists:categories,id',
-                'matiere_id' => 'nullable|exists:matieres,id',
-                'concours_id' => 'nullable|exists:concours,id',
+                'categorie_id' => ['required', new ExistsOrNewTaxonomy('categories')],
+                'matiere_id' => ['nullable', new ExistsOrNewTaxonomy('matieres')],
+                'concours_id' => ['nullable', new ExistsOrNewTaxonomy('concours')],
                 'description' => '',
                 'statut' => 'required|in:active,desactive',
                 'approuve' => 'required|boolean',
                 'annee' => '',
                 'niveaux' => 'required|array',
-                'niveaux.*' => 'exists:niveaux,id',
+                'niveaux.*' => [new NiveauIdOrNewSentinel()],
                 'non_corrige' => 'nullable|file|mimes:pdf,doc,docx',
                 'corrige' => 'nullable|file|mimes:pdf,doc,docx',
             ]);
 
+            $resolved = $this->resolveAiTaxonomySentinels($request);
+
             $sujet = Sujet::with('user')->findOrFail($id);
-            $sujet->categorie_id = $request->categorie_id;
-            $sujet->matiere_id = $request->matiere_id;
-            $sujet->concours_id = $request->concours_id;
+            $sujet->categorie_id = $resolved['categorie_id'];
+            $sujet->matiere_id = $resolved['matiere_id'];
+            $sujet->concours_id = $resolved['concours_id'];
             $sujet->description = $request->description;
             $sujet->statut = $request->statut;
             $sujet->annee = $request->annee;
@@ -285,7 +305,7 @@ class SujetController extends Controller
             // statut d'approbation change réellement, jamais deux fois. En transaction
             // pour ne pas créditer/reprendre les points si la sauvegarde échoue.
             $nouvelEtat = (bool) $request->approuve;
-            $categorie = Categorie::find($request->categorie_id);
+            $categorie = Categorie::find($resolved['categorie_id']);
 
             DB::transaction(function () use ($sujet, $nouvelEtat, $categorie) {
                 if ($sujet->user) {
@@ -307,7 +327,7 @@ class SujetController extends Controller
             });
 
             // Met à jour les niveaux liés
-            $sujet->niveaux()->sync($request->niveaux);
+            $sujet->niveaux()->sync($resolved['niveaux']);
 
             // Met à jour les fichiers
             if ($request->hasFile('non_corrige')) {
