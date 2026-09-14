@@ -6,11 +6,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    @php
+        $seoNom = $parametre?->nom_projet ?? 'MaxiSujets';
+        $seoDescription = $parametre?->description_projet
+            ?? 'Téléchargez des milliers de documents éducatifs : cours, exercices, examens, concours. Ressources gratuites pour élèves, étudiants et enseignants.';
+        $seoLogo = $parametre?->getFirstMediaUrl('logo_header') ?: asset('frontend/images/logo-social.png');
+    @endphp
+
     <!-- SEO Meta Tags -->
-    <title>@yield('title', 'MaxiSujets - Plateforme Éducative de Documents Scolaires et Universitaires')</title>
-    <meta name="description" content="@yield('meta_description', 'MaxiSujets - Téléchargez des milliers de documents éducatifs : cours, exercices, examens, concours. Ressources gratuites pour élèves, étudiants et enseignants.')">
+    <title>@yield('title', $seoNom . ' - Plateforme Éducative de Documents Scolaires et Universitaires')</title>
+    <meta name="description" content="@yield('meta_description', $seoDescription)">
     <meta name="keywords" content="@yield('meta_keywords', 'documents scolaires, cours gratuits, exercices, examens, concours, ressources éducatives, téléchargement, étudiant, élève, enseignant, université, lycée, collège')">
-    <meta name="author" content="MaxiSujets">
+    <meta name="author" content="{{ $seoNom }}">
     <meta name="robots" content="@yield('meta_robots', 'index, follow')">
     <meta name="language" content="fr">
     <meta name="revisit-after" content="7 days">
@@ -18,22 +25,20 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:url" content="@yield('og_url', url()->current())">
-    <meta property="og:title" content="@yield('og_title', 'MaxiSujets - Plateforme Éducative de Documents Scolaires')">
-    <meta property="og:description" content="@yield('og_description', 'Téléchargez des milliers de documents éducatifs gratuitement. Cours, exercices, examens pour tous les niveaux.')">
-    <meta property="og:image" content="@yield('og_image', asset('frontend/images/logo-social.png'))">
+    <meta property="og:title" content="@yield('og_title', $seoNom . ' - Plateforme Éducative de Documents Scolaires')">
+    <meta property="og:description" content="@yield('og_description', $seoDescription)">
+    <meta property="og:image" content="@yield('og_image', $seoLogo)">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:site_name" content="MaxiSujets">
+    <meta property="og:site_name" content="{{ $seoNom }}">
     <meta property="og:locale" content="fr_FR">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="@yield('twitter_url', url()->current())">
-    <meta name="twitter:title" content="@yield('twitter_title', 'MaxiSujets - Documents Éducatifs Gratuits')">
-    <meta name="twitter:description" content="@yield('twitter_description', 'Plateforme de téléchargement de documents scolaires et universitaires.')">
-    <meta name="twitter:image" content="@yield('twitter_image', asset('frontend/images/logo-social.png'))">
-    <meta name="twitter:creator" content="@MaxiSujets">
-    <meta name="twitter:site" content="@MaxiSujets">
+    <meta name="twitter:title" content="@yield('twitter_title', $seoNom . ' - Documents Éducatifs Gratuits')">
+    <meta name="twitter:description" content="@yield('twitter_description', $seoDescription)">
+    <meta name="twitter:image" content="@yield('twitter_image', $seoLogo)">
 
     <!-- Canonical URL -->
     <link rel="canonical" href="@yield('canonical', url()->current())">
@@ -48,7 +53,7 @@
     <!-- Additional SEO -->
     <meta name="theme-color" content="#0d6efd">
     <meta name="msapplication-TileColor" content="#0d6efd">
-    <meta name="application-name" content="MaxiSujets">
+    <meta name="application-name" content="{{ $seoNom }}">
     <meta name="msapplication-tooltip" content="Plateforme de documents éducatifs">
 
     <!-- Schema.org structured data -->
@@ -56,13 +61,15 @@
         $ldJson = [
             '@context' => 'https://schema.org',
             '@type' => 'EducationalOrganization',
-            'name' => 'MaxiSujets',
-            'description' => 'Plateforme de téléchargement de documents éducatifs gratuits',
+            'name' => $seoNom,
+            'description' => $seoDescription,
             'url' => url('/'),
-            'logo' => asset('frontend/images/logo.png'),
+            'logo' => $seoLogo,
+            'email' => $parametre?->email1 ?? 'info@maxisujets.net',
+            'telephone' => $parametre?->contact1,
             'address' => [
                 '@type' => 'PostalAddress',
-                'addressLocality' => 'Abidjan',
+                'addressLocality' => $parametre?->localisation ?? 'Abidjan',
                 'addressCountry' => 'CI',
             ],
         ];
@@ -123,7 +130,8 @@
         <div class="container">
             <!-- Logo seul -->
             <a class="navbar-brand d-flex align-items-center" href="{{ route('accueil') }}">
-                <img src="{{ asset('frontend/img/logo.png') }}" alt="Logo MaxiSujets" class="logo-animate">
+                <img src="{{ $parametre?->getFirstMediaUrl('logo_header') ?: asset('frontend/img/logo.png') }}"
+                    alt="Logo {{ $parametre?->nom_projet ?? 'MaxiSujets' }}" class="logo-animate">
             </a>
 
             <!-- Hamburger menu -->
@@ -182,6 +190,10 @@
                             </li>
 
                         </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}" href="{{ route('contact') }}">Contact</a>
                     </li>
 
                 </ul>
@@ -252,6 +264,25 @@
         @yield('content')
     </main>
 
+    @php
+        $footerNom = $parametre?->nom_projet ?? 'MaxiSujets';
+        $footerDescription = $parametre?->description_projet
+            ?? "Ce site regroupe de nombreux supports de sujets et de cours portant sur divers domaines de votre parcours scolaire, universitaire et votre entrée dans la vie professionnelle.";
+        $footerEmail = $parametre?->email1 ?? 'info@maxisujets.net';
+        $footerTel = $parametre?->contact1 ?? '+225 25 22 00 20 77';
+        $footerAdresse = $parametre?->localisation ?? "Abidjan, Côte d'Ivoire";
+        $footerHoraires = $parametre?->horaires ?? '24h/7j disponible';
+        $footerLogo = $parametre?->getFirstMediaUrl('logo_footer') ?: asset('frontend/img/logo.png');
+        $footerWhatsapp = preg_replace('/\D+/', '', $footerTel);
+        $footerSocials = array_filter([
+            'facebook' => ['url' => $parametre?->lien_facebook, 'icon' => 'bi-facebook'],
+            'instagram' => ['url' => $parametre?->lien_instagram, 'icon' => 'bi-instagram'],
+            'linkedin' => ['url' => $parametre?->lien_linkedin, 'icon' => 'bi-linkedin'],
+            'twitter' => ['url' => $parametre?->lien_twitter, 'icon' => 'bi-twitter-x'],
+            'tiktok' => ['url' => $parametre?->lien_tiktok, 'icon' => 'bi-tiktok'],
+        ], fn($social) => !empty($social['url']));
+    @endphp
+
     <!-- Footer Moderne -->
     <footer class="modern-footer mt-auto">
         <!-- Footer Principal -->
@@ -262,13 +293,12 @@
                     <div class="col-lg-4 col-md-6">
                         <div class="footer-section">
                             <div class="footer-logo mb-3">
-                                <img src="{{ asset('frontend/img/logo.png') }}" alt="MaxiSujets"
+                                <img src="{{ $footerLogo }}" alt="{{ $footerNom }}"
                                     class="footer-logo-img">
-                                {{-- <span class="footer-brand-name">MaxiSujets</span> --}}
+                                {{-- <span class="footer-brand-name">{{ $footerNom }}</span> --}}
                             </div>
                             <p class="footer-description">
-                                Ce site regroupe de nombreux supports de sujets et de cours portant sur divers domaines
-                                de votre parcours scolaire, universitaire et votre entrée dans la vie professionnelle.
+                                {{ $footerDescription }}
                             </p>
                             <div class="footer-stats">
                                 <div class="stat-item">
@@ -295,6 +325,7 @@
                                         Actualités</a></li>
                                 <li><a href="{{ route('astuces-conseils.index') }}"><i class="bi bi-lightbulb"></i>
                                         Conseils</a></li>
+                                <li><a href="{{ route('contact') }}"><i class="bi bi-envelope"></i> Contact</a></li>
                             </ul>
                         </div>
                     </div>
@@ -324,28 +355,28 @@
                                     <i class="bi bi-envelope-fill"></i>
                                     <div>
                                         <strong>Email</strong>
-                                        <a href="mailto:info@maxisujets.net">info@maxisujets.net</a>
+                                        <a href="mailto:{{ $footerEmail }}">{{ $footerEmail }}</a>
                                     </div>
                                 </div>
                                 <div class="contact-item">
                                     <i class="bi bi-telephone-fill"></i>
                                     <div>
                                         <strong>Téléphone</strong>
-                                        <a href="tel:+22525220020777">(+225) 25 22 00 20 77</a>
+                                        <a href="tel:{{ preg_replace('/\s+/', '', $footerTel) }}">{{ $footerTel }}</a>
                                     </div>
                                 </div>
                                 <div class="contact-item">
                                     <i class="bi bi-geo-alt-fill"></i>
                                     <div>
                                         <strong>Adresse</strong>
-                                        <span>Abidjan, Côte d'Ivoire</span>
+                                        <span>{{ $footerAdresse }}</span>
                                     </div>
                                 </div>
                                 <div class="contact-item">
                                     <i class="bi bi-clock-fill"></i>
                                     <div>
-                                        <strong>Support</strong>
-                                        <span>24h/7j disponible</span>
+                                        <strong>Horaires</strong>
+                                        <span>{{ $footerHoraires }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -364,12 +395,17 @@
                     </div>
                     <div class="col-md-6">
                         <div class="social-links">
-                            <a href="https://wa.me/22525220020777" class="social-link whatsapp" title="WhatsApp" target="_blank" rel="noopener">
+                            <a href="https://wa.me/{{ $footerWhatsapp }}" class="social-link whatsapp" title="WhatsApp" target="_blank" rel="noopener">
                                 <i class="bi bi-whatsapp"></i>
                             </a>
-                            <a href="mailto:info@maxisujets.net" class="social-link email" title="Email">
+                            <a href="mailto:{{ $footerEmail }}" class="social-link email" title="Email">
                                 <i class="bi bi-envelope-fill"></i>
                             </a>
+                            @foreach ($footerSocials as $key => $social)
+                                <a href="{{ $social['url'] }}" class="social-link {{ $key }}" title="{{ ucfirst($key) }}" target="_blank" rel="noopener">
+                                    <i class="bi {{ $social['icon'] }}"></i>
+                                </a>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -382,7 +418,7 @@
                 <div class="row align-items-center">
                     <div class="col-md-6">
                         <p class="mb-0">
-                            &copy; {{ date('Y') }} <strong>MaxiSujets</strong>. Tous droits réservés.
+                            &copy; {{ date('Y') }} <strong>{{ $footerNom }}</strong>. Tous droits réservés.
                         </p>
                     </div>
                     <div class="col-md-6">
@@ -404,7 +440,7 @@
 
     <!-- Bouton WhatsApp Flottant -->
     <div class="whatsapp-float">
-        <a href="https://wa.me/22525220020777?text=Bonjour,%20j'ai%20besoin%20d'aide%20avec%20MaxiSujets"
+        <a href="https://wa.me/{{ $footerWhatsapp }}?text=Bonjour,%20j'ai%20besoin%20d'aide%20avec%20{{ urlencode($footerNom) }}"
             target="_blank" class="whatsapp-btn" title="Contactez-nous sur WhatsApp">
             <i class="bi bi-whatsapp"></i>
             <span class="whatsapp-text">Besoin d'aide ?</span>

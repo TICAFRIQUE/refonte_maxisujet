@@ -235,6 +235,7 @@ Route::controller(RubriqueFrontController::class)->group(function () {
 // Pages statiques
 Route::view('/cgu', 'frontend.pages.static.cgu')->name('cgu');
 Route::view('/confidentialite', 'frontend.pages.static.confidentialite')->name('confidentialite');
+Route::view('/contact', 'frontend.pages.contact')->name('contact');
 
 // SEO Routes
 Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');

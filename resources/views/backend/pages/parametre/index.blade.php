@@ -76,6 +76,7 @@
                                 <div class="row">
 
                                     <!-- ========== Start Section ========== -->
+                                    <h6 class="text-muted text-uppercase fs-12 fw-semibold mb-3">Identité visuelle</h6>
                                     <div class="row mb-3">
                                         <div class="col-lg-4">
                                             <label for="background-image">Image d'arrière-plan</label>
@@ -142,6 +143,7 @@
                                     <!-- ========== End Section ========== -->
                                 </div>
                                 <hr>
+                                <h6 class="text-muted text-uppercase fs-12 fw-semibold mb-3">Informations générales</h6>
                                 <div class="row">
                                     <div class="col-lg-5">
                                         <div class="mb-3">
@@ -159,27 +161,38 @@
                                         </div>
                                     </div>
                                     <!--end col-->
+                                </div>
 
-                                    <div class="col-lg-4">
+                                <hr>
+                                <h6 class="text-muted text-uppercase fs-12 fw-semibold mb-3">Coordonnées &amp; localisation</h6>
+                                <div class="row">
+                                    <div class="col-lg-3">
                                         <div class="mb-3">
-                                            <label for="phonenumberInput" class="form-label">Telephone1</label>
+                                            <label for="phonenumberInput" class="form-label">Téléphone 1</label>
                                             <input type="text" name="contact1" class="form-control" id="phonenumberInput"
                                                 value="{{ $data_parametre['contact1'] ?? '' }}">
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
                                         <div class="mb-3">
-                                            <label for="phonenumberInput" class="form-label">Telephone2</label>
+                                            <label for="phonenumberInput2" class="form-label">Téléphone 2</label>
                                             <input type="text" name="contact2" class="form-control"
-                                                id="phonenumberInput" value="{{ $data_parametre['contact2'] ?? '' }}">
+                                                id="phonenumberInput2" value="{{ $data_parametre['contact2'] ?? '' }}">
                                         </div>
                                     </div>
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
                                         <div class="mb-3">
-                                            <label for="phonenumberInput" class="form-label">Telephone3</label>
+                                            <label for="phonenumberInput3" class="form-label">Téléphone 3</label>
                                             <input type="text" name="contact3" class="form-control"
-                                                id="phonenumberInput" value="{{ $data_parametre['contact3'] ?? '' }}">
+                                                id="phonenumberInput3" value="{{ $data_parametre['contact3'] ?? '' }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="mb-3">
+                                            <label for="faxInput" class="form-label">Fax</label>
+                                            <input type="text" name="fax" class="form-control"
+                                                id="faxInput" value="{{ $data_parametre['fax'] ?? '' }}">
                                         </div>
                                     </div>
                                     <!--end col-->
@@ -212,78 +225,94 @@
 
                                     <div class="col-lg-6">
                                         <div class="mb-3">
-                                            <label for="countryInput" class="form-label">Localisation</label>
+                                            <label for="localisationInput" class="form-label">Localisation (adresse)</label>
                                             <input type="text" name="localisation" class="form-control"
-                                                id="countryInput" value="{{ $data_parametre['localisation'] ?? '' }}" />
+                                                id="localisationInput" value="{{ $data_parametre['localisation'] ?? '' }}"
+                                                placeholder="Ex: Côte D'Ivoire, Abidjan, Cocody II Plateaux" />
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-12">
+                                    <div class="col-lg-6">
                                         <div class="mb-3">
-                                            <label for="countryInput" class="form-label">Google maps</label>
+                                            <label for="horairesInput" class="form-label">Horaires d'ouverture</label>
+                                            <input type="text" name="horaires" class="form-control"
+                                                id="horairesInput" value="{{ $data_parametre['horaires'] ?? '' }}"
+                                                placeholder="Ex: Du lundi au samedi (8H-18H)" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label for="googleMapsInput" class="form-label">Google maps</label>
                                             <input type="text" name="google_maps" class="form-control"
-                                                id="countryInput" value="{{ $data_parametre['google_maps'] ?? '' }}" />
+                                                id="googleMapsInput" value="{{ $data_parametre['google_maps'] ?? '' }}"
+                                                placeholder="URL Google Maps ou code d'intégration <iframe>" />
+                                            <div class="form-text">
+                                                Collez un lien Google Maps (ex: https://maps.google.com/?q=...) ou le code
+                                                d'intégration complet ("Partager &gt; Intégrer une carte"). À défaut, la
+                                                page Contact du site utilisera le champ "Localisation" ci-dessus.
+                                            </div>
                                         </div>
                                     </div>
 
                                     <!--end col-->
+                                </div>
 
-
-
-
-                                    <!-- ========== Start social network ========== -->
-                                    <div class="row mt-4">
-                                        <div class="mb-3 d-flex">
-                                            <div class="avatar-xs d-block flex-shrink-0 me-3">
-                                                <span class="avatar-title rounded-circle fs-16 bg-primary material-shadow">
-                                                    <i class=" ri-facebook-fill"></i>
-                                                </span>
-                                            </div>
-                                            <input type="text" name="lien_facebook" class="form-control"
-                                                id="websiteInput" value="{{ $data_parametre['lien_facebook'] ?? '' }}">
+                                <hr>
+                                <h6 class="text-muted text-uppercase fs-12 fw-semibold mb-3">Réseaux sociaux</h6>
+                                <!-- ========== Start social network ========== -->
+                                <div class="row">
+                                    <div class="col-lg-6 mb-3 d-flex">
+                                        <div class="avatar-xs d-block flex-shrink-0 me-3">
+                                            <span class="avatar-title rounded-circle fs-16 bg-primary material-shadow">
+                                                <i class=" ri-facebook-fill"></i>
+                                            </span>
                                         </div>
-                                        <div class="mb-3 d-flex">
-                                            <div class="avatar-xs d-block flex-shrink-0 me-3">
-                                                <span class="avatar-title rounded-circle fs-16 bg-primary material-shadow">
-                                                    <i class=" ri-instagram-fill"></i>
-                                                </span>
-                                            </div>
-                                            <input type="text" name="lien_instagram" class="form-control"
-                                                id="websiteInput" value="{{ $data_parametre['lien_instagram'] ?? '' }}">
-                                        </div>
-
-                                        <div class=" mb-3 d-flex">
-                                            <div class="avatar-xs d-block flex-shrink-0 me-3">
-                                                <span class="avatar-title rounded-circle fs-16 bg-danger material-shadow">
-                                                    <i class=" ri-tiktok-fill"></i>
-                                                </span>
-                                            </div>
-                                            <input type="text" name="lien_twitter" class="form-control"
-                                                id="pinterestName" value="{{ $data_parametre['lien_twitter'] ?? '' }}">
-                                        </div>
-                                        <div class="mb-3 d-flex">
-                                            <div class="avatar-xs d-block flex-shrink-0 me-3">
-                                                <span class="avatar-title rounded-circle fs-16 bg-danger material-shadow">
-                                                    <i class=" ri-linkedin-line"></i>
-                                                </span>
-                                            </div>
-                                            <input type="text" name="lien_linkedin" class="form-control"
-                                                id="pinterestName" value="{{ $data_parametre['lien_linkedin'] ?? '' }}">
-                                        </div>
-
-                                        <div class="mb-3 d-flex">
-                                            <div class="avatar-xs d-block flex-shrink-0 me-3">
-                                                <span class="avatar-title rounded-circle fs-16 bg-danger material-shadow">
-                                                    <i class=" ri-twitter-x-fill"></i>
-                                                </span>
-                                            </div>
-                                            <input type="text" name="lien_tiktok" class="form-control"
-                                                id="pinterestName" value="{{ $data_parametre['lien_tiktok'] ?? '' }}">
-                                        </div>
+                                        <input type="text" name="lien_facebook" class="form-control"
+                                            id="websiteInput" placeholder="Lien Facebook" value="{{ $data_parametre['lien_facebook'] ?? '' }}">
                                     </div>
-                                    <!-- ========== End social network ========== -->
+                                    <div class="col-lg-6 mb-3 d-flex">
+                                        <div class="avatar-xs d-block flex-shrink-0 me-3">
+                                            <span class="avatar-title rounded-circle fs-16 bg-primary material-shadow">
+                                                <i class=" ri-instagram-fill"></i>
+                                            </span>
+                                        </div>
+                                        <input type="text" name="lien_instagram" class="form-control"
+                                            id="instagramInput" placeholder="Lien Instagram" value="{{ $data_parametre['lien_instagram'] ?? '' }}">
+                                    </div>
 
+                                    <div class="col-lg-6 mb-3 d-flex">
+                                        <div class="avatar-xs d-block flex-shrink-0 me-3">
+                                            <span class="avatar-title rounded-circle fs-16 bg-dark material-shadow">
+                                                <i class=" ri-twitter-x-fill"></i>
+                                            </span>
+                                        </div>
+                                        <input type="text" name="lien_twitter" class="form-control"
+                                            id="twitterInput" placeholder="Lien X (Twitter)" value="{{ $data_parametre['lien_twitter'] ?? '' }}">
+                                    </div>
+                                    <div class="col-lg-6 mb-3 d-flex">
+                                        <div class="avatar-xs d-block flex-shrink-0 me-3">
+                                            <span class="avatar-title rounded-circle fs-16 bg-info material-shadow">
+                                                <i class=" ri-linkedin-line"></i>
+                                            </span>
+                                        </div>
+                                        <input type="text" name="lien_linkedin" class="form-control"
+                                            id="linkedinInput" placeholder="Lien LinkedIn" value="{{ $data_parametre['lien_linkedin'] ?? '' }}">
+                                    </div>
 
+                                    <div class="col-lg-6 mb-3 d-flex">
+                                        <div class="avatar-xs d-block flex-shrink-0 me-3">
+                                            <span class="avatar-title rounded-circle fs-16 bg-danger material-shadow">
+                                                <i class=" ri-tiktok-fill"></i>
+                                            </span>
+                                        </div>
+                                        <input type="text" name="lien_tiktok" class="form-control"
+                                            id="tiktokInput" placeholder="Lien TikTok" value="{{ $data_parametre['lien_tiktok'] ?? '' }}">
+                                    </div>
+                                </div>
+                                <!-- ========== End social network ========== -->
+
+                                <div class="row">
                                     <div class="col-lg-12">
                                         <div class="hstack mt-3">
                                             <button type="submit" class="btn btn-primary w-100">

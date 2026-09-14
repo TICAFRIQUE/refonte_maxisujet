@@ -41,6 +41,15 @@
 
 
                 <div class="ms-1 header-item d-none d-sm-flex">
+                    <a href="{{ route('accueil') }}" target="_blank" rel="noopener"
+                        class="btn btn-sm btn-soft-primary material-shadow-none d-flex align-items-center"
+                        title="Voir le site">
+                        <i class="bx bx-globe fs-16 align-middle me-1"></i>
+                        <span class="d-none d-md-inline">Voir le site</span>
+                    </a>
+                </div>
+
+                <div class="ms-1 header-item d-none d-sm-flex">
                     <button type="button"
                         class="btn btn-icon btn-topbar material-shadow-none btn-ghost-secondary rounded-circle light-dark-mode">
                         <i class='bx bx-moon fs-22'></i>

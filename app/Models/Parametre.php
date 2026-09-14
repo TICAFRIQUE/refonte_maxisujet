@@ -29,11 +29,13 @@ class Parametre extends Model implements HasMedia
         'contact1',
         'contact2',
         'contact3',
+        'fax',
         'email1',
         'email2',
         'localisation',
         'google_maps',
         'siege_social',
+        'horaires',
 
         //security
         'mode_maintenance',

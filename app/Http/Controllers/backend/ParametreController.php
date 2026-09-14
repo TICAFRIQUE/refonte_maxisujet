@@ -57,6 +57,8 @@ class ParametreController extends Controller
                 'nom_projet' => 'nullable|string|max:255',
                 'email1' => 'nullable|email|max:255',
                 'email2' => 'nullable|email|max:255',
+                'fax' => 'nullable|string|max:255',
+                'horaires' => 'nullable|string|max:255',
                 'cover' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
                 'logo_header' => 'nullable|image|mimes:jpg,jpeg,png,svg,webp|max:2048',
                 'logo_footer' => 'nullable|image|mimes:jpg,jpeg,png,svg,webp|max:2048',
@@ -81,6 +83,7 @@ class ParametreController extends Controller
                     'contact1' => $request['contact1'],
                     'contact2' => $request['contact2'],
                     'contact3' => $request['contact3'],
+                    'fax' => $request['fax'],
 
                     'email1' => $request['email1'],
                     'email2' => $request['email2'],
@@ -88,6 +91,7 @@ class ParametreController extends Controller
                     'localisation' => $request['localisation'],
                     'google_maps' => $request['google_maps'],
                     'siege_social' => $request['siege_social'],
+                    'horaires' => $request['horaires'],
 
                     //security
                     // 'mode_maintenance'=>'',
@@ -115,6 +119,7 @@ class ParametreController extends Controller
                     'contact1' => $request['contact1'],
                     'contact2' => $request['contact2'],
                     'contact3' => $request['contact3'],
+                    'fax' => $request['fax'],
 
                     'email1' => $request['email1'],
                     'email2' => $request['email2'],
@@ -122,6 +127,7 @@ class ParametreController extends Controller
                     'localisation' => $request['localisation'],
                     'google_maps' => $request['google_maps'],
                     'siege_social' => $request['siege_social'],
+                    'horaires' => $request['horaires'],
 
                     //security
                     // 'mode_maintenance'=>'',
