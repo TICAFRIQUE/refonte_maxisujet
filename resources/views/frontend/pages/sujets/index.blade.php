@@ -6,65 +6,47 @@
 @section('content')
 
     @push('styles')
+        @include('frontend.pages.sujets.partials._card-styles')
         <style>
-            /* Cartes de sujets */
-            .subject-card {
-                transition: box-shadow 0.2s ease, border-color 0.2s ease;
-                border: 1px solid var(--ms-border-subtle);
+            .btn-load-more {
+                background: var(--ms-blue-light);
+                color: var(--ms-blue-dark);
+                border: 1px solid var(--ms-blue-light);
+                border-radius: 12px;
+                font-weight: 500;
+                font-size: 0.85rem;
+                padding: 0.55rem 1.5rem;
+                transition: background 0.2s ease;
+            }
+
+            .btn-load-more:hover { background: var(--ms-blue-light); filter: brightness(0.96); }
+            .btn-load-more:disabled { opacity: 0.6; }
+
+            .stats-band {
+                border-top: 1px solid var(--ms-border-subtle);
+                padding-top: 2rem;
+            }
+
+            .stats-card {
+                text-align: center;
+                background: var(--ms-orange-light);
                 border-radius: var(--ms-radius-lg);
-                overflow: hidden;
-                box-shadow: var(--ms-shadow-rest);
+                padding: 1.25rem 1rem;
             }
 
-            .subject-card:hover {
-                box-shadow: var(--ms-shadow-hover);
-                border-color: var(--ms-border);
+            .stats-card.stats-card-blue { background: var(--ms-blue-light); }
+
+            .stats-number {
+                font-size: 1.6rem;
+                font-weight: 700;
+                color: var(--ms-navy);
+                line-height: 1.2;
             }
 
-            .subject-image {
-                border-radius: 10px;
-                border: 2px solid #f8f9fa;
-                transition: border-color 0.3s ease;
-            }
-
-            .subject-card:hover .subject-image {
-                border-color: var(--ms-orange);
-            }
-
-            .subject-title {
-                color: #2d3748;
-                font-weight: 600;
-                font-size: 1rem;
-            }
-
-            .subject-description {
-                color: #718096;
-                font-size: 0.9rem;
-                line-height: 1.4;
-            }
-
-            .modern-badge {
-                font-size: 0.75rem;
-                padding: 0.4rem 0.8rem;
-                border-radius: 20px;
-                font-weight: 500;
-                margin: 0.15rem;
-            }
-
-            .badge-matiere { background: var(--ms-blue-light); color: var(--ms-blue-dark); }
-            .badge-niveau { background: #f1f5f9; color: #64748b; }
-            .badge-annee { background: var(--ms-orange-light); color: var(--ms-orange-dark); }
-            .badge-categorie { background: #e7f7ee; color: #147a4a; }
-            .badge-code { background: var(--ms-navy); color: white; }
-
-            .publication-date {
-                background: #f8fafc;
+            .stats-label {
+                font-size: 0.78rem;
+                font-weight: 400;
                 color: #64748b;
-                padding: 0.3rem 0.8rem;
-                border-radius: 15px;
-                font-size: 0.8rem;
-                font-weight: 500;
-                border: 1px solid #e2e8f0;
             }
 
             /* Barre de recherche */
@@ -101,6 +83,59 @@
                 box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
             }
 
+            /* Select2 génère son propre balisage à côté du <select> natif caché :
+               les règles ci-dessus ne s'appliquent pas à son rendu visible, d'où ces
+               surcharges ciblées sur les classes .select2-*. */
+            .search-section .select2-container {
+                width: 100% !important;
+            }
+
+            .search-section .select2-container--default .select2-selection--single {
+                height: 46px;
+                border: 2px solid #e2e8f0;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            }
+
+            .search-section .select2-container--default.select2-container--open .select2-selection--single,
+            .search-section .select2-container--default .select2-selection--single:hover {
+                border-color: var(--ms-blue);
+            }
+
+            .search-section .select2-container--default.select2-container--focus .select2-selection--single {
+                border-color: var(--ms-blue);
+                box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+            }
+
+            .search-section .select2-container--default .select2-selection--single .select2-selection__rendered {
+                padding-left: 1rem;
+                font-weight: 500;
+                color: #2d3748;
+            }
+
+            .search-section .select2-container--default .select2-selection--single .select2-selection__arrow {
+                height: 44px;
+                right: 0.6rem;
+            }
+
+            .search-section .select2-dropdown {
+                border: 2px solid var(--ms-blue);
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: var(--ms-shadow-hover);
+            }
+
+            .search-section .select2-container--default .select2-results__option--highlighted[aria-selected] {
+                background-color: var(--ms-blue);
+            }
+
+            .search-section .select2-search--dropdown .select2-search__field {
+                border-radius: 8px;
+                border: 1px solid #e2e8f0;
+            }
+
             .search-submit-btn {
                 background: var(--ms-gradient-navy);
                 border: none;
@@ -117,30 +152,6 @@
                 color: white;
             }
 
-            .btn-detail-card {
-                background: var(--ms-blue);
-                border: none;
-                border-radius: 12px;
-                font-weight: 600;
-                transition: all 0.3s ease;
-            }
-
-            .btn-detail-card:hover {
-                background: var(--ms-blue-dark);
-                transform: translateY(-2px);
-                box-shadow: 0 6px 16px rgba(13, 110, 253, 0.3);
-                color: white;
-            }
-
-            .cost-tag {
-                font-size: 0.72rem;
-                font-weight: 700;
-                color: var(--ms-orange-dark);
-                display: inline-flex;
-                align-items: center;
-                gap: 0.2rem;
-                margin-top: 0.25rem;
-            }
         </style>
     @endpush
 
@@ -257,137 +268,38 @@
         </div>
 
         <!-- Liste des sujets -->
-        <div class="row g-4">
-            @forelse($sujets as $sujet)
-                <div class="col-md-6 col-xl-4">
-                    <div class="card subject-card h-100">
-                        <div class="card-body p-4 d-flex flex-column">
-                            <!-- En-tête avec image et titre -->
-                            <div class="d-flex align-items-start mb-3">
-                                <div class="flex-shrink-0 me-3">
-                                    @php
-                                        $media = $sujet->getFirstMedia('non_corrige');
-                                        $extension = $media ? strtolower($media->extension) : null;
-                                        $isPdf = $extension === 'pdf';
-                                        $isDoc = in_array($extension, ['doc', 'docx']);
-                                    @endphp
-                                    <div class="subject-image d-flex align-items-center justify-content-center bg-light"
-                                        style="width:60px; height:60px; overflow:hidden; position:relative;">
-                                        @auth
-                                            @if ($media && $isPdf)
-                                                <iframe src="{{ route('sujet.front.apercu', ['id' => $sujet->id, 'type' => 'non_corrige']) }}#toolbar=0&navpanes=0&scrollbar=0&view=FitH"
-                                                    style="position:absolute; top:0; left:0; width: 260px; height: 260px; border: none; transform: scale(0.23); transform-origin: top left; pointer-events: none;"
-                                                    tabindex="-1" title="Aperçu du sujet"></iframe>
-                                            @elseif ($isDoc)
-                                                <i class="bi bi-filetype-doc text-primary" style="font-size: 1.5rem;"></i>
-                                            @else
-                                                <i class="bi bi-file-earmark-text text-muted" style="font-size: 1.5rem;"></i>
-                                            @endif
-                                        @else
-                                            @if ($isPdf)
-                                                <i class="bi bi-filetype-pdf text-danger" style="font-size: 1.5rem;"></i>
-                                            @elseif ($isDoc)
-                                                <i class="bi bi-filetype-doc text-primary" style="font-size: 1.5rem;"></i>
-                                            @else
-                                                <i class="bi bi-file-earmark-text text-muted" style="font-size: 1.5rem;"></i>
-                                            @endif
-                                        @endauth
-                                    </div>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                        <h6 class="subject-title mb-0 me-2">
-                                            {{ Str::limit($sujet->libelle, 40) }}
-                                            <span class="text-muted small">{{ $sujet->concours->libelle ?? '' }}</span>
-                                        </h6>
-                                        <span class="modern-badge badge-code">{{ $sujet->code }}</span>
-                                    </div>
-                                    <p class="subject-description mb-0 small">{{ Str::limit($sujet->description, 80) }}</p>
-                                </div>
-                            </div>
-
-                            <!-- Informations -->
-                            <div class="mb-3">
-                                <div class="row g-2 small">
-                                    <div class="col-6">
-                                        <div class="d-flex align-items-center">
-                                            <i class="bi bi-book me-1 text-muted"></i>
-                                            <span class="modern-badge badge-matiere">{{ $sujet->matiere->libelle ?? 'Non définie' }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="d-flex align-items-center">
-                                            <i class="bi bi-calendar me-1 text-muted"></i>
-                                            <span class="modern-badge badge-annee">{{ $sujet->annee }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="d-flex align-items-center">
-                                            <i class="bi bi-mortarboard me-1 text-muted"></i>
-                                            @if ($sujet->niveaux->count() > 0)
-                                                <span class="modern-badge badge-niveau">{{ $sujet->niveaux->first()->libelle }}</span>
-                                                @if ($sujet->niveaux->count() > 1)
-                                                    <small class="text-muted ms-1">+{{ $sujet->niveaux->count() - 1 }}</small>
-                                                @endif
-                                            @else
-                                                <span class="modern-badge badge-niveau">Tous niveaux</span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="d-flex align-items-center">
-                                            <i class="bi bi-tag me-1 text-muted"></i>
-                                            <span class="modern-badge badge-categorie">{{ $sujet->categorie->libelle ?? 'Générale' }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <small class="text-muted mb-3 d-block">
-                                <i class="bi bi-clock me-1"></i>Publié le {{ $sujet->created_at->format('d/m/Y') }}
-                            </small>
-
-                            <!-- Actions -->
-                            <div class="mt-auto">
-                                <a href="{{ route('sujet.front.show', $sujet->libelle) }}"
-                                    class="btn btn-detail-card text-white btn-sm w-100 mb-2">
-                                    <i class="bi bi-eye me-2"></i>Voir détails et télécharger
-                                </a>
-
-                                @auth
-                                    @if (auth()->user()->points > 0)
-                                        <div class="cost-tag">
-                                            <i class="bi bi-star-fill"></i> 1 point par fichier téléchargé
-                                        </div>
-                                    @else
-                                        <div class="cost-tag text-danger">
-                                            <i class="bi bi-exclamation-triangle"></i> Points insuffisants pour télécharger
-                                        </div>
-                                    @endif
-                                @else
-                                    <div class="cost-tag">
-                                        <i class="bi bi-lock"></i> Connexion requise pour télécharger
-                                    </div>
-                                @endauth
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @empty
-                <div class="col-12">
-                    <div class="alert alert-info d-flex align-items-center gap-2">
-                        <i class="bi bi-emoji-frown fs-4"></i>
-                        <div>
-                            Aucun sujet ne correspond à ces critères.
-                            <a href="{{ route('sujet.front.index') }}">Réinitialiser les filtres</a>.
-                        </div>
-                    </div>
-                </div>
-            @endforelse
+        <div class="row g-3" id="sujets-grid" data-next-page-url="{{ $sujets->hasMorePages() ? $sujets->nextPageUrl() : '' }}">
+            @include('frontend.pages.sujets.partials._cards', ['sujets' => $sujets])
         </div>
 
-        <div class="mt-4">
-            {{ $sujets->links() }}
+        <div class="text-center mt-4 mb-5" id="sujets-load-more-wrap"
+            style="{{ $sujets->hasMorePages() ? '' : 'display:none;' }}">
+            <button type="button" id="sujets-load-more" class="btn btn-load-more">
+                <span class="btn-label">Charger plus de sujets</span>
+                <span class="btn-spinner spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true" style="display:none;"></span>
+            </button>
+        </div>
+
+        <noscript>
+            <div class="mt-4 mb-5">
+                {{ $sujets->links() }}
+            </div>
+        </noscript>
+
+        <!-- Statistiques -->
+        <div class="row g-3 stats-band mb-5">
+            <div class="col-6 col-md-3 offset-md-3">
+                <div class="stats-card">
+                    <div class="stats-number">{{ number_format($totalSujetsDisponibles, 0, ',', ' ') }}</div>
+                    <div class="stats-label"><i class="bi bi-journal-text me-1"></i>Sujets disponibles</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stats-card stats-card-blue">
+                    <div class="stats-number">{{ number_format($totalTelechargements, 0, ',', ' ') }}</div>
+                    <div class="stats-label"><i class="bi bi-download me-1"></i>Téléchargements</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -398,6 +310,48 @@
                     width: '100%'
                 });
             });
+        </script>
+        <script>
+            (function () {
+                var grid = document.getElementById('sujets-grid');
+                var wrap = document.getElementById('sujets-load-more-wrap');
+                var button = document.getElementById('sujets-load-more');
+                var label = button.querySelector('.btn-label');
+                var spinner = button.querySelector('.btn-spinner');
+
+                var nextUrl = grid.dataset.nextPageUrl || null;
+                var busy = false;
+
+                button.addEventListener('click', function () {
+                    if (busy || !nextUrl) return;
+                    busy = true;
+                    button.disabled = true;
+                    label.textContent = 'Chargement...';
+                    spinner.style.display = 'inline-block';
+
+                    fetch(nextUrl, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                        .then(function (response) {
+                            nextUrl = response.headers.get('X-Next-Page') || null;
+                            return response.text();
+                        })
+                        .then(function (html) {
+                            grid.insertAdjacentHTML('beforeend', html);
+                            busy = false;
+                            button.disabled = false;
+                            label.textContent = 'Charger plus de sujets';
+                            spinner.style.display = 'none';
+                            if (!nextUrl) {
+                                wrap.style.display = 'none';
+                            }
+                        })
+                        .catch(function () {
+                            busy = false;
+                            button.disabled = false;
+                            label.textContent = 'Charger plus de sujets';
+                            spinner.style.display = 'none';
+                        });
+                });
+            })();
         </script>
     @endpush
 @endsection

@@ -54,12 +54,29 @@ class SujetFrontController extends Controller
                 ->paginate(12) // Nombre de sujets par page
                 ->withQueryString(); // Ajout de la pagination
 
+            // Chargement progressif (scroll infini) : ne renvoyer que les cartes de la
+            // page demandée, sans recharger tout le layout/les filtres.
+            if ($request->ajax()) {
+                $html = view('frontend.pages.sujets.partials._cards', compact('sujets'))->render();
+                return response($html)->header('X-Next-Page', $sujets->hasMorePages() ? $sujets->nextPageUrl() : '');
+            }
+
             // Pour afficher les filtres dans la vue
             $categories = Categorie::all();
             $niveaux = Niveau::all();
             $matieres = Matiere::all();
 
-            return view('frontend.pages.sujets.index', compact('sujets', 'categories', 'niveaux', 'matieres'));
+            // Statistiques affichées en bas de catalogue.
+            // Le compteur de téléchargements part d'une base de 1354 (historique de
+            // l'ancien site) à laquelle s'ajoutent les téléchargements réels de la
+            // plateforme actuelle.
+            $totalSujetsDisponibles = Sujet::active()->approuve()->count();
+            $totalTelechargements = 1354 + DownloadLog::count();
+
+            return view('frontend.pages.sujets.index', compact(
+                'sujets', 'categories', 'niveaux', 'matieres',
+                'totalSujetsDisponibles', 'totalTelechargements'
+            ));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Une erreur est survenue: ' . $e->getMessage());
         }
@@ -145,6 +162,16 @@ class SujetFrontController extends Controller
 
         // S'assurer que toutes les opérations DB sont terminées
         DB::commit();
+
+        // Pour les PDF, on tamponne le logo MaxiSujets sur une copie temporaire
+        // avant envoi (le fichier stocké n'est jamais modifié).
+        if (strtolower($media->extension) === 'pdf') {
+            $stampedPath = app(\App\Services\PdfWatermarkService::class)->stamp($media->getPath());
+
+            if ($stampedPath !== $media->getPath()) {
+                return response()->download($stampedPath, $media->file_name)->deleteFileAfterSend(true);
+            }
+        }
 
         // Lancer le téléchargement direct
         return response()->download($media->getPath(), $media->file_name);

@@ -16,6 +16,7 @@
         "orangehill/iseed": "^3.1",
         "phpmailer/phpmailer": "^6.10",
         "realrashid/sweet-alert": "^7.3",
+        "setasign/fpdi-fpdf": "^2.3",
         "spatie/laravel-backup": "^9.3",
         "spatie/laravel-medialibrary": "^11.12",
         "spatie/laravel-permission": "^6.17"

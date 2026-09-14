@@ -4,12 +4,13 @@
 @section('meta_description', 'Téléchargez le sujet ' . $sujet->libelle . ' (' . ($sujet->matiere->libelle ?? '') . '). Document éducatif avec corrigé disponible.')
 @section('meta_keywords', ($sujet->matiere->libelle ?? '') . ', sujet, exercice corrigé, téléchargement, ' . $sujet->libelle)
 @section('og_title', $sujet->libelle . ' - ' . ($sujet->matiere->libelle ?? 'Sujet'))
-@section('og_description', 'Téléchargez ce sujet' . ($sujet->matiere->libelle ? ' de ' . $sujet->matiere->libelle : '') . ' avec corrigé.')
+@section('og_description', 'Téléchargez ce sujet' . ($sujet->matiere?->libelle ? ' de ' . $sujet->matiere->libelle : '') . ' avec corrigé.')
 @section('og_image', asset('frontend/img/logo.png'))
 
 @section('content')
 
     @push('styles')
+        @include('frontend.pages.sujets.partials._card-styles')
         <style>
             .detail-card { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); border: none; }
 
@@ -40,9 +41,6 @@
             .alert-simple { border: none; border-radius: 8px; padding: 1rem; }
 
             .points-summary { background: var(--ms-blue-light); border-radius: 12px; padding: 1.25rem; text-align: center; }
-
-            .similar-card { border-radius: 12px; transition: transform 0.2s ease; height: 100%; }
-            .similar-card:hover { transform: translateY(-4px); }
         </style>
     @endpush
 
@@ -277,57 +275,8 @@
         @if ($similaires->isNotEmpty())
             <div class="mt-5">
                 <h4 class="mb-4"><i class="bi bi-collection me-2" style="color: var(--ms-blue);"></i>Sujets similaires</h4>
-                <div class="row g-4">
-                    @foreach ($similaires as $similaire)
-                        <div class="col-md-6 col-xl-3">
-                            <div class="card similar-card">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-start mb-3">
-                                        <div class="flex-shrink-0 me-3">
-                                            @php
-                                                $mediaSimilaire = $similaire->getFirstMedia('non_corrige');
-                                                $extSimilaire = $mediaSimilaire ? strtolower($mediaSimilaire->extension) : null;
-                                                $isPdfSimilaire = $extSimilaire === 'pdf';
-                                                $isDocSimilaire = in_array($extSimilaire, ['doc', 'docx']);
-                                            @endphp
-                                            <div class="d-flex align-items-center justify-content-center bg-light rounded"
-                                                style="width:60px; height:60px; overflow:hidden; position:relative;">
-                                                @auth
-                                                    @if ($mediaSimilaire && $isPdfSimilaire)
-                                                        <iframe src="{{ route('sujet.front.apercu', ['id' => $similaire->id, 'type' => 'non_corrige']) }}#toolbar=0&navpanes=0&scrollbar=0&view=FitH"
-                                                            style="position:absolute; top:0; left:0; width: 260px; height: 260px; border: none; transform: scale(0.23); transform-origin: top left; pointer-events: none;"
-                                                            tabindex="-1" title="Aperçu du sujet"></iframe>
-                                                    @elseif ($isDocSimilaire)
-                                                        <i class="bi bi-filetype-doc text-primary" style="font-size: 1.5rem;"></i>
-                                                    @else
-                                                        <i class="bi bi-file-earmark-text text-muted" style="font-size: 1.5rem;"></i>
-                                                    @endif
-                                                @else
-                                                    @if ($isPdfSimilaire)
-                                                        <i class="bi bi-filetype-pdf text-danger" style="font-size: 1.5rem;"></i>
-                                                    @elseif ($isDocSimilaire)
-                                                        <i class="bi bi-filetype-doc text-primary" style="font-size: 1.5rem;"></i>
-                                                    @else
-                                                        <i class="bi bi-file-earmark-text text-muted" style="font-size: 1.5rem;"></i>
-                                                    @endif
-                                                @endauth
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <h6 class="mb-2">{{ Str::limit($similaire->libelle, 35) }}</h6>
-                                            <div>
-                                                <span class="simple-badge primary">{{ $similaire->matiere->libelle ?? '' }}</span>
-                                                <span class="simple-badge warning">{{ $similaire->annee }}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <a href="{{ route('sujet.front.show', $similaire->libelle) }}" class="btn btn-sm btn-outline-primary w-100">
-                                        Voir ce sujet
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
+                <div class="row g-3">
+                    @include('frontend.pages.sujets.partials._cards', ['sujets' => $similaires])
                 </div>
             </div>
         @endif
