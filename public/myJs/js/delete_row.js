@@ -1,5 +1,10 @@
 function delete_row(route){
-    $('.delete').on("click", function(e) {
+    // Délégation sur document plutôt que liaison directe sur .delete : les tableaux
+    // utilisent DataTables (pagination côté client), qui détache du DOM les lignes
+    // des pages non affichées au moment du chargement. Une liaison directe ne
+    // s'attache donc qu'aux lignes de la page 1 — sur les pages suivantes, le clic
+    // suit alors le lien "#" sans jamais afficher la confirmation.
+    $(document).on("click", '.delete', function(e) {
         e.preventDefault();
         var Id = $(this).attr('data-id');
         var url = '/admin/'+ route +'/delete/'

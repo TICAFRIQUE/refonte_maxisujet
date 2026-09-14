@@ -9,14 +9,15 @@
                 display: flex;
                 gap: 0.5rem;
                 border-bottom: 1px solid var(--ms-border);
-                margin-bottom: 2rem;
+                margin-bottom: 1.25rem;
                 overflow-x: auto;
             }
 
             .account-nav .nav-link {
                 color: var(--ms-muted);
                 font-weight: 600;
-                padding: 0.75rem 1rem;
+                padding: 0.5rem 0.85rem;
+                font-size: 0.9rem;
                 border-bottom: 3px solid transparent;
                 white-space: nowrap;
             }
@@ -27,8 +28,8 @@
             }
 
             .dash-stat-icon {
-                width: 56px;
-                height: 56px;
+                width: 42px;
+                height: 42px;
                 border-radius: 50%;
                 display: inline-flex;
                 align-items: center;
@@ -39,8 +40,9 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                padding: 0.75rem 0;
+                padding: 0.5rem 0;
                 border-bottom: 1px solid var(--ms-border-subtle);
+                font-size: 0.9rem;
             }
 
             .bareme-item:last-child { border-bottom: none; }
@@ -59,10 +61,10 @@
         </nav>
         </div>
 
-        <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 mb-4 gap-2">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mt-3 mb-3 gap-2">
             <div>
-                <h1 class="fw-bold mb-1">Bonjour {{ $user->username }}</h1>
-                <p class="text-muted mb-0">Voici un résumé de votre activité sur MaxiSujets.</p>
+                <h1 class="fw-bold mb-1 fs-3">Bonjour {{ $user->username }}</h1>
+                <p class="text-muted mb-0 small">Voici un résumé de votre activité sur MaxiSujets.</p>
             </div>
             <span class="points-pill">
                 <i class="bi bi-star-fill"></i> {{ $points }} point{{ $points > 1 ? 's' : '' }}
@@ -77,48 +79,48 @@
         </div>
 
         <!-- Statistiques -->
-        <div class="row g-4 mb-5">
+        <div class="row g-3 mb-4">
             <div class="col-md-4">
                 <div class="card h-100">
-                    <div class="card-body text-center p-4">
-                        <div class="dash-stat-icon mb-3 mx-auto" style="background: var(--ms-blue-light);">
-                            <i class="bi bi-download" style="font-size: 1.5rem; color: var(--ms-blue);"></i>
+                    <div class="card-body text-center p-3">
+                        <div class="dash-stat-icon mb-2 mx-auto" style="background: var(--ms-blue-light);">
+                            <i class="bi bi-download" style="font-size: 1.1rem; color: var(--ms-blue);"></i>
                         </div>
-                        <h3 class="fw-bold mb-1" style="color: var(--ms-blue);">{{ $downloadsCount }}</h3>
+                        <h4 class="fw-bold mb-0" style="color: var(--ms-blue);">{{ $downloadsCount }}</h4>
                         <p class="text-muted mb-0 small">Téléchargements</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card h-100">
-                    <div class="card-body text-center p-4">
-                        <div class="dash-stat-icon mb-3 mx-auto" style="background: var(--ms-orange-light);">
-                            <i class="bi bi-file-earmark-text" style="font-size: 1.5rem; color: var(--ms-orange);"></i>
+                    <div class="card-body text-center p-3">
+                        <div class="dash-stat-icon mb-2 mx-auto" style="background: var(--ms-orange-light);">
+                            <i class="bi bi-file-earmark-text" style="font-size: 1.1rem; color: var(--ms-orange);"></i>
                         </div>
-                        <h3 class="fw-bold mb-1" style="color: var(--ms-orange-dark);">{{ $publishedSubjectsCount }}</h3>
+                        <h4 class="fw-bold mb-0" style="color: var(--ms-orange-dark);">{{ $publishedSubjectsCount }}</h4>
                         <p class="text-muted mb-0 small">Sujets publiés</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card h-100">
-                    <div class="card-body text-center p-4">
-                        <div class="dash-stat-icon mb-3 mx-auto" style="background: #fff4e0;">
-                            <i class="bi bi-star-fill" style="font-size: 1.5rem; color: #d97706;"></i>
+                    <div class="card-body text-center p-3">
+                        <div class="dash-stat-icon mb-2 mx-auto" style="background: #fff4e0;">
+                            <i class="bi bi-star-fill" style="font-size: 1.1rem; color: #d97706;"></i>
                         </div>
-                        <h3 class="fw-bold mb-1" style="color: #d97706;">{{ $points }}</h3>
+                        <h4 class="fw-bold mb-0" style="color: #d97706;">{{ $points }}</h4>
                         <p class="text-muted mb-0 small">Solde de points</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="row g-4 mb-5">
+        <div class="row g-3 mb-4">
             <!-- Barème de points -->
             <div class="col-lg-5">
                 <div class="card h-100">
-                    <div class="card-body p-4">
-                        <h5 class="fw-bold mb-3"><i class="bi bi-info-circle me-2" style="color: var(--ms-blue);"></i>Comment gagner des points ?</h5>
+                    <div class="card-body p-3">
+                        <h6 class="fw-bold mb-2"><i class="bi bi-info-circle me-2" style="color: var(--ms-blue);"></i>Comment gagner des points ?</h6>
                         <div class="bareme-item">
                             <span><i class="bi bi-person-plus me-2 text-muted"></i>Inscription</span>
                             <strong style="color: var(--ms-orange-dark);">+50</strong>
@@ -135,7 +137,7 @@
                             <span><i class="bi bi-download me-2 text-muted"></i>Téléchargement d'un sujet</span>
                             <strong class="text-danger">-1</strong>
                         </div>
-                        <a href="{{ route('user.sujet.create') }}" class="btn btn-warning w-100 mt-3">
+                        <a href="{{ route('user.sujet.create') }}" class="btn btn-warning w-100 mt-2">
                             <i class="bi bi-plus-circle me-2"></i>Publier un sujet maintenant
                         </a>
                     </div>
@@ -145,9 +147,9 @@
             <!-- Mes derniers sujets -->
             <div class="col-lg-7">
                 <div class="card h-100">
-                    <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="fw-bold mb-0"><i class="bi bi-file-earmark-text me-2" style="color: var(--ms-orange);"></i>Mes derniers sujets</h5>
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="fw-bold mb-0"><i class="bi bi-file-earmark-text me-2" style="color: var(--ms-orange);"></i>Mes derniers sujets</h6>
                             <a href="{{ route('user.sujet.index') }}" class="small text-decoration-none fw-semibold">Voir tout <i class="bi bi-arrow-right"></i></a>
                         </div>
                         @if ($mySujets->isEmpty())
@@ -158,9 +160,9 @@
                         @else
                             <div class="list-group list-group-flush">
                                 @foreach ($mySujets as $sujet)
-                                    <div class="list-group-item border-0 px-0 py-3 d-flex justify-content-between align-items-center">
+                                    <div class="list-group-item border-0 px-0 py-2 d-flex justify-content-between align-items-center">
                                         <div class="flex-grow-1 me-3">
-                                            <h6 class="mb-1 fw-semibold">{{ Str::limit($sujet->libelle, 40) }}</h6>
+                                            <h6 class="mb-1 fw-semibold small">{{ Str::limit($sujet->libelle, 40) }}</h6>
                                             <small class="text-muted">{{ $sujet->created_at->format('d/m/Y') }}</small>
                                         </div>
                                         @if ($sujet->approuve)
@@ -180,13 +182,13 @@
         <!-- Profil et téléchargements : sections empilées (pas d'onglets JS, toujours visibles) -->
         <div>
             <div id="section-profil" style="scroll-margin-top: 100px;">
-                <div class="card mb-4">
-                    <div class="card-body p-4">
-                        <h4 class="mb-1 fw-bold">Mon profil</h4>
-                        <p class="text-muted mb-4">Gérez vos informations personnelles</p>
+                <div class="card mb-3">
+                    <div class="card-body p-3">
+                        <h5 class="mb-1 fw-bold">Mon profil</h5>
+                        <p class="text-muted mb-3 small">Gérez vos informations personnelles</p>
 
                         @if ($errors->any())
-                            <div class="alert alert-danger">
+                            <div class="alert alert-danger py-2">
                                 <strong>Erreurs de validation :</strong>
                                 <ul class="mb-0 ps-3">
                                     @foreach ($errors->all() as $error)
@@ -196,23 +198,23 @@
                             </div>
                         @endif
 
-                        <form method="POST" action="{{ route('user.profile') }}" class="row g-3" novalidate>
+                        <form method="POST" action="{{ route('user.profile') }}" class="row g-2" novalidate>
                             @csrf
                             <div class="col-md-6">
-                                <label for="username" class="form-label fw-semibold">Nom d'utilisateur</label>
-                                <input type="text" name="username" id="username" class="form-control" value="{{ $user->username }}" required>
+                                <label for="username" class="form-label fw-semibold small mb-1">Nom d'utilisateur</label>
+                                <input type="text" name="username" id="username" class="form-control form-control-sm" value="{{ $user->username }}" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="email" class="form-label fw-semibold">Email</label>
-                                <input type="email" name="email" id="email" class="form-control" value="{{ $user->email }}" required>
+                                <label for="email" class="form-label fw-semibold small mb-1">Email</label>
+                                <input type="email" name="email" id="email" class="form-control form-control-sm" value="{{ $user->email }}" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="phone" class="form-label fw-semibold">Téléphone</label>
-                                <input type="text" name="phone" id="phone" class="form-control" value="{{ $user->phone }}">
+                                <label for="phone" class="form-label fw-semibold small mb-1">Téléphone</label>
+                                <input type="text" name="phone" id="phone" class="form-control form-control-sm" value="{{ $user->phone }}">
                             </div>
                             <div class="col-md-6">
-                                <label for="profil" class="form-label fw-semibold">Profil</label>
-                                <select name="profil" id="profil" class="form-select" required>
+                                <label for="profil" class="form-label fw-semibold small mb-1">Profil</label>
+                                <select name="profil" id="profil" class="form-select form-select-sm" required>
                                     <option value="eleve" {{ $user->profil == 'eleve' ? 'selected' : '' }}>Élève</option>
                                     <option value="etudiant" {{ $user->profil == 'etudiant' ? 'selected' : '' }}>Étudiant(e)</option>
                                     <option value="enseignant" {{ $user->profil == 'enseignant' ? 'selected' : '' }}>Enseignant</option>
@@ -220,13 +222,13 @@
                                 </select>
                             </div>
                             <div class="col-12">
-                                <label for="password" class="form-label fw-semibold">
+                                <label for="password" class="form-label fw-semibold small mb-1">
                                     Nouveau mot de passe <small class="text-muted">(laisser vide pour ne pas changer)</small>
                                 </label>
-                                <input type="password" name="password" id="password" class="form-control" autocomplete="new-password" placeholder="••••••••">
+                                <input type="password" name="password" id="password" class="form-control form-control-sm" autocomplete="new-password" placeholder="••••••••">
                             </div>
-                            <div class="col-12 text-end mt-4">
-                                <button type="submit" class="btn btn-primary px-4">
+                            <div class="col-12 text-end mt-2">
+                                <button type="submit" class="btn btn-primary btn-sm px-4">
                                     <i class="bi bi-check-circle me-2"></i>Mettre à jour le profil
                                 </button>
                             </div>
@@ -237,9 +239,9 @@
 
             <div id="section-telechargements" style="scroll-margin-top: 100px;">
                 <div class="card">
-                    <div class="card-body p-4">
-                        <h4 class="mb-1 fw-bold">Historique des téléchargements</h4>
-                        <p class="text-muted mb-4">L'ensemble de vos téléchargements récents</p>
+                    <div class="card-body p-3">
+                        <h5 class="mb-1 fw-bold">Historique des téléchargements</h5>
+                        <p class="text-muted mb-3 small">L'ensemble de vos téléchargements récents</p>
 
                         @if ($downloads->isEmpty())
                             <div class="text-center py-5">
@@ -250,9 +252,9 @@
                         @else
                             <div class="list-group list-group-flush">
                                 @foreach ($downloads as $download)
-                                    <div class="list-group-item border-0 px-0 py-3 d-flex justify-content-between align-items-center">
+                                    <div class="list-group-item border-0 px-0 py-2 d-flex justify-content-between align-items-center">
                                         <div class="flex-grow-1 me-3">
-                                            <h6 class="mb-1 fw-semibold">{{ $download->sujet->libelle ?? 'Sujet inconnu' }}</h6>
+                                            <h6 class="mb-1 fw-semibold small">{{ $download->sujet->libelle ?? 'Sujet inconnu' }}</h6>
                                             <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>{{ $download->created_at->format('d/m/Y à H:i') }}</small>
                                         </div>
                                         @if ($download->sujet)
@@ -265,7 +267,7 @@
                             </div>
 
                             @if ($downloads->hasPages())
-                                <div class="mt-4">{{ $downloads->links() }}</div>
+                                <div class="mt-3">{{ $downloads->links() }}</div>
                             @endif
                         @endif
                     </div>

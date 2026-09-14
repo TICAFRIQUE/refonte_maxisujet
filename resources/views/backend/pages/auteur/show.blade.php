@@ -60,7 +60,16 @@
                         </li>
                     </ul>
 
-                    <button type="button" class="btn {{ $auteur->statut === 'active' ? 'btn-danger' : 'btn-success' }} w-100 mt-3 toggle-statut-btn"
+                    <div class="d-flex gap-2 mt-3">
+                        <button type="button" class="btn btn-primary flex-fill" data-bs-toggle="modal" data-bs-target="#editAuteurModal">
+                            <i class="ri-pencil-line align-bottom"></i> Modifier
+                        </button>
+                        <button type="button" class="btn btn-danger flex-fill delete-auteur-btn" data-id="{{ $auteur->id }}">
+                            <i class="ri-delete-bin-line align-bottom"></i> Supprimer
+                        </button>
+                    </div>
+
+                    <button type="button" class="btn {{ $auteur->statut === 'active' ? 'btn-outline-danger' : 'btn-outline-success' }} w-100 mt-2 toggle-statut-btn"
                         data-id="{{ $auteur->id }}">
                         @if ($auteur->statut === 'active')
                             <i class="ri-forbid-line align-bottom"></i> Désactiver ce compte
@@ -164,6 +173,65 @@
             </div>
         </div>
     </div>
+
+    <!-- Modale de modification -->
+    <div class="modal fade" id="editAuteurModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="{{ route('auteur.update', $auteur->id) }}">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modifier {{ $auteur->username }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Nom d'utilisateur</label>
+                            <input type="text" name="username" class="form-control @error('username') is-invalid @enderror" value="{{ old('username', $auteur->username) }}" required>
+                            @error('username')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $auteur->email) }}" required>
+                            @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Téléphone</label>
+                            <input type="text" name="phone" class="form-control" value="{{ old('phone', $auteur->phone) }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Profil</label>
+                            <select name="profil" class="form-select">
+                                <option value="">—</option>
+                                @foreach (['eleve' => 'Élève', 'enseignant' => 'Enseignant', 'etudiant' => 'Étudiant', 'parent' => 'Parent', 'autre' => 'Autre'] as $value => $label)
+                                    <option value="{{ $value }}" {{ old('profil', $auteur->profil) === $value ? 'selected' : '' }}>{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Points</label>
+                            <input type="number" name="points" min="0" class="form-control" value="{{ old('points', $auteur->points ?? 0) }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Statut</label>
+                            <select name="statut" class="form-select" required>
+                                <option value="active" {{ old('statut', $auteur->statut) === 'active' ? 'selected' : '' }}>Actif</option>
+                                <option value="desactive" {{ old('statut', $auteur->statut) === 'desactive' ? 'selected' : '' }}>Désactivé</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('script')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
@@ -204,6 +272,48 @@
                     }
                 });
             });
+
+            $('.delete-auteur-btn').on('click', function(e) {
+                e.preventDefault();
+                const id = $(this).data('id');
+
+                Swal.fire({
+                    title: 'Supprimer cet auteur ?',
+                    text: "Cette action supprimera aussi définitivement tous ses sujets publiés. Elle est irréversible pour les sujets.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Supprimer',
+                    cancelButtonText: 'Annuler',
+                    customClass: {
+                        confirmButton: 'btn btn-danger w-xs me-2 mt-2',
+                        cancelButton: 'btn btn-secondary w-xs mt-2',
+                    },
+                    buttonsStyling: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: "GET",
+                            url: "{{ url('admin/auteur/delete') }}/" + id,
+                            dataType: "json",
+                            success: function(response) {
+                                if (response.status == 200) {
+                                    window.location.href = "{{ route('auteur.index') }}";
+                                } else {
+                                    Swal.fire('Erreur', "Une erreur est survenue lors de la suppression.", 'error');
+                                }
+                            },
+                            error: function() {
+                                Swal.fire('Erreur', "Une erreur est survenue lors de la suppression.", 'error');
+                            }
+                        });
+                    }
+                });
+            });
+
+            @if ($errors->any() && old('username'))
+                var editAuteurModal = new bootstrap.Modal(document.getElementById('editAuteurModal'));
+                editAuteurModal.show();
+            @endif
         });
     </script>
 @endsection

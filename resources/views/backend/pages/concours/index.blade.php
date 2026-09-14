@@ -124,7 +124,11 @@
             ]
         });
 
-        $(".delete").on('click', function(e) {
+        // Délégation sur document : DataTables (pagination côté client) détache du DOM
+        // les lignes hors page courante au moment du chargement — une liaison directe
+        // ne s'attache qu'à la page 1, et sur les autres pages le clic supprimerait
+        // sans jamais afficher la confirmation.
+        $(document).on('click', '.delete', function(e) {
             e.preventDefault();
             const id = $(this).data('id');
             Swal.fire({

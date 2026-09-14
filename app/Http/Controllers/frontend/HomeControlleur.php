@@ -14,10 +14,10 @@ class HomeControlleur extends Controller
     public function __invoke(Request $request)
     {
         try {
-            // récupérer les derniers sujets ajoutés (8 = 2 lignes de 4 sur la page d'accueil)
-            $sujetsRecents = \App\Models\Sujet::with(['categorie', 'niveaux', 'matiere'])
+            // récupérer les derniers sujets ajoutés (12 = 4 lignes de 3 sur la page d'accueil)
+            $sujetsRecents = \App\Models\Sujet::with(['categorie', 'niveaux', 'matiere', 'media'])
                 ->orderByDesc('created_at')
-                ->take(8)
+                ->take(12)
                 ->active()->approuve()
                 ->get();
 

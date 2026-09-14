@@ -2,31 +2,31 @@
 
 @section('content')
     <!-- Header avec gradient -->
-    <div class="container-fluid py-4" style="background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%); min-height: 200px;">
+    <div class="container-fluid py-2" style="background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%);">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-8">
-                    <h1 class="text-white mb-2 fw-bold">
+                    <h1 class="text-white mb-0 fw-bold fs-4">
                         <i class="bi bi-pencil-square me-2"></i>Modifier le sujet
                     </h1>
-                    <p class="text-white-50 mb-0">Apportez des modifications à votre sujet publié</p>
+                    <p class="text-white-50 mb-0 small">Apportez des modifications à votre sujet publié</p>
                 </div>
                 <div class="col-md-4 text-end">
-                    <div class="bg-white bg-opacity-25 rounded-pill px-4 py-2 d-inline-block">
+                    <div class="bg-white bg-opacity-25 rounded-pill px-3 py-1 d-inline-block">
                         <i class="bi bi-file-earmark-text text-white me-1"></i>
-                        <span class="text-white fw-bold">Modification</span>
+                        <span class="text-white fw-bold small">Modification</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="container mb-5">
+    <div class="container mb-4">
         <!-- Breadcrumb moderne -->
-        <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
+        <div class="d-flex align-items-center gap-3 mb-3 mt-3 flex-wrap">
             @include('frontend.components.retour')
         <nav aria-label="breadcrumb" class="mb-0 flex-grow-1">
-            <ol class="breadcrumb bg-light rounded-pill shadow-sm px-4 py-3">
+            <ol class="breadcrumb bg-light rounded-pill shadow-sm px-3 py-2 mb-0 small">
                 <li class="breadcrumb-item">
                     <a href="{{ route('user.dashboard') }}" class="text-primary text-decoration-none">
                         <i class="bi bi-speedometer2 me-1"></i>Mon espace
@@ -41,21 +41,21 @@
         </div>
 
         <!-- Information du sujet -->
-        <div class="row mb-4">
+        <div class="row mb-3">
             <div class="col-12">
                 <div class="card border-0 shadow-sm bg-info bg-opacity-10">
-                    <div class="card-body p-4">
+                    <div class="card-body p-2 px-3">
                         <div class="d-flex align-items-center">
-                            <div class="bg-info bg-opacity-25 rounded-circle p-3 me-3">
-                                <i class="bi bi-info-circle-fill text-info" style="font-size: 1.5rem;"></i>
+                            <div class="bg-info bg-opacity-25 rounded-circle p-2 me-2">
+                                <i class="bi bi-info-circle-fill text-info"></i>
                             </div>
                             <div class="flex-grow-1">
-                                <h6 class="mb-1 fw-bold text-info">Modification du sujet</h6>
-                                <p class="text-muted mb-2 small">
-                                    Code: <strong>{{ $sujet->code ?? 'N/A' }}</strong> • 
+                                <h6 class="mb-0 fw-bold text-info small">Modification du sujet</h6>
+                                <p class="text-muted mb-0" style="font-size: 0.8rem;">
+                                    Code: <strong>{{ $sujet->code ?? 'N/A' }}</strong> •
                                     Créé le: <strong>{{ $sujet->created_at->format('d/m/Y à H:i') }}</strong>
                                 </p>
-                                <small class="text-muted">
+                                <small class="text-muted" style="font-size: 0.75rem;">
                                     Après modification, votre sujet sera de nouveau soumis à validation
                                 </small>
                             </div>
@@ -64,20 +64,20 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="row justify-content-center">
             <div class="col-xl-10">
                 <div class="card border-0 shadow-lg">
-                    <div class="card-header bg-white border-0 p-4">
-                        <h4 class="mb-1 fw-bold text-info">
+                    <div class="card-header bg-white border-0 p-3">
+                        <h6 class="mb-1 fw-bold text-info">
                             <i class="bi bi-pencil-square me-2"></i>Modifier le sujet
-                        </h4>
+                        </h6>
                         <small class="text-muted">Modifiez les informations de votre sujet</small>
                     </div>
-                    <div class="card-body p-4">
+                    <div class="card-body p-3">
                         @if ($errors->any())
-                            <div class="alert alert-danger border-0 rounded-3 shadow-sm">
-                                <div class="d-flex align-items-center mb-3">
+                            <div class="alert alert-danger border-0 rounded-3 shadow-sm py-2">
+                                <div class="d-flex align-items-center mb-2">
                                     <div class="bg-danger bg-opacity-10 rounded-circle p-2 me-3">
                                         <i class="bi bi-exclamation-triangle-fill text-danger"></i>
                                     </div>
@@ -99,24 +99,24 @@
                             @csrf
                             
                             <!-- Section Informations générales -->
-                            <div class="mb-5">
-                                <div class="d-flex align-items-center mb-4">
-                                    <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-2">
                                         <i class="bi bi-info-circle-fill text-primary"></i>
                                     </div>
                                     <div>
-                                        <h5 class="mb-1 fw-bold">Informations générales</h5>
+                                        <h6 class="mb-0 fw-bold">Informations générales</h6>
                                         <small class="text-muted">Catégorie, matière et niveaux concernés</small>
                                     </div>
                                 </div>
 
-                                <div class="row g-4">
+                                <div class="row g-2">
                                     <div class="col-md-6">
-                                        <label for="categorie_id" class="form-label fw-semibold">
+                                        <label for="categorie_id" class="form-label fw-semibold small mb-1">
                                             <i class="bi bi-folder me-1 text-primary"></i>Catégorie *
                                         </label>
-                                        <select name="categorie_id" id="categorie_id" 
-                                                class="form-select form-select-lg rounded-3 border-2 @error('categorie_id') is-invalid @enderror" 
+                                        <select name="categorie_id" id="categorie_id"
+                                                class="form-select rounded-3 @error('categorie_id') is-invalid @enderror"
                                                 required>
                                             <option value="">Choisir une catégorie</option>
                                             @foreach($categories as $cat)
@@ -129,11 +129,11 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="matiere_id" class="form-label fw-semibold">
+                                        <label for="matiere_id" class="form-label fw-semibold small mb-1">
                                             <i class="bi bi-book me-1 text-primary"></i>Matière *
                                         </label>
-                                        <select name="matiere_id" id="matiere_id" 
-                                                class="form-select form-select-lg rounded-3 border-2 @error('matiere_id') is-invalid @enderror" 
+                                        <select name="matiere_id" id="matiere_id"
+                                                class="form-select rounded-3 @error('matiere_id') is-invalid @enderror"
                                                 required>
                                             <option value="">Choisir une matière</option>
                                             @foreach($matieres as $mat)
@@ -146,11 +146,11 @@
                                     </div>
 
                                     <div class="col-12">
-                                        <label for="niveaux" class="form-label fw-semibold">
+                                        <label for="niveaux" class="form-label fw-semibold small mb-1">
                                             <i class="bi bi-diagram-3 me-1 text-primary"></i>Niveaux concernés *
                                         </label>
-                                        <select name="niveaux[]" id="niveaux" 
-                                                class="form-select form-select-lg rounded-3 border-2 @error('niveaux') is-invalid @enderror" 
+                                        <select name="niveaux[]" id="niveaux"
+                                                class="form-select rounded-3 @error('niveaux') is-invalid @enderror"
                                                 multiple required>
                                             @foreach($data_niveaux as $cycle)
                                                 <optgroup label="{{ $cycle->libelle }}">
@@ -170,68 +170,68 @@
                                             @endforeach
                                         </select>
                                         @error('niveaux')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                        <div class="form-text">
+                                        <div class="form-text small">
                                             <i class="bi bi-info-circle me-1"></i>Maintenez Ctrl pour sélectionner plusieurs niveaux
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <hr class="my-5">
+                            <hr class="my-3">
 
                             <!-- Section Description -->
-                            <div class="mb-5">
-                                <div class="d-flex align-items-center mb-4">
-                                    <div class="bg-info bg-opacity-10 rounded-circle p-2 me-3">
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="bg-info bg-opacity-10 rounded-circle p-2 me-2">
                                         <i class="bi bi-file-text-fill text-info"></i>
                                     </div>
                                     <div>
-                                        <h5 class="mb-1 fw-bold">Description du sujet</h5>
+                                        <h6 class="mb-0 fw-bold">Description du sujet</h6>
                                         <small class="text-muted">Modifiez la description de votre sujet</small>
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-12">
-                                        <label for="description" class="form-label fw-semibold">
+                                        <label for="description" class="form-label fw-semibold small mb-1">
                                             <i class="bi bi-card-text me-1 text-info"></i>Description
                                         </label>
-                                        <textarea name="description" id="description" 
-                                                  class="form-control form-control-lg rounded-3 border-2 @error('description') is-invalid @enderror" 
-                                                  rows="5" placeholder="Décrivez le contenu du sujet, les compétences évaluées, la durée de l'épreuve...">{{ old('description', $sujet->description) }}</textarea>
+                                        <textarea name="description" id="description"
+                                                  class="form-control rounded-3 @error('description') is-invalid @enderror"
+                                                  rows="3" placeholder="Décrivez le contenu du sujet, les compétences évaluées, la durée de l'épreuve...">{{ old('description', $sujet->description) }}</textarea>
                                         @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
                                 </div>
                             </div>
 
-                            <hr class="my-5">
+                            <hr class="my-3">
 
                             <!-- Section Fichiers -->
-                            <div class="mb-5">
-                                <div class="d-flex align-items-center mb-4">
-                                    <div class="bg-success bg-opacity-10 rounded-circle p-2 me-3">
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="bg-success bg-opacity-10 rounded-circle p-2 me-2">
                                         <i class="bi bi-cloud-upload-fill text-success"></i>
                                     </div>
                                     <div>
-                                        <h5 class="mb-1 fw-bold">Fichiers du sujet</h5>
+                                        <h6 class="mb-0 fw-bold">Fichiers du sujet</h6>
                                         <small class="text-muted">Remplacez les fichiers si nécessaire (optionnel)</small>
                                     </div>
                                 </div>
 
-                                <div class="row g-4">
+                                <div class="row g-2">
                                     <div class="col-md-6">
-                                        <label for="fichier_sujet" class="form-label fw-semibold">
+                                        <label for="fichier_sujet" class="form-label fw-semibold small mb-1">
                                             <i class="bi bi-file-earmark-pdf me-1 text-success"></i>Fichier du sujet
                                         </label>
-                                        
+
                                         @if($sujet->getFirstMedia('non_corrige'))
-                                            <div class="card border-success border-2 mb-3">
-                                                <div class="card-body p-3 bg-success bg-opacity-5">
+                                            <div class="card border-success border-2 mb-2">
+                                                <div class="card-body p-2 bg-success bg-opacity-5">
                                                     <div class="d-flex align-items-center">
-                                                        <i class="bi bi-file-earmark-check text-success me-2" style="font-size: 1.5rem;"></i>
+                                                        <i class="bi bi-file-earmark-check text-success me-2"></i>
                                                         <div class="flex-grow-1">
-                                                            <h6 class="mb-1 text-success">Fichier actuel</h6>
-                                                            <small class="text-muted">Cliquez pour consulter le fichier existant</small>
+                                                            <h6 class="mb-0 text-success small">Fichier actuel</h6>
+                                                            <small class="text-muted" style="font-size: 0.75rem;">Cliquez pour consulter le fichier existant</small>
                                                         </div>
                                                         <a href="{{ route('sujet.front.apercu', ['id' => $sujet->id, 'type' => 'non_corrige']) }}" target="_blank"
                                                            class="btn btn-outline-success btn-sm">
@@ -241,34 +241,34 @@
                                                 </div>
                                             </div>
                                         @endif
-                                        
-                                        <div class="upload-area border-2 border-dashed rounded-3 p-4 text-center position-relative" id="uploadArea1">
+
+                                        <div class="upload-area border-2 border-dashed rounded-3 p-2 text-center position-relative" id="uploadArea1">
                                             <div class="upload-content">
-                                                <i class="bi bi-cloud-upload text-muted" style="font-size: 2rem;"></i>
-                                                <p class="mt-2 mb-1 fw-semibold text-muted">Remplacer le fichier</p>
-                                                <p class="small text-muted">ou cliquez pour parcourir</p>
+                                                <i class="bi bi-cloud-upload text-muted" style="font-size: 1.4rem;"></i>
+                                                <p class="mt-1 mb-0 fw-semibold text-muted small">Remplacer le fichier</p>
+                                                <p class="small text-muted mb-0">ou cliquez pour parcourir</p>
                                                 <small class="text-success">PDF, DOC, DOCX • Max 10 MB</small>
                                             </div>
-                                            <input type="file" name="non_corrige" id="fichier_sujet" 
-                                                   class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0 @error('non_corrige') is-invalid @enderror" 
+                                            <input type="file" name="non_corrige" id="fichier_sujet"
+                                                   class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0 @error('non_corrige') is-invalid @enderror"
                                                    accept=".pdf,.doc,.docx" onchange="handleFileSelect(this, 1)">
                                         </div>
                                         @error('fichier_sujet')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="fichier_corrige" class="form-label fw-semibold">
+                                        <label for="fichier_corrige" class="form-label fw-semibold small mb-1">
                                             <i class="bi bi-file-earmark-check me-1 text-success"></i>Corrigé (optionnel)
                                         </label>
-                                        
+
                                         @if($sujet->getFirstMedia('corrige'))
-                                            <div class="card border-success border-2 mb-3">
-                                                <div class="card-body p-3 bg-success bg-opacity-5">
+                                            <div class="card border-success border-2 mb-2">
+                                                <div class="card-body p-2 bg-success bg-opacity-5">
                                                     <div class="d-flex align-items-center">
-                                                        <i class="bi bi-file-earmark-check text-success me-2" style="font-size: 1.5rem;"></i>
+                                                        <i class="bi bi-file-earmark-check text-success me-2"></i>
                                                         <div class="flex-grow-1">
-                                                            <h6 class="mb-1 text-success">Corrigé actuel</h6>
-                                                            <small class="text-muted">Cliquez pour consulter le corrigé existant</small>
+                                                            <h6 class="mb-0 text-success small">Corrigé actuel</h6>
+                                                            <small class="text-muted" style="font-size: 0.75rem;">Cliquez pour consulter le corrigé existant</small>
                                                         </div>
                                                         <a href="{{ route('sujet.front.apercu', ['id' => $sujet->id, 'type' => 'corrige']) }}" target="_blank"
                                                            class="btn btn-outline-success btn-sm">
@@ -278,16 +278,16 @@
                                                 </div>
                                             </div>
                                         @endif
-                                        
-                                        <div class="upload-area border-2 border-dashed rounded-3 p-4 text-center position-relative" id="uploadArea2">
+
+                                        <div class="upload-area border-2 border-dashed rounded-3 p-2 text-center position-relative" id="uploadArea2">
                                             <div class="upload-content">
-                                                <i class="bi bi-cloud-upload text-muted" style="font-size: 2rem;"></i>
-                                                <p class="mt-2 mb-1 fw-semibold text-muted">{{ $sujet->getFirstMedia('corrige') ? 'Remplacer' : 'Ajouter' }} le corrigé</p>
-                                                <p class="small text-muted">ou cliquez pour parcourir</p>
+                                                <i class="bi bi-cloud-upload text-muted" style="font-size: 1.4rem;"></i>
+                                                <p class="mt-1 mb-0 fw-semibold text-muted small">{{ $sujet->getFirstMedia('corrige') ? 'Remplacer' : 'Ajouter' }} le corrigé</p>
+                                                <p class="small text-muted mb-0">ou cliquez pour parcourir</p>
                                                 <small class="text-success">PDF, DOC, DOCX • Max 10 MB</small>
                                             </div>
-                                            <input type="file" name="corrige" id="fichier_corrige" 
-                                                   class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0 @error('corrige') is-invalid @enderror" 
+                                            <input type="file" name="corrige" id="fichier_corrige"
+                                                   class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0 @error('corrige') is-invalid @enderror"
                                                    accept=".pdf,.doc,.docx" onchange="handleFileSelect(this, 2)">
                                         </div>
                                         @error('fichier_corrige')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
@@ -296,16 +296,16 @@
                             </div>
 
                             <!-- Actions -->
-                            <div class="text-center pt-4 border-top">
-                                <div class="d-flex justify-content-center gap-3">
-                                    <a href="{{ route('user.sujet.index') }}" class="btn btn-outline-secondary btn-lg rounded-pill px-5">
+                            <div class="text-center pt-3 border-top">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a href="{{ route('user.sujet.index') }}" class="btn btn-outline-secondary rounded-pill px-4">
                                         <i class="bi bi-arrow-left me-2"></i>Retour
                                     </a>
-                                    <button type="submit" class="btn btn-info btn-lg rounded-pill px-5 fw-bold">
+                                    <button type="submit" class="btn btn-info rounded-pill px-4 fw-bold">
                                         <i class="bi bi-check-circle me-2"></i>Enregistrer les modifications
                                     </button>
                                 </div>
-                                <p class="text-muted mt-3 small">
+                                <p class="text-muted mt-2 small mb-0">
                                     <i class="bi bi-info-circle me-1"></i>
                                     Votre sujet modifié sera de nouveau soumis à validation
                                 </p>
@@ -339,21 +339,21 @@
         background-color: rgba(25, 135, 84, 0.05);
     }
     .select2-container--default .select2-selection--multiple {
-        border: 2px solid #dee2e6 !important;
-        border-radius: 0.75rem !important;
-        min-height: 48px !important;
+        border: 1px solid #dee2e6 !important;
+        border-radius: 0.5rem !important;
+        min-height: 38px !important;
     }
     .select2-container--default .select2-selection--single {
-        border: 2px solid #dee2e6 !important;
-        border-radius: 0.75rem !important;
-        height: 48px !important;
+        border: 1px solid #dee2e6 !important;
+        border-radius: 0.5rem !important;
+        height: 38px !important;
     }
     .select2-container--default .select2-selection--single .select2-selection__rendered {
-        line-height: 44px !important;
-        padding-left: 12px !important;
+        line-height: 36px !important;
+        padding-left: 10px !important;
     }
     .select2-container--default .select2-selection--single .select2-selection__arrow {
-        height: 44px !important;
+        height: 36px !important;
     }
 </style>
 @endpush

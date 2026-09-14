@@ -167,9 +167,9 @@ class UserControlleur extends Controller
                 $pointsService->giveDailyLoginPoints($user);
 
                 if ($user->points > $pointsAvant) {
-                    Alert::success('Félicitations !', 'Bienvenue ! Vous avez gagné ' . \App\Services\PointsService::POINTS_CONNEXION_QUOTIDIENNE . ' points pour votre connexion.');
+                    Alert::success('Félicitations !', 'Bienvenue ! Vous avez gagné ' . \App\Services\PointsService::POINTS_CONNEXION_QUOTIDIENNE . ' points pour votre connexion.')->toToast()->timerProgressBar();
                 } else {
-                    Alert::success('Bienvenue', 'Connexion réussie.');
+                    Alert::success('Bienvenue', 'Connexion réussie.')->toToast()->timerProgressBar();
                 }
                 return redirect()->intended(route('accueil'));
             }
@@ -189,7 +189,7 @@ class UserControlleur extends Controller
     {
         try {
             Auth::logout();
-            Alert::success('Déconnexion réussie', 'Vous avez été déconnecté avec succès.');
+            Alert::success('Déconnexion réussie', 'Vous avez été déconnecté avec succès.')->toToast()->timerProgressBar();
             return redirect()->route('accueil');
         } catch (\Exception $e) {
             Alert::error('Erreur', 'Erreur lors de la déconnexion : ' . $e->getMessage());

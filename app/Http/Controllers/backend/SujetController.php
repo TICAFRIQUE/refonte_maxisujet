@@ -64,11 +64,20 @@ class SujetController extends Controller
             ->get();
         $sujetsNonApprouves = Sujet::where('approuve', 0)->count();
 
+        // KPI affichés en haut de la liste (comptes globaux, indépendants des filtres actifs).
+        $kpiSujets = [
+            'total' => Sujet::count(),
+            'ajoutes_aujourdhui' => Sujet::whereDate('created_at', today())->count(),
+            'approuves' => Sujet::where('approuve', 1)->count(),
+            'non_approuves' => $sujetsNonApprouves,
+            'telechargements' => \App\Models\DownloadLog::count(),
+        ];
+
         $categories = Categorie::orderBy('libelle')->get();
         $matieres = Matiere::orderBy('libelle')->get();
         $concoursList = Concours::orderBy('libelle')->get();
 
-        return view('backend.pages.sujet.index', compact('sujets', 'sujetsNonApprouves', 'categories', 'matieres', 'concoursList'));
+        return view('backend.pages.sujet.index', compact('sujets', 'sujetsNonApprouves', 'kpiSujets', 'categories', 'matieres', 'concoursList'));
     }
 
     /**

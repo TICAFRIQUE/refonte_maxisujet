@@ -18,8 +18,14 @@
             padding: 2rem 1.5rem;
         }
 
-        .form-control:focus {
-            border-color: var(--ms-orange);
+        .form-control,
+        .form-select {
+            border: 1.5px solid var(--ms-orange);
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--ms-orange-dark);
             box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.15);
         }
 

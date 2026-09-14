@@ -27,7 +27,9 @@
                 </div>
 
                 <div class="subject-meta-sm d-flex flex-wrap gap-1 my-1">
-                    <span class="tag-sm tag-matiere">{{ Str::limit($sujet->matiere->libelle ?? 'N/D', 14) }}</span>
+                    @if ($sujet->matiere)
+                        <span class="tag-sm tag-matiere">{{ Str::limit($sujet->matiere->libelle, 14) }}</span>
+                    @endif
                     @if ($sujet->niveaux->count() > 0)
                         <span class="tag-sm tag-niveau">{{ Str::limit($sujet->niveaux->first()->libelle, 12) }}</span>
                         @if ($sujet->niveaux->count() > 1)

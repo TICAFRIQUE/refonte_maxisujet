@@ -66,6 +66,8 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
         route::get('', 'index')->name('auteur.index');
         route::get('show/{id}', 'show')->name('auteur.show');
         route::get('toggle-statut/{id}', 'toggleStatut')->name('auteur.toggle-statut')->middleware('can:modifier-auteur');
+        route::post('update/{id}', 'update')->name('auteur.update')->middleware('can:modifier-auteur');
+        route::get('delete/{id}', 'delete')->name('auteur.delete')->middleware('can:supprimer-auteur');
     });
 
     //permission

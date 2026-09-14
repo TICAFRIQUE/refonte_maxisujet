@@ -17,10 +17,10 @@
         </nav>
         </div>
 
-        <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 mb-4 gap-2">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mt-3 mb-3 gap-2">
             <div>
-                <h1 class="fw-bold mb-1">Publier un sujet</h1>
-                <p class="text-muted mb-0">Partagez vos ressources pédagogiques avec la communauté</p>
+                <h1 class="fw-bold mb-1 fs-3">Publier un sujet</h1>
+                <p class="text-muted mb-0 small">Partagez vos ressources pédagogiques avec la communauté</p>
             </div>
             <span class="points-pill">
                 <i class="bi bi-star-fill"></i> +100 points par sujet approuvé
@@ -28,16 +28,16 @@
         </div>
 
         <!-- Guide d'aide -->
-        <div class="row mb-4">
+        <div class="row mb-3">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-body p-4">
+                    <div class="card-body p-2 px-3">
                         <div class="row align-items-center">
                             <div class="col-md-8">
-                                <h6 class="fw-bold mb-2">
+                                <h6 class="fw-bold mb-1 small">
                                     <i class="bi bi-lightbulb me-2" style="color: var(--ms-blue);"></i>Conseils pour une publication réussie
                                 </h6>
-                                <p class="text-muted mb-0 small">
+                                <p class="text-muted mb-0" style="font-size: 0.8rem;">
                                     Vérifiez la qualité de vos fichiers • Ajoutez une description détaillée •
                                     Sélectionnez les niveaux appropriés • Respectez les formats PDF/DOC
                                 </p>
@@ -58,26 +58,26 @@
         <div class="row justify-content-center">
             <div class="col-xl-10">
                 <div class="card">
-                    <div class="card-header bg-white border-0 p-4">
+                    <div class="card-header bg-white border-0 p-3">
                         <div class="row align-items-center">
                             <div class="col-md-8">
-                                <h4 class="mb-1 fw-bold">
+                                <h6 class="mb-1 fw-bold">
                                     <i class="bi bi-file-earmark-plus me-2" style="color: var(--ms-orange);"></i>Nouveau sujet
-                                </h4>
+                                </h6>
                                 <small class="text-muted">Remplissez tous les champs obligatoires pour publier votre sujet</small>
                             </div>
                             <div class="col-md-4 text-end">
-                                <div class="progress" style="height: 6px;">
+                                <div class="progress" style="height: 5px;">
                                     <div class="progress-bar" role="progressbar" style="width: 0%; background: var(--ms-blue);" id="formProgress"></div>
                                 </div>
                                 <small class="text-muted mt-1 d-block">Progression : <span id="progressText">0%</span></small>
                             </div>
                         </div>
                     </div>
-                    <div class="card-body p-4">
+                    <div class="card-body p-3">
                         @if ($errors->any())
-                            <div class="alert alert-danger border-0 rounded-3 shadow-sm">
-                                <div class="d-flex align-items-center mb-3">
+                            <div class="alert alert-danger border-0 rounded-3 shadow-sm py-2">
+                                <div class="d-flex align-items-center mb-2">
                                     <div class="rounded-circle p-2 me-3" style="background: var(--ms-danger-bg);">
                                         <i class="bi bi-exclamation-triangle-fill" style="color: var(--ms-danger);"></i>
                                     </div>
@@ -99,24 +99,24 @@
                             @csrf
                             
                             <!-- Section Informations générales -->
-                            <div class="mb-5">
-                                <div class="d-flex align-items-center mb-4">
-                                    <div class="rounded-circle p-2 me-3" style="background: var(--ms-blue-light);">
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="rounded-circle p-2 me-2" style="background: var(--ms-blue-light);">
                                         <i class="bi bi-info-circle-fill" style="color: var(--ms-blue);"></i>
                                     </div>
                                     <div>
-                                        <h5 class="mb-1 fw-bold">Informations générales</h5>
+                                        <h6 class="mb-0 fw-bold">Informations générales</h6>
                                         <small class="text-muted">Catégorie, matière et niveaux concernés</small>
                                     </div>
                                 </div>
 
-                                <div class="row g-4">
+                                <div class="row g-2">
                                     <div class="col-md-6">
-                                        <label for="categorie_id" class="form-label fw-semibold">
+                                        <label for="categorie_id" class="form-label fw-semibold small mb-1">
                                             <i class="bi bi-folder me-1 text-primary"></i>Catégorie *
                                         </label>
-                                        <select name="categorie_id" id="categorie_id" 
-                                                class="form-select form-select-lg rounded-3 border-2 @error('categorie_id') is-invalid @enderror" 
+                                        <select name="categorie_id" id="categorie_id"
+                                                class="form-select rounded-3 @error('categorie_id') is-invalid @enderror"
                                                 required onchange="updateProgress()">
                                             <option value="">Choisir une catégorie</option>
                                             @foreach ($categories as $cat)
@@ -129,11 +129,11 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="matiere_id" class="form-label fw-semibold">
+                                        <label for="matiere_id" class="form-label fw-semibold small mb-1">
                                             <i class="bi bi-book me-1 text-primary"></i>Matière *
                                         </label>
-                                        <select name="matiere_id" id="matiere_id" 
-                                                class="form-select form-select-lg rounded-3 border-2 @error('matiere_id') is-invalid @enderror" 
+                                        <select name="matiere_id" id="matiere_id"
+                                                class="form-select rounded-3 @error('matiere_id') is-invalid @enderror"
                                                 required onchange="updateProgress()">
                                             <option value="">Choisir une matière</option>
                                             @foreach ($matieres as $mat)
@@ -146,11 +146,11 @@
                                     </div>
 
                                     <div class="col-12">
-                                        <label for="niveaux" class="form-label fw-semibold">
+                                        <label for="niveaux" class="form-label fw-semibold small mb-1">
                                             <i class="bi bi-diagram-3 me-1 text-primary"></i>Niveaux concernés *
                                         </label>
-                                        <select name="niveaux[]" id="niveaux" 
-                                                class="form-select form-select-lg rounded-3 border-2 @error('niveaux') is-invalid @enderror" 
+                                        <select name="niveaux[]" id="niveaux"
+                                                class="form-select rounded-3 @error('niveaux') is-invalid @enderror"
                                                 multiple required onchange="updateProgress()">
                                             @foreach ($data_niveaux as $cycle)
                                                 <optgroup label="{{ $cycle->libelle }}">
@@ -177,65 +177,65 @@
                                             @endforeach
                                         </select>
                                         @error('niveaux')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                        <div class="form-text">
+                                        <div class="form-text small">
                                             <i class="bi bi-info-circle me-1"></i>Maintenez Ctrl pour sélectionner plusieurs niveaux
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <hr class="my-5">
+                            <hr class="my-3">
 
                             <!-- Section Contenu -->
-                            <div class="mb-5">
-                                <div class="d-flex align-items-center mb-4">
-                                    <div class="rounded-circle p-2 me-3" style="background: var(--ms-blue-light);">
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="rounded-circle p-2 me-2" style="background: var(--ms-blue-light);">
                                         <i class="bi bi-file-text-fill" style="color: var(--ms-blue);"></i>
                                     </div>
                                     <div>
-                                        <h5 class="mb-1 fw-bold">Description du sujet</h5>
+                                        <h6 class="mb-0 fw-bold">Description du sujet</h6>
                                         <small class="text-muted">Ajoutez une description détaillée pour aider les utilisateurs</small>
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-12">
-                                        <label for="description" class="form-label fw-semibold">
+                                        <label for="description" class="form-label fw-semibold small mb-1">
                                             <i class="bi bi-card-text me-1"></i>Description
                                         </label>
-                                        <textarea name="description" id="description" 
-                                                  class="form-control form-control-lg rounded-3 border-2 @error('description') is-invalid @enderror" 
-                                                  rows="5" placeholder="Décrivez le contenu du sujet, les compétences évaluées, la durée de l'épreuve..." 
+                                        <textarea name="description" id="description"
+                                                  class="form-control rounded-3 @error('description') is-invalid @enderror"
+                                                  rows="3" placeholder="Décrivez le contenu du sujet, les compétences évaluées, la durée de l'épreuve..."
                                                   onkeyup="updateProgress()">{{ old('description') }}</textarea>
                                         @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
                                 </div>
                             </div>
 
-                            <hr class="my-5">
+                            <hr class="my-3">
 
                             <!-- Section Fichiers -->
-                            <div class="mb-5">
-                                <div class="d-flex align-items-center mb-4">
-                                    <div class="rounded-circle p-2 me-3" style="background: var(--ms-orange-light);">
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="rounded-circle p-2 me-2" style="background: var(--ms-orange-light);">
                                         <i class="bi bi-cloud-upload-fill" style="color: var(--ms-orange);"></i>
                                     </div>
                                     <div>
-                                        <h5 class="mb-1 fw-bold">Fichiers du sujet</h5>
+                                        <h6 class="mb-0 fw-bold">Fichiers du sujet</h6>
                                         <small class="text-muted">Téléchargez le sujet et son corrigé (optionnel)</small>
                                     </div>
                                 </div>
 
-                                <div class="row g-4">
+                                <div class="row g-2">
                                     <div class="col-md-6">
-                                        <label for="fichier_sujet" class="form-label fw-semibold">
+                                        <label for="fichier_sujet" class="form-label fw-semibold small mb-1">
                                             <i class="bi bi-file-earmark-pdf me-1"></i>Fichier du sujet *
                                         </label>
-                                        <div class="upload-area border-2 border-dashed rounded-3 p-4 text-center position-relative" id="uploadArea1">
+                                        <div class="upload-area border-2 border-dashed rounded-3 p-2 text-center position-relative" id="uploadArea1">
                                             <div class="upload-content">
-                                                <i class="bi bi-cloud-upload text-muted" style="font-size: 2rem;"></i>
-                                                <p class="mt-2 mb-1 fw-semibold text-muted">Glissez votre fichier ici</p>
-                                                <p class="small text-muted">ou cliquez pour parcourir</p>
+                                                <i class="bi bi-cloud-upload text-muted" style="font-size: 1.4rem;"></i>
+                                                <p class="mt-1 mb-0 fw-semibold text-muted small">Glissez votre fichier ici</p>
+                                                <p class="small text-muted mb-0">ou cliquez pour parcourir</p>
                                                 <small class="text-muted">PDF, DOC, DOCX • Max 10 MB</small>
                                             </div>
                                             <input type="file" name="non_corrige" id="fichier_sujet"
@@ -246,14 +246,14 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="fichier_corrige" class="form-label fw-semibold">
+                                        <label for="fichier_corrige" class="form-label fw-semibold small mb-1">
                                             <i class="bi bi-file-earmark-check me-1"></i>Corrigé (optionnel)
                                         </label>
-                                        <div class="upload-area border-2 border-dashed rounded-3 p-4 text-center position-relative" id="uploadArea2">
+                                        <div class="upload-area border-2 border-dashed rounded-3 p-2 text-center position-relative" id="uploadArea2">
                                             <div class="upload-content">
-                                                <i class="bi bi-cloud-upload text-muted" style="font-size: 2rem;"></i>
-                                                <p class="mt-2 mb-1 fw-semibold text-muted">Glissez votre corrigé ici</p>
-                                                <p class="small text-muted">ou cliquez pour parcourir</p>
+                                                <i class="bi bi-cloud-upload text-muted" style="font-size: 1.4rem;"></i>
+                                                <p class="mt-1 mb-0 fw-semibold text-muted small">Glissez votre corrigé ici</p>
+                                                <p class="small text-muted mb-0">ou cliquez pour parcourir</p>
                                                 <small class="text-muted">PDF, DOC, DOCX • Max 10 MB</small>
                                             </div>
                                             <input type="file" name="corrige" id="fichier_corrige"
@@ -265,27 +265,27 @@
                                 </div>
                             </div>
 
-                            <hr class="my-5">
+                            <hr class="my-3">
 
                             <!-- Section Métadonnées -->
-                            <div class="mb-5">
-                                <div class="d-flex align-items-center mb-4">
-                                    <div class="rounded-circle p-2 me-3" style="background: var(--ms-blue-light);">
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="rounded-circle p-2 me-2" style="background: var(--ms-blue-light);">
                                         <i class="bi bi-calendar-event-fill" style="color: var(--ms-blue);"></i>
                                     </div>
                                     <div>
-                                        <h5 class="mb-1 fw-bold">Informations complémentaires</h5>
+                                        <h6 class="mb-0 fw-bold">Informations complémentaires</h6>
                                         <small class="text-muted">Année scolaire du sujet</small>
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <label for="annee" class="form-label fw-semibold">
+                                        <label for="annee" class="form-label fw-semibold small mb-1">
                                             <i class="bi bi-calendar3 me-1"></i>Année
                                         </label>
-                                        <select name="annee" id="annee" 
-                                                class="form-select form-select-lg rounded-3 border-2 @error('annee') is-invalid @enderror">
+                                        <select name="annee" id="annee"
+                                                class="form-select rounded-3 @error('annee') is-invalid @enderror">
                                             <option value="">Sélectionner une année</option>
                                             @for ($year = date('Y'); $year >= 1990; $year--)
                                                 <option value="{{ $year }}" {{ old('annee') == $year ? 'selected' : '' }}>
@@ -299,16 +299,16 @@
                             </div>
 
                             <!-- Actions -->
-                            <div class="text-center pt-4 border-top">
-                                <div class="d-flex justify-content-center gap-3">
-                                    <a href="{{ route('user.dashboard') }}" class="btn btn-outline-secondary btn-lg px-5">
+                            <div class="text-center pt-3 border-top">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a href="{{ route('user.dashboard') }}" class="btn btn-outline-secondary px-4">
                                         <i class="bi bi-arrow-left me-2"></i>Annuler
                                     </a>
-                                    <button type="submit" class="btn btn-warning btn-lg px-5 fw-bold" id="submitBtn">
+                                    <button type="submit" class="btn btn-warning px-4 fw-bold" id="submitBtn">
                                         <i class="bi bi-send me-2"></i>Publier le sujet
                                     </button>
                                 </div>
-                                <p class="text-muted mt-3 small">
+                                <p class="text-muted mt-2 small mb-0">
                                     <i class="bi bi-info-circle me-1"></i>
                                     Votre sujet sera examiné par nos modérateurs avant publication
                                 </p>
@@ -341,21 +341,21 @@
         background-color: var(--ms-success-bg);
     }
     .select2-container--default .select2-selection--multiple {
-        border: 2px solid #dee2e6 !important;
-        border-radius: 0.75rem !important;
-        min-height: 48px !important;
+        border: 1px solid #dee2e6 !important;
+        border-radius: 0.5rem !important;
+        min-height: 38px !important;
     }
     .select2-container--default .select2-selection--single {
-        border: 2px solid #dee2e6 !important;
-        border-radius: 0.75rem !important;
-        height: 48px !important;
+        border: 1px solid #dee2e6 !important;
+        border-radius: 0.5rem !important;
+        height: 38px !important;
     }
     .select2-container--default .select2-selection--single .select2-selection__rendered {
-        line-height: 44px !important;
-        padding-left: 12px !important;
+        line-height: 36px !important;
+        padding-left: 10px !important;
     }
     .select2-container--default .select2-selection--single .select2-selection__arrow {
-        height: 44px !important;
+        height: 36px !important;
     }
 </style>
 @endpush

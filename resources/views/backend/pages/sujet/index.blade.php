@@ -22,7 +22,95 @@
     @endcomponent
 
     <div class="row mb-3">
-        <div class="col-lg-9">
+        <div class="col-xl-2 col-md-4">
+            <div class="card card-animate mb-2">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <p class="text-uppercase fw-medium text-muted mb-0">Total sujets</p>
+                            <h4 class="fs-22 fw-semibold mb-0 mt-1">{{ $kpiSujets['total'] }}</h4>
+                        </div>
+                        <div class="avatar-sm flex-shrink-0">
+                            <span class="avatar-title rounded-circle fs-3 bg-primary-subtle text-primary">
+                                <i class="ri-file-text-line"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-md-4">
+            <div class="card card-animate mb-2">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <p class="text-uppercase fw-medium text-muted mb-0">Ajoutés aujourd'hui</p>
+                            <h4 class="fs-22 fw-semibold mb-0 mt-1">{{ $kpiSujets['ajoutes_aujourdhui'] }}</h4>
+                        </div>
+                        <div class="avatar-sm flex-shrink-0">
+                            <span class="avatar-title rounded-circle fs-3 bg-info-subtle text-info">
+                                <i class="ri-calendar-event-line"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-md-4">
+            <div class="card card-animate mb-2">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <p class="text-uppercase fw-medium text-muted mb-0">Approuvés</p>
+                            <h4 class="fs-22 fw-semibold mb-0 mt-1">{{ $kpiSujets['approuves'] }}</h4>
+                        </div>
+                        <div class="avatar-sm flex-shrink-0">
+                            <span class="avatar-title rounded-circle fs-3 bg-success-subtle text-success">
+                                <i class="ri-checkbox-circle-line"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-md-4">
+            <div class="card card-animate mb-2">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <p class="text-uppercase fw-medium text-muted mb-0">En attente</p>
+                            <h4 class="fs-22 fw-semibold mb-0 mt-1">{{ $kpiSujets['non_approuves'] }}</h4>
+                        </div>
+                        <div class="avatar-sm flex-shrink-0">
+                            <span class="avatar-title rounded-circle fs-3 bg-warning-subtle text-warning">
+                                <i class="ri-error-warning-line"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-md-4">
+            <div class="card card-animate mb-2">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <p class="text-uppercase fw-medium text-muted mb-0">Téléchargements</p>
+                            <h4 class="fs-22 fw-semibold mb-0 mt-1">{{ $kpiSujets['telechargements'] }}</h4>
+                        </div>
+                        <div class="avatar-sm flex-shrink-0">
+                            <span class="avatar-title rounded-circle fs-3 bg-secondary-subtle text-secondary">
+                                <i class="ri-download-2-line"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-lg-12">
             <form method="GET" action="{{ route('sujet.index') }}" class="row g-2 align-items-end">
                 <div class="col-md-2">
                     <label for="approuve" class="form-label mb-0">Approuvé</label>
@@ -80,12 +168,6 @@
                     </div>
                 @endif
             </form>
-        </div>
-        <div class="col-lg-3 text-end">
-            <div class="alert alert-warning py-2 px-3 mb-0 d-inline-block">
-                <i class="ri-error-warning-line"></i>
-                <strong>{{ $sujetsNonApprouves ?? 0 }}</strong> sujet(s) non approuvé(s)
-            </div>
         </div>
     </div>
 
@@ -206,7 +288,11 @@
             var route = "sujet"
             delete_row(route);
 
-            $('.approuve-form').on('submit', function(e) {
+            // Délégation sur document : DataTables (pagination côté client) détache du DOM
+            // les lignes hors page courante au moment du chargement — une liaison directe
+            // ne s'attache qu'à la page 1, et sur les autres pages le formulaire se
+            // soumettrait sans jamais afficher la confirmation.
+            $(document).on('submit', '.approuve-form', function(e) {
                 e.preventDefault();
                 const form = this;
                 Swal.fire({

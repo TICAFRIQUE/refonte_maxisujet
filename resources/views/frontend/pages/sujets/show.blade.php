@@ -283,7 +283,8 @@
 
         <!-- Cycles et niveaux -->
         <div class="mt-5">
-            @include('frontend.components.old.cycle_niveaux')
+            <h4 class="mb-4"><i class="bi bi-diagram-3 me-2" style="color: var(--ms-blue);"></i>Parcourir par niveau</h4>
+            @include('frontend.components.cycle_niveaux_improved')
         </div>
     </div>
 

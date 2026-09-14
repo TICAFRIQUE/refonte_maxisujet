@@ -101,18 +101,20 @@
                 <div class="info-flash-item info-flash-{{ $flash->type }} {{ $loop->first ? 'is-active' : '' }}">
                     <div class="info-flash-content">
                         <span class="info-flash-label">
-                            <i class="bi bi-megaphone-fill"></i> Info
+                            <i class="bi bi-megaphone-fill"></i> <span class="info-flash-label-text">Info</span>
                         </span>
-                        <span class="info-flash-message">{{ $flash->message }}</span>
+                        <span class="info-flash-message"><span class="info-flash-message-inner">{{ $flash->message }}</span></span>
                         @if ($flash->lien)
-                            <a href="{{ $flash->lien }}" class="info-flash-link">{{ $flash->lien_texte ?: 'En savoir plus' }} <i class="bi bi-arrow-right"></i></a>
+                            <a href="{{ $flash->lien }}" class="info-flash-link">
+                                <span class="info-flash-link-text">{{ $flash->lien_texte ?: 'En savoir plus' }}</span> <i class="bi bi-arrow-right"></i>
+                            </a>
                         @endif
                     </div>
+                    <button type="button" class="info-flash-close" aria-label="Fermer les annonces">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
                 </div>
             @endforeach
-            <button type="button" class="info-flash-close" id="infoFlashClose" aria-label="Fermer les annonces">
-                <i class="bi bi-x-lg"></i>
-            </button>
         </div>
     @endif
 
@@ -456,8 +458,8 @@
             majDecalage();
             window.addEventListener('resize', majDecalage);
 
-            const closeBtn = document.getElementById('infoFlashClose');
-            closeBtn && closeBtn.addEventListener('click', function () {
+            banner.addEventListener('click', function (e) {
+                if (!e.target.closest('.info-flash-close')) return;
                 banner.remove();
                 document.documentElement.style.setProperty('--info-flash-height', '0px');
                 sessionStorage.setItem('infoFlashClosed', '1');
@@ -465,12 +467,55 @@
 
             const items = banner.querySelectorAll('.info-flash-item');
             if (items.length > 1) {
+                const isMobile = () => window.matchMedia('(max-width: 767.98px)').matches;
+                const PAUSE_BEFORE_NEXT_MIN = 5000; // attendre 5 à 10s avant de passer au suivant
+                const PAUSE_BEFORE_NEXT_MAX = 10000;
+                const pauseBeforeNext = () => PAUSE_BEFORE_NEXT_MIN + Math.random() * (PAUSE_BEFORE_NEXT_MAX - PAUSE_BEFORE_NEXT_MIN);
                 let index = 0;
-                setInterval(function () {
-                    items[index].classList.remove('is-active');
-                    index = (index + 1) % items.length;
-                    items[index].classList.add('is-active');
-                }, 5000);
+
+                function playItem() {
+                    const current = items[index];
+                    const inner = current.querySelector('.info-flash-message-inner');
+
+                    // Sur mobile : si le texte dépasse, on le fait défiler avant de passer au suivant.
+                    if (inner) {
+                        inner.classList.remove('is-scrolling');
+                        inner.style.transitionDuration = '';
+                        inner.style.removeProperty('--info-flash-scroll-distance');
+                    }
+
+                    if (isMobile() && inner) {
+                        const messageBox = current.querySelector('.info-flash-message');
+                        const overflow = inner.scrollWidth - messageBox.clientWidth;
+
+                        if (overflow > 4) {
+                            const duration = Math.min(Math.max(overflow / 40, 3), 14); // ~40px/s, entre 3 et 14s
+                            const startDelay = 900; // laisser le temps de lire le début avant de défiler
+
+                            setTimeout(function () {
+                                inner.style.setProperty('--info-flash-scroll-distance', (-overflow) + 'px');
+                                inner.style.transitionDuration = duration + 's';
+                                inner.classList.add('is-scrolling');
+                            }, startDelay);
+
+                            scheduleNext(startDelay + duration * 1000 + pauseBeforeNext());
+                            return;
+                        }
+                    }
+
+                    scheduleNext(pauseBeforeNext());
+                }
+
+                function scheduleNext(delay) {
+                    setTimeout(function () {
+                        items[index].classList.remove('is-active');
+                        index = (index + 1) % items.length;
+                        items[index].classList.add('is-active');
+                        playItem();
+                    }, delay);
+                }
+
+                playItem();
             }
         })();
     </script>
