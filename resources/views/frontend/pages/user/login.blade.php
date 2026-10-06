@@ -1,73 +1,14 @@
 @extends('frontend.layouts.front_app')
 
 @section('content')
-    <style>
-        .auth-card {
-            border: 1px solid var(--ms-border-subtle);
-            border-radius: var(--ms-radius-lg);
-            box-shadow: var(--ms-shadow-rest);
-            overflow: hidden;
-        }
-
-        .auth-header {
-            background: var(--ms-orange) !important;
-            padding: 2rem 1.5rem;
-        }
-
-        .auth-body {
-            padding: 2rem 1.5rem;
-        }
-
-        .form-control,
-        .form-select {
-            border: 1.5px solid var(--ms-orange);
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: var(--ms-orange-dark);
-            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.15);
-        }
-
-        .btn-auth {
-            background: var(--ms-orange);
-            border: none;
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-        }
-
-        .btn-auth:hover {
-            background: var(--ms-orange-dark);
-        }
-
-        .auth-link {
-            color: var(--ms-blue);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .auth-link:hover {
-            color: var(--ms-blue-dark);
-            text-decoration: underline;
-        }
-
-        .forgot-link {
-            color: var(--ms-muted);
-            text-decoration: none;
-        }
-
-        .forgot-link:hover {
-            color: var(--ms-blue);
-        }
-    </style>
-    <div class="container mb-2">
+    <div class="container">
         <!-- Breadcrumb -->
         <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
             @include('frontend.components.retour')
-        <nav aria-label="breadcrumb" class="mb-0 flex-grow-1">
-            <ol class="breadcrumb bg-light rounded p-3">
+        <nav aria-label="Fil d'Ariane" class="mb-0 flex-grow-1 min-w-0">
+            <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="{{ route('accueil') }}" class="text-primary text-decoration-none">
+                    <a href="{{ route('accueil') }}">
                         <i class="bi bi-house-door"></i> Accueil
                     </a>
                 </li>
@@ -80,9 +21,9 @@
         <div class="row justify-content-center">
             <div class="col-md-6 col-lg-5">
                 <div class="card auth-card">
-                    <div class="card-header auth-header text-white text-center">
+                    <div class="card-header auth-header">
                         <h4 class="mb-2">Bon retour !</h4>
-                        <p class="mb-0 opacity-90">Connectez-vous pour accéder à votre espace</p>
+                        <p class="mb-0">Connectez-vous pour accéder à votre espace</p>
                     </div>
                     <div class="card-body auth-body">
                         @if ($errors->any())
@@ -125,7 +66,7 @@
                                 <a href="{{ route('password.request') }}" class="forgot-link">Mot de passe oublié ?</a>
                             </div>
 
-                            <button type="submit" class="btn btn-auth text-white w-100">
+                            <button type="submit" class="btn btn-auth w-100">
                                 <i class="bi bi-box-arrow-in-right me-2"></i>Se connecter
                             </button>
                         </form>

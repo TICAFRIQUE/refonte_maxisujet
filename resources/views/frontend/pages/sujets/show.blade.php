@@ -1,4 +1,3 @@
-<!-- filepath: c:\laragon\www\refonte_maxisujet\resources\views\frontend\pages\sujets\show.blade.php -->
 @extends('frontend.layouts.front_app')
 @section('title', $sujet->libelle . ' - ' . ($sujet->matiere->libelle ?? 'Sujet') . ' | MaxiSujets')
 @section('meta_description', 'Téléchargez le sujet ' . $sujet->libelle . ' (' . ($sujet->matiere->libelle ?? '') . '). Document éducatif avec corrigé disponible.')
@@ -9,283 +8,206 @@
 
 @section('content')
 
-    @push('styles')
-        @include('frontend.pages.sujets.partials._card-styles')
-        <style>
-            .detail-card { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); border: none; }
+    @php
+        // Le libellé technique (catégorie + code) ne dit rien à l'élève : on titre avec la matière.
+        $titreSujet = $sujet->matiere->libelle
+            ?? ($sujet->niveaux->isNotEmpty()
+                ? ($sujet->categorie->libelle ?? 'Sujet') . ' — ' . $sujet->niveaux->first()->libelle
+                : ($sujet->categorie->libelle ?? $sujet->libelle));
+        $userPoints = auth()->check() ? (int) auth()->user()->points : 0;
 
-            .info-grid { background: var(--ms-bg-soft); border-radius: 8px; padding: 1rem; margin: 1rem 0; }
-            .info-item { display: flex; align-items: center; margin-bottom: 0.5rem; }
-            .info-item:last-child { margin-bottom: 0; }
-            .info-item i { margin-right: 0.5rem; color: var(--ms-muted); width: 16px; }
-
-            .simple-badge { background: #e2e8f0; color: #475569; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500; margin-right: 0.5rem; }
-            .simple-badge.primary { background: var(--ms-blue-light); color: var(--ms-blue-dark); }
-            .simple-badge.success { background: #dcfce7; color: #16a34a; }
-            .simple-badge.warning { background: var(--ms-orange-light); color: var(--ms-orange-dark); }
-            .simple-badge.dark { background: var(--ms-navy); color: white; }
-
-            .preview-section { background: var(--ms-bg-soft); border-radius: 12px; padding: 1.5rem; text-align: center; }
-            .preview-container { position: relative; border-radius: 8px; overflow: hidden; background: white; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); margin-bottom: 1rem; }
-            .guest-preview-trigger { cursor: pointer; transition: box-shadow 0.2s ease; }
-            .guest-preview-trigger:hover { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); }
-            .pdf-preview { width: 100%; height: 300px; border: none; border-radius: 8px; }
-
-            .file-info-badge { position: absolute; top: 10px; right: 10px; background: rgba(0, 0, 0, 0.8); color: white; padding: 0.3rem 0.6rem; border-radius: 15px; font-size: 0.75rem; z-index: 10; }
-
-            .download-btn { background: var(--ms-orange); color: white; border: none; border-radius: 8px; padding: 0.8rem 1.5rem; font-weight: 600; transition: all 0.3s ease; text-decoration: none; display: inline-block; }
-            .download-btn:hover { background: var(--ms-orange-dark); color: white; transform: translateY(-2px); }
-            .download-btn.success { background: #16a34a; }
-            .download-btn.success:hover { background: #15803d; }
-
-            .alert-simple { border: none; border-radius: 8px; padding: 1rem; }
-
-            .points-summary { background: var(--ms-blue-light); border-radius: 12px; padding: 1.25rem; text-align: center; }
-        </style>
-    @endpush
+        // Les deux documents (sujet / corrigé) partagent exactement la même présentation.
+        $documents = [
+            [
+                'type' => 'non_corrige',
+                'titre' => 'Sujet',
+                'label' => 'le sujet',
+                'icon' => 'bi-file-earmark-text',
+                'media' => $sujet->getFirstMedia('non_corrige'),
+                'vide' => 'Aucun fichier disponible',
+                'btn' => 'btn-warning',
+            ],
+            [
+                'type' => 'corrige',
+                'titre' => 'Corrigé',
+                'label' => 'le corrigé',
+                'icon' => 'bi-file-earmark-check',
+                'media' => $sujet->getFirstMedia('corrige'),
+                'vide' => 'Corrigé non disponible pour le moment',
+                'btn' => 'btn-primary',
+            ],
+        ];
+    @endphp
 
     <div class="container">
-        <!-- Breadcrumb -->
-        <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
-            @include('frontend.components.retour')
-        <nav aria-label="breadcrumb" class="mb-0 flex-grow-1">
-            <ol class="breadcrumb bg-light rounded p-3">
-                <li class="breadcrumb-item"><a href="{{ route('accueil') }}" class="text-decoration-none"><i class="bi bi-house-door"></i> Accueil</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('sujet.front.index') }}" class="text-decoration-none">Sujets</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{{ Str::limit($sujet->libelle, 30) }}</li>
+        <nav aria-label="Fil d'Ariane">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('accueil') }}"><i class="bi bi-house-door"></i> Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('sujet.front.index') }}">Sujets</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ $sujet->code }}</li>
             </ol>
         </nav>
+
+        <!-- En-tête : l'essentiel du sujet en un coup d'œil -->
+        <div class="page-head">
+            <span class="eyebrow">{{ $sujet->categorie->libelle ?? 'Sujet' }}@if ($sujet->annee) · {{ $sujet->annee }}@endif</span>
+            <h1>{{ $titreSujet }}</h1>
+            <div class="d-flex flex-wrap gap-2 mt-2">
+                @foreach ($sujet->niveaux as $niveau)
+                    <a href="{{ route('sujet.front.index', ['niveau' => $niveau->slug]) }}" class="chip chip-blue text-decoration-none">
+                        <i class="bi bi-mortarboard"></i>{{ $niveau->libelle }}
+                    </a>
+                @endforeach
+                @if ($documents[1]['media'])
+                    <span class="chip chip-success"><i class="bi bi-check-circle-fill"></i>Corrigé disponible</span>
+                @endif
+                <span class="chip" title="Code du sujet">Réf. {{ $sujet->code }}</span>
+            </div>
+            @if ($sujet->description)
+                <p class="mt-3" style="max-width: 46rem;">{{ $sujet->description }}</p>
+            @endif
         </div>
 
-        <div class="row">
-            <!-- Informations du sujet -->
-            <div class="col-lg-8 mb-4">
-                <div class="detail-card">
-                    <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-start mb-4">
-                            <h2 class="text-dark mb-0">{{ $sujet->libelle }}</h2>
-                            <span class="simple-badge dark">{{ $sujet->code }}</span>
-                        </div>
-
-                        @if ($sujet->description)
-                            <div class="mb-4">
-                                <h6 class="text-muted mb-2">Description</h6>
-                                <p class="text-dark">{{ $sujet->description }}</p>
-                            </div>
-                        @endif
-
-                        <div class="info-grid">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="info-item"><i class="bi bi-book"></i><div><strong>Matière:</strong> {{ $sujet->matiere->libelle ?? 'Non définie' }}</div></div>
-                                    <div class="info-item"><i class="bi bi-calendar"></i><div><strong>Année:</strong> {{ $sujet->annee }}</div></div>
+        <div class="row g-4">
+            <!-- Documents : sujet et corrigé côte à côte -->
+            <div class="col-lg-8">
+                <div class="row g-3">
+                    @foreach ($documents as $doc)
+                        @php
+                            $media = $doc['media'];
+                            $ext = $media ? strtolower($media->extension) : null;
+                            $estPdf = $ext === 'pdf';
+                            $tailleMo = $media ? number_format($media->size / 1048576, 2, ',', ' ') : null;
+                            $apercuUrl = $media ? route('sujet.front.apercu', ['id' => $sujet->id, 'type' => $doc['type']]) : null;
+                        @endphp
+                        <div class="col-md-6">
+                            <section class="detail-card doc-panel" aria-labelledby="doc-{{ $doc['type'] }}">
+                                <div class="doc-panel-head">
+                                    <h2 id="doc-{{ $doc['type'] }}">
+                                        <i class="bi {{ $doc['icon'] }}" style="color: var(--ms-blue);"></i>{{ $doc['titre'] }}
+                                    </h2>
+                                    @if ($media)
+                                        <span class="chip">{{ strtoupper($ext) }} · {{ $tailleMo }} Mo</span>
+                                    @endif
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="info-item"><i class="bi bi-tag"></i><div><strong>Catégorie:</strong> {{ $sujet->categorie->libelle ?? 'Générale' }}</div></div>
-                                    <div class="info-item"><i class="bi bi-clock"></i><div><strong>Publié le:</strong> {{ $sujet->created_at->format('d/m/Y') }}</div></div>
-                                </div>
-                            </div>
 
-                            @if ($sujet->niveaux->count() > 0)
-                                <div class="info-item mt-2">
-                                    <i class="bi bi-mortarboard"></i>
-                                    <div>
-                                        <strong>Niveaux:</strong>
-                                        @foreach ($sujet->niveaux as $niveau)
-                                            <span class="simple-badge">{{ $niveau->libelle }}</span>
-                                        @endforeach
+                                @if (!$media)
+                                    <div class="doc-preview">
+                                        <div class="doc-preview-inner">
+                                            <i class="bi bi-file-earmark-x"></i>
+                                            {{ $doc['vide'] }}
+                                        </div>
                                     </div>
-                                </div>
-                            @endif
+                                @else
+                                    @auth
+                                        <div class="doc-preview">
+                                            @if ($estPdf)
+                                                <iframe src="{{ $apercuUrl }}#toolbar=0&navpanes=0&scrollbar=0" title="Aperçu : {{ $doc['titre'] }}" loading="lazy"></iframe>
+                                            @else
+                                                <div class="doc-preview-inner">
+                                                    <i class="bi bi-file-earmark-word" style="color: var(--ms-blue);"></i>
+                                                    <p class="mb-2">Aperçu intégré indisponible pour ce format.</p>
+                                                    <a href="{{ $apercuUrl }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">Ouvrir l'aperçu</a>
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                        @if ($userPoints > 0)
+                                            <button type="button" class="btn {{ $doc['btn'] }} w-100"
+                                                data-bs-toggle="modal" data-bs-target="#confirmDownloadModal"
+                                                data-download-url="{{ route('sujet.front.download', ['id' => $sujet->id, 'type' => $doc['type']]) }}"
+                                                data-label="{{ $doc['label'] }}">
+                                                <i class="bi bi-download me-2"></i>Télécharger {{ $doc['label'] }} · 1 point
+                                            </button>
+                                        @else
+                                            <button class="btn btn-outline-secondary w-100" disabled>
+                                                <i class="bi bi-exclamation-triangle me-2"></i>Points insuffisants
+                                            </button>
+                                        @endif
+                                    @else
+                                        <button type="button" class="doc-preview" data-bs-toggle="modal" data-bs-target="#loginRequiredModal">
+                                            <span class="doc-preview-inner">
+                                                <i class="bi bi-eye" style="color: var(--ms-blue);"></i>
+                                                <strong class="d-block" style="color: var(--ms-blue-dark);">Voir l'aperçu</strong>
+                                                <small>Gratuit — connexion requise</small>
+                                            </span>
+                                        </button>
+                                        <a href="{{ route('user.loginForm') }}" class="btn btn-outline-secondary w-100">
+                                            <i class="bi bi-lock me-2"></i>Se connecter pour télécharger
+                                        </a>
+                                    @endauth
+                                @endif
+                            </section>
                         </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
 
-            <!-- Aperçus et téléchargements -->
+            <!-- Colonne latérale : points puis informations -->
             <div class="col-lg-4">
                 @auth
-                    <div class="points-summary mb-4">
-                        <div class="points-pill mb-1">
-                            <i class="bi bi-star-fill"></i> {{ auth()->user()->points }} point{{ auth()->user()->points > 1 ? 's' : '' }}
+                    <div class="notice mb-3">
+                        <div>
+                            <span class="points-pill mb-2">
+                                <i class="bi bi-star-fill"></i> {{ $userPoints }} point{{ $userPoints > 1 ? 's' : '' }}
+                            </span>
+                            <div>L'aperçu est gratuit. 1 point est déduit à chaque téléchargement.</div>
+                            @if ($userPoints <= 0)
+                                <a href="{{ route('user.sujet.create') }}" class="btn btn-sm btn-warning mt-2">
+                                    <i class="bi bi-plus-circle me-1"></i>Publier un sujet pour gagner des points
+                                </a>
+                            @endif
                         </div>
-                        <div class="small text-muted">L'aperçu est gratuit. 1 point est déduit à chaque téléchargement.</div>
-                        @if (auth()->user()->points <= 0)
-                            <a href="{{ route('user.sujet.create') }}" class="btn btn-sm btn-warning mt-2">
-                                <i class="bi bi-plus-circle me-1"></i>Publier un sujet pour gagner des points
-                            </a>
-                        @endif
+                    </div>
+                @else
+                    <div class="notice notice-orange mb-3">
+                        <div>
+                            <strong class="d-block mb-1">50 points offerts à l'inscription</strong>
+                            Créez un compte gratuit pour voir l'aperçu et télécharger ce sujet.
+                            <div class="d-flex flex-wrap gap-2 mt-3">
+                                <a href="{{ route('user.registerForm') }}" class="btn btn-warning btn-sm">Créer un compte</a>
+                                <a href="{{ route('user.loginForm') }}" class="btn btn-outline-secondary btn-sm">Se connecter</a>
+                            </div>
+                        </div>
                     </div>
                 @endauth
 
-                @php
-                    $mediaNonCorrige = $sujet->getFirstMedia('non_corrige');
-                    $mediaCorrige = $sujet->getFirstMedia('corrige');
-                @endphp
-
-                <!-- Sujet -->
-                <div class="detail-card mb-4">
-                    <div class="card-body p-4">
-                        <h6 class="mb-3" style="color: var(--ms-blue);"><i class="bi bi-file-earmark-text me-2"></i>Sujet</h6>
-
-                        <div class="preview-section mb-3">
-                            @auth
-                                @if ($mediaNonCorrige)
-                                    @php
-                                        $extension = strtolower($mediaNonCorrige->extension);
-                                        $isPdf = $extension === 'pdf';
-                                        $isDoc = in_array($extension, ['doc', 'docx']);
-                                        $sizeMB = round($mediaNonCorrige->size / 1048576, 2);
-                                        $apercuUrl = route('sujet.front.apercu', ['id' => $sujet->id, 'type' => 'non_corrige']);
-                                    @endphp
-                                    <div class="preview-container">
-                                        @if ($isPdf)
-                                            <iframe src="{{ $apercuUrl }}#toolbar=0&navpanes=0&scrollbar=0" class="pdf-preview" title="Aperçu du sujet"></iframe>
-                                            <div class="file-info-badge"><i class="bi bi-filetype-pdf me-1"></i>PDF • {{ $sizeMB }}MB</div>
-                                        @elseif ($isDoc)
-                                            <div class="d-flex align-items-center justify-content-center" style="height: 200px; background: #f8f9fa;">
-                                                <div class="text-center">
-                                                    <i class="bi bi-file-earmark-word text-primary" style="font-size: 3rem;"></i>
-                                                    <p class="mt-2 text-muted mb-0">{{ strtoupper($extension) }} • {{ $sizeMB }}MB</p>
-                                                    <a href="{{ $apercuUrl }}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">Ouvrir l'aperçu</a>
-                                                </div>
-                                            </div>
-                                        @else
-                                            <div class="d-flex align-items-center justify-content-center" style="height: 200px; background: #f8f9fa;">
-                                                <div class="text-center">
-                                                    <i class="bi bi-file-earmark text-muted" style="font-size: 3rem;"></i>
-                                                    <small class="text-muted">{{ strtoupper($extension) }} • {{ $sizeMB }}MB</small>
-                                                </div>
-                                            </div>
-                                        @endif
-                                    </div>
-                                @else
-                                    <div class="alert alert-simple alert-info mb-0"><i class="bi bi-info-circle me-2"></i>Aucun fichier disponible</div>
-                                @endif
-                            @else
-                                <div class="preview-container guest-preview-trigger" data-bs-toggle="modal" data-bs-target="#loginRequiredModal" role="button" tabindex="0">
-                                    <div class="d-flex align-items-center justify-content-center" style="height: 200px; background: #f8f9fa;">
-                                        <div class="text-center">
-                                            <i class="bi bi-eye" style="font-size: 2.5rem; color: var(--ms-blue);"></i>
-                                            <p class="mt-2 mb-0 fw-semibold" style="color: var(--ms-blue);">Cliquez pour voir l'aperçu</p>
-                                            <small class="text-muted">Gratuit — connexion requise</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endauth
-                        </div>
-
-                        @auth
-                            @if ($mediaNonCorrige)
-                                @if (auth()->user()->points > 0)
-                                    <button type="button" class="download-btn w-100 text-center border-0"
-                                        data-bs-toggle="modal" data-bs-target="#confirmDownloadModal"
-                                        data-download-url="{{ route('sujet.front.download', ['id' => $sujet->id, 'type' => 'non_corrige']) }}"
-                                        data-label="le sujet">
-                                        <i class="bi bi-download me-2"></i>Télécharger le sujet (1 point)
-                                    </button>
-                                @else
-                                    <button class="btn btn-outline-secondary w-100" disabled>
-                                        <i class="bi bi-exclamation-triangle me-2"></i>Points insuffisants
-                                    </button>
-                                @endif
-                            @endif
-                        @else
-                            <a href="{{ route('user.loginForm') }}" class="btn btn-outline-secondary w-100"><i class="bi bi-lock me-2"></i>Se connecter</a>
-                        @endauth
-                    </div>
-                </div>
-
-                <!-- Corrigé -->
-                <div class="detail-card mb-4">
-                    <div class="card-body p-4">
-                        <h6 class="text-success mb-3"><i class="bi bi-file-earmark-check me-2"></i>Corrigé</h6>
-
-                        <div class="preview-section mb-3">
-                            @auth
-                                @if ($mediaCorrige)
-                                    @php
-                                        $extensionC = strtolower($mediaCorrige->extension);
-                                        $isPdfC = $extensionC === 'pdf';
-                                        $isDocC = in_array($extensionC, ['doc', 'docx']);
-                                        $sizeMBC = round($mediaCorrige->size / 1048576, 2);
-                                        $apercuUrlC = route('sujet.front.apercu', ['id' => $sujet->id, 'type' => 'corrige']);
-                                    @endphp
-                                    <div class="preview-container">
-                                        @if ($isPdfC)
-                                            <iframe src="{{ $apercuUrlC }}#toolbar=0&navpanes=0&scrollbar=0" class="pdf-preview" title="Aperçu du corrigé"></iframe>
-                                            <div class="file-info-badge"><i class="bi bi-filetype-pdf me-1"></i>PDF • {{ $sizeMBC }}MB</div>
-                                        @elseif ($isDocC)
-                                            <div class="d-flex align-items-center justify-content-center" style="height: 200px; background: #f8f9fa;">
-                                                <div class="text-center">
-                                                    <i class="bi bi-file-earmark-word text-primary" style="font-size: 3rem;"></i>
-                                                    <p class="mt-2 text-muted mb-0">{{ strtoupper($extensionC) }} • {{ $sizeMBC }}MB</p>
-                                                    <a href="{{ $apercuUrlC }}" target="_blank" class="btn btn-sm btn-outline-success mt-2">Ouvrir l'aperçu</a>
-                                                </div>
-                                            </div>
-                                        @else
-                                            <div class="d-flex align-items-center justify-content-center" style="height: 200px; background: #f8f9fa;">
-                                                <div class="text-center">
-                                                    <i class="bi bi-file-earmark-check text-success" style="font-size: 3rem;"></i>
-                                                    <small class="text-muted">{{ strtoupper($extensionC) }} • {{ $sizeMBC }}MB</small>
-                                                </div>
-                                            </div>
-                                        @endif
-                                    </div>
-                                @else
-                                    <div class="alert alert-simple alert-info mb-0"><i class="bi bi-info-circle me-2"></i>Corrigé non disponible</div>
-                                @endif
-                            @else
-                                <div class="preview-container guest-preview-trigger" data-bs-toggle="modal" data-bs-target="#loginRequiredModal" role="button" tabindex="0">
-                                    <div class="d-flex align-items-center justify-content-center" style="height: 200px; background: #f8f9fa;">
-                                        <div class="text-center">
-                                            <i class="bi bi-eye" style="font-size: 2.5rem; color: #16a34a;"></i>
-                                            <p class="mt-2 mb-0 fw-semibold" style="color: #16a34a;">Cliquez pour voir l'aperçu</p>
-                                            <small class="text-muted">Gratuit — connexion requise</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endauth
-                        </div>
-
-                        @auth
-                            @if ($mediaCorrige)
-                                @if (auth()->user()->points > 0)
-                                    <button type="button" class="download-btn success w-100 text-center border-0"
-                                        data-bs-toggle="modal" data-bs-target="#confirmDownloadModal"
-                                        data-download-url="{{ route('sujet.front.download', ['id' => $sujet->id, 'type' => 'corrige']) }}"
-                                        data-label="le corrigé">
-                                        <i class="bi bi-download me-2"></i>Télécharger le corrigé (1 point)
-                                    </button>
-                                @else
-                                    <button class="btn btn-outline-secondary w-100" disabled>
-                                        <i class="bi bi-exclamation-triangle me-2"></i>Points insuffisants
-                                    </button>
-                                @endif
-                            @endif
-                        @else
-                            <a href="{{ route('user.loginForm') }}" class="btn btn-outline-secondary w-100"><i class="bi bi-lock me-2"></i>Se connecter</a>
-                        @endauth
-                    </div>
+                <div class="detail-card p-3">
+                    <h2 class="h6 mb-2">Informations</h2>
+                    <dl class="spec-list">
+                        <div><dt>Matière</dt><dd>{{ $sujet->matiere->libelle ?? 'Non définie' }}</dd></div>
+                        <div><dt>Catégorie</dt><dd>{{ $sujet->categorie->libelle ?? 'Générale' }}</dd></div>
+                        <div><dt>Niveaux</dt><dd>{{ $sujet->niveaux->pluck('libelle')->implode(', ') ?: 'Tous niveaux' }}</dd></div>
+                        <div><dt>Année</dt><dd>{{ $sujet->annee ?: '—' }}</dd></div>
+                        <div><dt>Publié le</dt><dd>{{ $sujet->created_at->format('d/m/Y') }}</dd></div>
+                        <div><dt>Code</dt><dd>{{ $sujet->code }}</dd></div>
+                    </dl>
                 </div>
             </div>
         </div>
 
         <!-- Sujets similaires -->
         @if ($similaires->isNotEmpty())
-            <div class="mt-5">
-                <h4 class="mb-4"><i class="bi bi-collection me-2" style="color: var(--ms-blue);"></i>Sujets similaires</h4>
+            <section class="mt-5" aria-labelledby="similaires-title">
+                <div class="section-head">
+                    <h2 id="similaires-title" class="h4">Sujets similaires</h2>
+                    <a href="{{ route('sujet.front.index', array_filter(['matiere' => $sujet->matiere->slug ?? null])) }}" class="section-link">
+                        Voir plus <i class="bi bi-arrow-right-short"></i>
+                    </a>
+                </div>
                 <div class="row g-3">
                     @include('frontend.pages.sujets.partials._cards', ['sujets' => $similaires])
                 </div>
-            </div>
+            </section>
         @endif
 
         <!-- Cycles et niveaux -->
-        <div class="mt-5">
-            <h4 class="mb-4"><i class="bi bi-diagram-3 me-2" style="color: var(--ms-blue);"></i>Parcourir par niveau</h4>
+        <section class="mt-5" aria-labelledby="niveaux-title">
+            <div class="section-head">
+                <h2 id="niveaux-title" class="h4">Parcourir par niveau</h2>
+            </div>
             @include('frontend.components.cycle_niveaux_improved')
-        </div>
+        </section>
     </div>
 
     {{-- La modale "connexion requise" est partagée, définie une seule fois dans le layout (front_app.blade.php). --}}
@@ -295,21 +217,21 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDownloadModalLabel"><i class="bi bi-star-fill me-2 text-warning"></i>Confirmer le téléchargement</h5>
+                    <h5 class="modal-title" id="confirmDownloadModalLabel"><i class="bi bi-star-fill me-2" style="color: var(--ms-orange);"></i>Confirmer le téléchargement</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                 </div>
                 <div class="modal-body">
                     @auth
                         <p class="mb-1">Télécharger <strong id="confirmDownloadLabel"></strong> coûte <strong>1 point</strong>.</p>
                         <p class="text-muted mb-0">
-                            Solde actuel : <strong>{{ auth()->user()->points }}</strong> →
-                            après téléchargement : <strong>{{ max(auth()->user()->points - 1, 0) }}</strong>
+                            Solde actuel : <strong>{{ $userPoints }}</strong> →
+                            après téléchargement : <strong>{{ max($userPoints - 1, 0) }}</strong>
                         </p>
                     @endauth
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <a href="#" id="confirmDownloadLink" class="btn btn-primary" style="background: var(--ms-orange); border-color: var(--ms-orange);">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <a href="#" id="confirmDownloadLink" class="btn btn-warning">
                         <i class="bi bi-download me-1"></i>Confirmer
                     </a>
                 </div>

@@ -26,8 +26,25 @@ class SujetFrontController extends Controller
             $matiere = $request->input('matiere');
             $annee = $request->input('annee');
             $code = $request->input('code');
+            // Recherche libre (barre de navigation, accueil, catalogue) : chaque mot doit
+            // se retrouver dans le code, la matière, un niveau, la catégorie, l'année ou la description.
+            $mots = array_slice(preg_split('/\s+/', trim((string) $request->input('q')), -1, PREG_SPLIT_NO_EMPTY), 0, 6);
 
             $sujets = Sujet::with(['categorie', 'niveaux', 'matiere', 'user', 'media'])
+                ->when($mots, function ($query) use ($mots) {
+                    foreach ($mots as $mot) {
+                        $like = '%' . addcslashes($mot, '%_\\') . '%';
+                        $query->where(function ($q) use ($like) {
+                            $q->where('code', 'like', $like)
+                                ->orWhere('libelle', 'like', $like)
+                                ->orWhere('annee', 'like', $like)
+                                ->orWhere('description', 'like', $like)
+                                ->orWhereHas('matiere', fn($m) => $m->where('libelle', 'like', $like))
+                                ->orWhereHas('niveaux', fn($n) => $n->where('libelle', 'like', $like))
+                                ->orWhereHas('categorie', fn($c) => $c->where('libelle', 'like', $like));
+                        });
+                    }
+                })
                 ->when($categorie, function ($query, $categorie) {
                     return $query->whereHas('categorie', function ($q) use ($categorie) {
                         $q->where('slug', $categorie);

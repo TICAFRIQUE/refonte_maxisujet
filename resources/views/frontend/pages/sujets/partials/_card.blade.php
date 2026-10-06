@@ -3,59 +3,64 @@
     $extension = $media ? strtolower($media->extension) : null;
     $isPdf = $extension === 'pdf';
     $isDoc = in_array($extension, ['doc', 'docx']);
+    $hasCorrige = (bool) $sujet->getFirstMedia('corrige');
+
+    // Le libellé est généré automatiquement (catégorie + code aléatoire) : il n'aide pas à choisir.
+    // On titre donc la carte avec ce que l'élève cherche vraiment : la matière, à défaut le niveau.
+    $niveauxCarte = $sujet->niveaux;
+    $titreCarte = $sujet->matiere->libelle ?? null;
+    if (!$titreCarte && $niveauxCarte->isNotEmpty()) {
+        $titreCarte = $niveauxCarte->first()->libelle;
+        $niveauxCarte = $niveauxCarte->slice(1)->values(); // déjà affiché en titre
+    }
+    $titreCarte = $titreCarte ?: ($sujet->categorie->libelle ?? $sujet->libelle);
 @endphp
-<div class="col-12 col-sm-6 col-lg-4">
-    <div class="card subject-card-h h-100">
-        <div class="d-flex h-100">
-            <div class="subject-preview flex-shrink-0 d-flex align-items-center justify-content-center bg-light">
-                @if ($media && $isPdf)
-                    <iframe src="{{ route('sujet.front.apercu', ['id' => $sujet->id, 'type' => 'non_corrige']) }}#toolbar=0&navpanes=0&scrollbar=0&view=FitH"
-                        style="position:absolute; top:0; left:0; width: 340px; height: 340px; border: none; transform: scale(0.24); transform-origin: top left; pointer-events: none;"
-                        tabindex="-1" title="Aperçu du sujet" loading="lazy"></iframe>
-                @elseif ($isDoc)
-                    <i class="bi bi-filetype-doc text-primary"></i>
-                @else
-                    <i class="bi bi-file-earmark-text text-muted"></i>
+<div class="col-12 col-md-6 col-xl-4">
+    <article class="subject-card">
+        <div class="sujet-file {{ $isPdf ? 'sujet-file-pdf' : ($isDoc ? 'sujet-file-doc' : '') }}" aria-hidden="true">
+            <i class="bi {{ $isPdf ? 'bi-file-earmark-pdf' : ($isDoc ? 'bi-file-earmark-word' : 'bi-file-earmark-text') }}"></i>
+            @if ($extension)
+                <small>{{ strtoupper($extension) }}</small>
+            @endif
+        </div>
+        <div class="sujet-body">
+            <div class="sujet-eyebrow">
+                <span class="text-truncate">{{ $sujet->categorie->libelle ?? 'Sujet' }}@if ($sujet->annee) · {{ $sujet->annee }}@endif</span>
+                <span class="sujet-ref" title="Code du sujet">{{ $sujet->code }}</span>
+            </div>
+
+            <h3 class="sujet-title">
+                <a href="{{ route('sujet.front.show', $sujet->libelle) }}" class="stretched-link">{{ $titreCarte }}</a>
+            </h3>
+
+            <div class="sujet-chips">
+                @forelse ($niveauxCarte->take(2) as $niveau)
+                    <span class="chip">{{ $niveau->libelle }}</span>
+                @empty
+                    @if ($sujet->niveaux->isEmpty())
+                        <span class="chip">Tous niveaux</span>
+                    @endif
+                @endforelse
+                @if ($niveauxCarte->count() > 2)
+                    <span class="chip" title="{{ $niveauxCarte->skip(2)->pluck('libelle')->implode(', ') }}">+{{ $niveauxCarte->count() - 2 }}</span>
+                @endif
+                @if ($hasCorrige)
+                    <span class="chip chip-success"><i class="bi bi-check-circle-fill"></i>Corrigé</span>
                 @endif
             </div>
-            <div class="subject-info flex-grow-1 min-w-0 d-flex flex-column">
-                <div class="d-flex justify-content-between align-items-start gap-1">
-                    <h6 class="subject-title-sm mb-0 text-truncate" title="{{ $sujet->libelle }}">
-                        {{ Str::limit($sujet->libelle, 26) }}
-                    </h6>
-                    <span class="badge-code-sm">{{ $sujet->code }}</span>
-                </div>
 
-                <div class="subject-meta-sm d-flex flex-wrap gap-1 my-1">
-                    @if ($sujet->matiere)
-                        <span class="tag-sm tag-matiere">{{ Str::limit($sujet->matiere->libelle, 14) }}</span>
-                    @endif
-                    @if ($sujet->niveaux->count() > 0)
-                        <span class="tag-sm tag-niveau">{{ Str::limit($sujet->niveaux->first()->libelle, 12) }}</span>
-                        @if ($sujet->niveaux->count() > 1)
-                            <span class="tag-sm tag-niveau">+{{ $sujet->niveaux->count() - 1 }}</span>
-                        @endif
+            <div class="sujet-foot">
+                @auth
+                    @if (auth()->user()->points > 0)
+                        <span class="sujet-cost is-points"><i class="bi bi-star-fill"></i>1 point</span>
                     @else
-                        <span class="tag-sm tag-niveau">Tous niveaux</span>
+                        <span class="sujet-cost is-empty"><i class="bi bi-exclamation-triangle"></i>Points insuffisants</span>
                     @endif
-                    <span class="tag-sm tag-annee">{{ $sujet->annee }}</span>
-                </div>
-
-                <div class="mt-auto d-flex align-items-center justify-content-between gap-1">
-                    <a href="{{ route('sujet.front.show', $sujet->libelle) }}" class="link-details-sm stretched-link">
-                        Détails <i class="bi bi-arrow-right-short"></i>
-                    </a>
-                    @auth
-                        @if (auth()->user()->points > 0)
-                            <span class="cost-tag-sm" title="1 point par téléchargement"><i class="bi bi-star-fill"></i> 1 pt</span>
-                        @else
-                            <span class="cost-tag-sm text-danger" title="Points insuffisants"><i class="bi bi-exclamation-triangle"></i></span>
-                        @endif
-                    @else
-                        <span class="cost-tag-sm" title="Connexion requise"><i class="bi bi-lock"></i></span>
-                    @endauth
-                </div>
+                @else
+                    <span class="sujet-cost"><i class="bi bi-lock"></i>Connexion requise</span>
+                @endauth
+                <span class="sujet-more" aria-hidden="true">Voir <i class="bi bi-arrow-right-short"></i></span>
             </div>
         </div>
-    </div>
+    </article>
 </div>

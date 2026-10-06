@@ -4,9 +4,9 @@
 <div class="container">
     <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
         @include('frontend.components.retour')
-    <nav aria-label="breadcrumb" class="mb-0 flex-grow-1">
-        <ol class="breadcrumb bg-light rounded p-3">
-            <li class="breadcrumb-item"><a href="{{ route('accueil') }}" class="text-primary text-decoration-none"><i class="bi bi-house-door"></i> Accueil</a></li>
+    <nav aria-label="Fil d'Ariane" class="mb-0 flex-grow-1 min-w-0">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ route('accueil') }}"><i class="bi bi-house-door"></i> Accueil</a></li>
             <li class="breadcrumb-item active" aria-current="page">Politique de confidentialité</li>
         </ol>
     </nav>

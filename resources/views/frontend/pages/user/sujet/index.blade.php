@@ -5,10 +5,10 @@
         <!-- Breadcrumb -->
         <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
             @include('frontend.components.retour')
-        <nav aria-label="breadcrumb" class="mb-0 flex-grow-1">
-            <ol class="breadcrumb bg-light rounded p-3 mb-0">
+        <nav aria-label="Fil d'Ariane" class="mb-0 flex-grow-1 min-w-0">
+            <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="{{ route('user.dashboard') }}" class="text-decoration-none">
+                    <a href="{{ route('user.dashboard') }}">
                         <i class="bi bi-speedometer2 me-1"></i>Mon espace
                     </a>
                 </li>
@@ -35,7 +35,7 @@
 
         <!-- Statistiques rapides : icônes colorées, chiffres neutres -->
         <div class="row g-2 mb-4">
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="card h-100">
                     <div class="card-body text-center p-2">
                         <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-1" style="width: 38px; height: 38px; background: var(--ms-blue-light);">
@@ -46,7 +46,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="card h-100">
                     <div class="card-body text-center p-2">
                         <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-1" style="width: 38px; height: 38px; background: var(--ms-success-bg);">
@@ -57,7 +57,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="card h-100">
                     <div class="card-body text-center p-2">
                         <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-1" style="width: 38px; height: 38px; background: var(--ms-orange-light);">
@@ -68,7 +68,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="card h-100">
                     <div class="card-body text-center p-2">
                         <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-1" style="width: 38px; height: 38px; background: var(--ms-bg-soft);">
@@ -96,7 +96,7 @@
                             <p class="text-muted mb-4 lead">
                                 Vous n'avez pas encore publié de sujet. Commencez à partager vos ressources pédagogiques avec la communauté !
                             </p>
-                            <div class="d-flex justify-content-center gap-3">
+                            <div class="d-flex flex-wrap justify-content-center gap-3">
                                 <a href="{{ route('user.sujet.create') }}" class="btn btn-warning btn-lg px-5">
                                     <i class="bi bi-plus-circle me-2"></i>Publier mon premier sujet
                                 </a>
@@ -251,15 +251,6 @@
 
 @push('styles')
 <style>
-    .sujet-card {
-        transition: all 0.3s ease;
-    }
-    .sujet-card:hover .card {
-        transform: translateY(-5px);
-    }
-    .card {
-        transition: all 0.3s ease;
-    }
     .btn-sm.rounded-pill {
         width: 35px;
         height: 35px;

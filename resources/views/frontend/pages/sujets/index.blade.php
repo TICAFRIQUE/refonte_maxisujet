@@ -1,270 +1,157 @@
-<!-- filepath: c:\laragon\www\refonte_maxisujet\resources\views\frontend\pages\sujets\index.blade.php -->
 @extends('frontend.layouts.front_app')
 
 @section('title', 'Sujets et corrigés d\'examens - MaxiSujets')
 
 @section('content')
 
-    @push('styles')
-        @include('frontend.pages.sujets.partials._card-styles')
-        <style>
-            .btn-load-more {
-                background: var(--ms-blue-light);
-                color: var(--ms-blue-dark);
-                border: 1px solid var(--ms-blue-light);
-                border-radius: 12px;
-                font-weight: 500;
-                font-size: 0.85rem;
-                padding: 0.55rem 1.5rem;
-                transition: background 0.2s ease;
-            }
-
-            .btn-load-more:hover { background: var(--ms-blue-light); filter: brightness(0.96); }
-            .btn-load-more:disabled { opacity: 0.6; }
-
-            .stats-band {
-                border-top: 1px solid var(--ms-border-subtle);
-                padding-top: 2rem;
-            }
-
-            .stats-card {
-                text-align: center;
-                background: var(--ms-orange-light);
-                border-radius: var(--ms-radius-lg);
-                padding: 1.25rem 1rem;
-            }
-
-            .stats-card.stats-card-blue { background: var(--ms-blue-light); }
-
-            .stats-number {
-                font-size: 1.6rem;
-                font-weight: 700;
-                color: var(--ms-navy);
-                line-height: 1.2;
-            }
-
-            .stats-label {
-                font-size: 0.78rem;
-                font-weight: 400;
-                color: #64748b;
-            }
-
-            /* Barre de recherche */
-            .search-section {
-                background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
-                border: 2px solid #e2e8f0;
-                border-radius: 12px;
-                padding: 1.5rem;
-                margin-bottom: 2rem;
-            }
-
-            .search-title {
-                color: var(--ms-navy);
-                font-size: 1.2rem;
-                font-weight: 700;
-                margin-bottom: 1rem;
-                display: flex;
-                align-items: center;
-            }
-
-            .search-title i { color: var(--ms-blue); margin-right: 0.6rem; }
-
-            .search-section .form-select,
-            .search-section .form-control {
-                border-radius: 12px;
-                border: 2px solid #e2e8f0;
-                font-weight: 500;
-                transition: border-color 0.2s ease, box-shadow 0.2s ease;
-            }
-
-            .search-section .form-select:focus,
-            .search-section .form-control:focus {
-                border-color: var(--ms-blue);
-                box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
-            }
-
-            /* Select2 génère son propre balisage à côté du <select> natif caché :
-               les règles ci-dessus ne s'appliquent pas à son rendu visible, d'où ces
-               surcharges ciblées sur les classes .select2-*. */
-            .search-section .select2-container {
-                width: 100% !important;
-            }
-
-            .search-section .select2-container--default .select2-selection--single {
-                height: 46px;
-                border: 2px solid #e2e8f0;
-                border-radius: 12px;
-                display: flex;
-                align-items: center;
-                transition: border-color 0.2s ease, box-shadow 0.2s ease;
-            }
-
-            .search-section .select2-container--default.select2-container--open .select2-selection--single,
-            .search-section .select2-container--default .select2-selection--single:hover {
-                border-color: var(--ms-blue);
-            }
-
-            .search-section .select2-container--default.select2-container--focus .select2-selection--single {
-                border-color: var(--ms-blue);
-                box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
-            }
-
-            .search-section .select2-container--default .select2-selection--single .select2-selection__rendered {
-                padding-left: 1rem;
-                font-weight: 500;
-                color: #2d3748;
-            }
-
-            .search-section .select2-container--default .select2-selection--single .select2-selection__arrow {
-                height: 44px;
-                right: 0.6rem;
-            }
-
-            .search-section .select2-dropdown {
-                border: 2px solid var(--ms-blue);
-                border-radius: 12px;
-                overflow: hidden;
-                box-shadow: var(--ms-shadow-hover);
-            }
-
-            .search-section .select2-container--default .select2-results__option--highlighted[aria-selected] {
-                background-color: var(--ms-blue);
-            }
-
-            .search-section .select2-search--dropdown .select2-search__field {
-                border-radius: 8px;
-                border: 1px solid #e2e8f0;
-            }
-
-            .search-submit-btn {
-                background: var(--ms-gradient-navy);
-                border: none;
-                border-radius: 12px;
-                color: white;
-                font-weight: 600;
-                min-width: 50px;
-                transition: transform 0.2s ease, box-shadow 0.2s ease;
-            }
-
-            .search-submit-btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 16px rgba(13, 110, 253, 0.35);
-                color: white;
-            }
-
-        </style>
-    @endpush
+    @php
+        // Filtres actifs : affichés sous forme d'étiquettes supprimables au-dessus des résultats.
+        $filtresActifs = [];
+        if (request()->filled('q')) {
+            $filtresActifs['q'] = '« ' . request('q') . ' »';
+        }
+        if (request()->filled('categorie')) {
+            $filtresActifs['categorie'] = $categories->firstWhere('slug', request('categorie'))->libelle ?? request('categorie');
+        }
+        if (request()->filled('matiere')) {
+            $filtresActifs['matiere'] = $matieres->firstWhere('slug', request('matiere'))->libelle ?? request('matiere');
+        }
+        if (request()->filled('niveau')) {
+            $filtresActifs['niveau'] = $niveaux->firstWhere('slug', request('niveau'))->libelle ?? request('niveau');
+        }
+        if (request()->filled('annee')) {
+            $filtresActifs['annee'] = request('annee');
+        }
+        if (request()->filled('code')) {
+            $filtresActifs['code'] = 'Code ' . request('code');
+        }
+        $nbFiltresListes = count(array_diff_key($filtresActifs, ['q' => true, 'code' => true]));
+    @endphp
 
     <div class="container">
-        <!-- Breadcrumb -->
-        <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
-            @include('frontend.components.retour')
-        <nav aria-label="breadcrumb" class="mb-0 flex-grow-1">
-            <ol class="breadcrumb bg-light rounded p-3 mb-0">
+        <nav aria-label="Fil d'Ariane">
+            <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="{{ route('accueil') }}" class="text-decoration-none">
-                        <i class="bi bi-house-door"></i> Accueil
-                    </a>
+                    <a href="{{ route('accueil') }}"><i class="bi bi-house-door"></i> Accueil</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">Sujets</li>
             </ol>
         </nav>
+
+        <div class="page-head d-flex flex-wrap justify-content-between align-items-end gap-3">
+            <div>
+                <h1>Sujets et corrigés</h1>
+                <p>
+                    {{ number_format($totalSujetsDisponibles, 0, ',', ' ') }} sujets disponibles ·
+                    {{ number_format($totalTelechargements, 0, ',', ' ') }} téléchargements
+                </p>
+            </div>
+            @auth
+                <a href="{{ route('user.sujet.create') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-cloud-upload me-2"></i>Publier un sujet
+                </a>
+            @endauth
         </div>
 
-        <!-- Bandeau points : contexte visible dès l'arrivée sur le catalogue -->
-        @auth
-            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4 p-3 rounded-3"
-                style="background: var(--ms-blue-light);">
-                <div class="d-flex align-items-center gap-2">
-                    <span class="points-pill">
-                        <i class="bi bi-star-fill"></i> {{ auth()->user()->points }} point{{ auth()->user()->points > 1 ? 's' : '' }}
-                    </span>
-                    <span class="text-muted small">1 point est déduit à chaque aperçu ou téléchargement.</span>
+        <!-- Recherche et filtres : directement sous le titre, rien ne s'intercale avant les résultats.
+             Ordre de lecture = ordre d'action : mot-clé, puis filtres, puis le bouton en dernier. -->
+        <form class="filter-card" method="GET" action="{{ route('sujet.front.index') }}" role="search" aria-label="Rechercher un sujet">
+            <div class="filter-top">
+                <div class="filter-search">
+                    <i class="bi bi-search" aria-hidden="true"></i>
+                    <label for="filter-q" class="visually-hidden">Rechercher un sujet</label>
+                    <input type="search" class="form-control" id="filter-q" name="q" value="{{ request('q') }}"
+                        placeholder="Matière, niveau, année, code…">
                 </div>
-                <a href="{{ route('user.dashboard') }}" class="small text-decoration-none fw-semibold" style="color: var(--ms-blue-dark);">
-                    Comment gagner des points ? <i class="bi bi-arrow-right-short"></i>
-                </a>
+                <button type="button" class="btn btn-outline-secondary filter-toggle" data-bs-toggle="collapse"
+                    data-bs-target="#filter-fields" aria-expanded="false" aria-controls="filter-fields">
+                    <i class="bi bi-sliders"></i>
+                    <span class="visually-hidden">Filtres</span>
+                    @if ($nbFiltresListes > 0)
+                        <span class="filter-count ms-1">{{ $nbFiltresListes }}</span>
+                    @endif
+                </button>
             </div>
-        @else
-            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4 p-3 rounded-3"
-                style="background: var(--ms-orange-light);">
-                <span class="small" style="color: var(--ms-orange-dark);">
-                    <i class="bi bi-info-circle me-1"></i>
-                    Crée un compte pour recevoir <strong>50 points offerts</strong> et télécharger tes premiers sujets.
-                </span>
-                <a href="{{ route('user.registerForm') }}" class="btn btn-warning btn-sm fw-semibold">S'inscrire gratuitement</a>
-            </div>
-        @endauth
 
-        <!-- Recherche / filtres (UI unique) -->
-        <div class="search-section">
-            <div class="search-title">
-                <i class="bi bi-search"></i> Rechercher un sujet
-            </div>
-            <form class="row g-3" method="GET" action="{{ route('sujet.front.index') }}">
-                <div class="col-lg-3 col-md-6">
-                    <select class="form-select" id="categorie-select" name="categorie">
-                        <option value="">Toutes les catégories</option>
-                        @foreach ($categories as $categorie)
-                            <option value="{{ $categorie->slug }}" {{ request('categorie') == $categorie->slug ? 'selected' : '' }}>
-                                {{ $categorie->libelle }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <select class="form-select" id="matiere-select" name="matiere">
-                        <option value="">Toutes les matières</option>
-                        @foreach ($matieres as $matiere)
-                            <option value="{{ $matiere->slug }}" {{ request('matiere') == $matiere->slug ? 'selected' : '' }}>
-                                {{ $matiere->libelle }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <select class="form-select" id="niveau-select" name="niveau">
-                        <option value="">Tous les niveaux</option>
-                        @foreach ($data_niveaux as $cycle)
-                            <optgroup label="{{ $cycle->libelle }}">
-                                @foreach ($cycle->children as $niveau)
-                                    <option value="{{ $niveau->slug }}" {{ request('niveau') == $niveau->slug ? 'selected' : '' }}>
-                                        {{ $niveau->libelle }}
-                                    </option>
-                                    @foreach ($niveau->children as $subNiveau)
-                                        <option value="{{ $subNiveau->slug }}" {{ request('niveau') == $subNiveau->slug ? 'selected' : '' }}>
-                                            &nbsp;&nbsp;{{ $subNiveau->libelle }}
-                                        </option>
-                                    @endforeach
-                                @endforeach
-                            </optgroup>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <select class="form-select" id="annee-select" name="annee">
-                        <option value="">Toutes les années</option>
-                        @for ($year = date('Y'); $year >= 2000; $year--)
-                            <option value="{{ $year }}" {{ request('annee') == $year ? 'selected' : '' }}>{{ $year }}</option>
-                        @endfor
-                    </select>
-                </div>
-                <div class="col-lg-9 col-md-8">
-                    <input type="text" class="form-control" name="code" value="{{ request('code') }}" placeholder="Code du sujet">
-                </div>
-                <div class="col-lg-3 col-md-4">
-                    <button type="submit" class="btn search-submit-btn w-100">
-                        <i class="bi bi-search"></i> Filtrer
-                    </button>
-                </div>
-                @if (request()->anyFilled(['categorie', 'matiere', 'niveau', 'annee', 'code']))
-                    <div class="col-12">
-                        <a href="{{ route('sujet.front.index') }}" class="small text-decoration-none">
-                            <i class="bi bi-x-circle me-1"></i>Réinitialiser les filtres
-                        </a>
+            <div class="collapse filter-fields" id="filter-fields">
+                <div class="row g-2">
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <label for="categorie-select" class="visually-hidden">Catégorie</label>
+                        <select class="form-select" id="categorie-select" name="categorie">
+                            <option value="">Toutes les catégories</option>
+                            @foreach ($categories as $categorie)
+                                <option value="{{ $categorie->slug }}" {{ request('categorie') == $categorie->slug ? 'selected' : '' }}>
+                                    {{ $categorie->libelle }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
-                @endif
-            </form>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <label for="matiere-select" class="visually-hidden">Matière</label>
+                        <select class="form-select" id="matiere-select" name="matiere">
+                            <option value="">Toutes les matières</option>
+                            @foreach ($matieres as $matiere)
+                                <option value="{{ $matiere->slug }}" {{ request('matiere') == $matiere->slug ? 'selected' : '' }}>
+                                    {{ $matiere->libelle }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <label for="niveau-select" class="visually-hidden">Niveau</label>
+                        <select class="form-select" id="niveau-select" name="niveau">
+                            <option value="">Tous les niveaux</option>
+                            @foreach ($data_niveaux as $cycle)
+                                <optgroup label="{{ $cycle->libelle }}">
+                                    @foreach ($cycle->children as $niveau)
+                                        <option value="{{ $niveau->slug }}" {{ request('niveau') == $niveau->slug ? 'selected' : '' }}>
+                                            {{ $niveau->libelle }}
+                                        </option>
+                                        @foreach ($niveau->children as $subNiveau)
+                                            <option value="{{ $subNiveau->slug }}" {{ request('niveau') == $subNiveau->slug ? 'selected' : '' }}>
+                                                &nbsp;&nbsp;{{ $subNiveau->libelle }}
+                                            </option>
+                                        @endforeach
+                                    @endforeach
+                                </optgroup>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <label for="annee-select" class="visually-hidden">Année</label>
+                        <select class="form-select" id="annee-select" name="annee">
+                            <option value="">Toutes les années</option>
+                            @for ($year = date('Y'); $year >= 2000; $year--)
+                                <option value="{{ $year }}" {{ request('annee') == $year ? 'selected' : '' }}>{{ $year }}</option>
+                            @endfor
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary filter-submit">
+                <i class="bi bi-search me-2"></i>Rechercher
+            </button>
+        </form>
+
+        <!-- Nombre de résultats + filtres actifs -->
+        <div class="result-bar">
+            <span>
+                <strong>{{ number_format($sujets->total(), 0, ',', ' ') }}</strong>
+                {{ $sujets->total() > 1 ? 'sujets trouvés' : 'sujet trouvé' }}
+            </span>
+            @if ($filtresActifs)
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    @foreach ($filtresActifs as $cle => $libelleFiltre)
+                        <a href="{{ route('sujet.front.index', \Illuminate\Support\Arr::except(request()->query(), [$cle, 'page'])) }}"
+                            class="active-filter" title="Retirer ce filtre">
+                            <span class="text-truncate">{{ $libelleFiltre }}</span> <i class="bi bi-x" aria-hidden="true"></i>
+                            <span class="visually-hidden">(retirer ce filtre)</span>
+                        </a>
+                    @endforeach
+                    <a href="{{ route('sujet.front.index') }}" class="small fw-semibold text-decoration-none">Tout effacer</a>
+                </div>
+            @endif
         </div>
 
         <!-- Liste des sujets -->
@@ -272,7 +159,7 @@
             @include('frontend.pages.sujets.partials._cards', ['sujets' => $sujets])
         </div>
 
-        <div class="text-center mt-4 mb-5" id="sujets-load-more-wrap"
+        <div class="text-center mt-4" id="sujets-load-more-wrap"
             style="{{ $sujets->hasMorePages() ? '' : 'display:none;' }}">
             <button type="button" id="sujets-load-more" class="btn btn-load-more">
                 <span class="btn-label">Charger plus de sujets</span>
@@ -281,26 +168,34 @@
         </div>
 
         <noscript>
-            <div class="mt-4 mb-5">
+            <div class="mt-4">
                 {{ $sujets->links() }}
             </div>
         </noscript>
 
-        <!-- Statistiques -->
-        <div class="row g-3 stats-band mb-5">
-            <div class="col-6 col-md-3 offset-md-3">
-                <div class="stats-card">
-                    <div class="stats-number">{{ number_format($totalSujetsDisponibles, 0, ',', ' ') }}</div>
-                    <div class="stats-label"><i class="bi bi-journal-text me-1"></i>Sujets disponibles</div>
+        <!-- Rappel du système de points : après les résultats, pour ne pas repousser la recherche
+             (le coût figure déjà sur chaque carte, le solde dans la barre de navigation) -->
+        @auth
+            <div class="notice mt-5">
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <span class="points-pill">
+                        <i class="bi bi-star-fill"></i> {{ auth()->user()->points }} point{{ auth()->user()->points > 1 ? 's' : '' }}
+                    </span>
+                    <span>L'aperçu est gratuit. 1 point est déduit à chaque téléchargement.</span>
                 </div>
+                <a href="{{ route('user.dashboard') }}" class="section-link">
+                    Comment gagner des points ? <i class="bi bi-arrow-right-short"></i>
+                </a>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="stats-card stats-card-blue">
-                    <div class="stats-number">{{ number_format($totalTelechargements, 0, ',', ' ') }}</div>
-                    <div class="stats-label"><i class="bi bi-download me-1"></i>Téléchargements</div>
-                </div>
+        @else
+            <div class="notice notice-orange mt-5">
+                <span>
+                    <i class="bi bi-gift me-1"></i>
+                    Créez un compte et recevez <strong>50 points offerts</strong> pour télécharger vos premiers sujets.
+                </span>
+                <a href="{{ route('user.registerForm') }}" class="btn btn-warning btn-sm">S'inscrire gratuitement</a>
             </div>
-        </div>
+        @endauth
     </div>
 
     @push('scripts')

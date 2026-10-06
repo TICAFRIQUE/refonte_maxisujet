@@ -2,83 +2,14 @@
 @extends('frontend.layouts.front_app')
 
 @section('content')
-<style>
-    .auth-card {
-        border: 1px solid var(--ms-border-subtle);
-        border-radius: var(--ms-radius-lg);
-        box-shadow: var(--ms-shadow-rest);
-        overflow: hidden;
-    }
-
-    .auth-header {
-        background: var(--ms-orange) !important;
-        padding: 1.75rem 1.5rem;
-    }
-
-    .auth-body {
-        padding: 2rem 1.5rem;
-    }
-
-    .form-control,
-    .form-select {
-        border: 1.5px solid var(--ms-orange);
-    }
-
-    .form-control:focus, .form-select:focus {
-        border-color: var(--ms-orange-dark);
-        box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.15);
-    }
-
-    .btn-auth {
-        background: var(--ms-orange);
-        border: none;
-        padding: 0.75rem 1.5rem;
-        font-weight: 600;
-    }
-
-    .btn-auth:hover {
-        background: var(--ms-orange-dark);
-    }
-
-    .auth-link {
-        color: var(--ms-blue);
-        text-decoration: none;
-        font-weight: 600;
-    }
-
-    .auth-link:hover {
-        color: var(--ms-blue-dark);
-        text-decoration: underline;
-    }
-
-    .password-toggle:hover {
-        background-color: var(--ms-orange);
-        color: white;
-        border-color: var(--ms-orange);
-    }
-
-    .form-check-input:checked {
-        background-color: var(--ms-orange);
-        border-color: var(--ms-orange);
-    }
-
-    .form-check-input:focus {
-        box-shadow: 0 0 0 0.25rem rgba(255, 107, 53, 0.15);
-    }
-
-    .password-match-feedback {
-        font-size: 0.85rem;
-        margin-top: 0.35rem;
-    }
-</style>
-    <div class="container pb-5 min-vh-100 d-flex flex-column">
+    <div class="container">
         <!-- Breadcrumb -->
         <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
             @include('frontend.components.retour')
-        <nav aria-label="breadcrumb" class="mb-0 flex-grow-1">
-            <ol class="breadcrumb bg-light rounded p-3">
+        <nav aria-label="Fil d'Ariane" class="mb-0 flex-grow-1 min-w-0">
+            <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="{{ route('accueil') }}" class="text-primary text-decoration-none">
+                    <a href="{{ route('accueil') }}">
                         <i class="bi bi-house-door"></i> Accueil
                     </a>
                 </li>
@@ -88,13 +19,13 @@
             </ol>
         </nav>
         </div>
-        <div class="row justify-content-center flex-grow-1">
-            <div class="col-md-6 d-flex align-items-center">
+        <div class="row justify-content-center">
+            <div class="col-md-9 col-lg-7 col-xl-6">
                 <div class="card auth-card">
-                    <div class="card-header auth-header text-white text-center">
+                    <div class="card-header auth-header">
                         <h4 class="mb-2">Rejoignez MaxiSujets</h4>
-                        <p class="mb-3 opacity-90">Inscrivez-vous gratuitement pour accéder aux ressources et publier des sujets</p>
-                        <span class="badge bg-white px-3 py-2" style="color: var(--ms-orange-dark); font-size: 0.9rem;">
+                        <p class="mb-3">Inscrivez-vous gratuitement pour accéder aux ressources et publier des sujets</p>
+                        <span class="points-pill">
                             <i class="bi bi-star-fill me-1"></i>+50 points offerts à l'inscription
                         </span>
                     </div>
@@ -208,7 +139,7 @@
                                 <div class="g-recaptcha" data-sitekey="{{ env('NOCAPTCHA_SITEKEY') }}"></div>
                             </div>
 
-                            <button type="submit" class="btn btn-auth text-white w-100" id="submitBtn">
+                            <button type="submit" class="btn btn-auth w-100" id="submitBtn">
                                 <span id="btnText"><i class="bi bi-person-plus me-2"></i>Créer mon compte</span>
                                 <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                             </button>

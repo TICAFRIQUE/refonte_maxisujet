@@ -51,8 +51,8 @@
     <link rel="manifest" href="{{ asset('frontend/images/site.webmanifest') }}">
 
     <!-- Additional SEO -->
-    <meta name="theme-color" content="#0d6efd">
-    <meta name="msapplication-TileColor" content="#0d6efd">
+    <meta name="theme-color" content="#1a56db">
+    <meta name="msapplication-TileColor" content="#1a56db">
     <meta name="application-name" content="{{ $seoNom }}">
     <meta name="msapplication-tooltip" content="Plateforme de documents éducatifs">
 
@@ -89,9 +89,6 @@
     <!-- Select2 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <!-- Choices.js CDN -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <link rel="stylesheet" href="{{ asset('frontend/css/style.css') }}?v={{ @filemtime(public_path('frontend/css/style.css')) ?: '1' }}">
 
     @stack('styles')
@@ -102,160 +99,160 @@
 
     <a class="visually-hidden-focusable" href="#main-content">Aller au contenu principal</a>
 
-    @if (isset($info_flashes) && $info_flashes->isNotEmpty())
-        <div id="infoFlashBanner" class="info-flash-banner" role="region" aria-label="Annonces">
-            @foreach ($info_flashes as $flash)
-                <div class="info-flash-item info-flash-{{ $flash->type }} {{ $loop->first ? 'is-active' : '' }}">
-                    <div class="info-flash-content">
-                        <span class="info-flash-label">
-                            <i class="bi bi-megaphone-fill"></i> <span class="info-flash-label-text">Info</span>
-                        </span>
-                        <span class="info-flash-message"><span class="info-flash-message-inner">{{ $flash->message }}</span></span>
-                        @if ($flash->lien)
-                            <a href="{{ $flash->lien }}" class="info-flash-link">
-                                <span class="info-flash-link-text">{{ $flash->lien_texte ?: 'En savoir plus' }}</span> <i class="bi bi-arrow-right"></i>
-                            </a>
-                        @endif
+    <!-- En-tête collant : bandeau d'annonces + navigation dans un seul bloc -->
+    <header class="site-header">
+        @if (isset($info_flashes) && $info_flashes->isNotEmpty())
+            <div id="infoFlashBanner" class="info-flash-banner" role="region" aria-label="Annonces">
+                @foreach ($info_flashes as $flash)
+                    <div class="info-flash-item info-flash-{{ $flash->type }} {{ $loop->first ? 'is-active' : '' }}">
+                        <div class="info-flash-content">
+                            <span class="info-flash-label">
+                                <i class="bi bi-megaphone-fill"></i> <span class="info-flash-label-text">Info</span>
+                            </span>
+                            <span class="info-flash-message"><span class="info-flash-message-inner">{{ $flash->message }}</span></span>
+                            @if ($flash->lien)
+                                <a href="{{ $flash->lien }}" class="info-flash-link">
+                                    <span class="info-flash-link-text">{{ $flash->lien_texte ?: 'En savoir plus' }}</span> <i class="bi bi-arrow-right"></i>
+                                </a>
+                            @endif
+                        </div>
+                        <button type="button" class="info-flash-close" aria-label="Fermer les annonces">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
                     </div>
-                    <button type="button" class="info-flash-close" aria-label="Fermer les annonces">
-                        <i class="bi bi-x-lg"></i>
-                    </button>
-                </div>
-            @endforeach
-        </div>
-    @endif
+                @endforeach
+            </div>
+        @endif
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg fixed-top">
-        <div class="container">
-            <!-- Logo seul -->
-            <a class="navbar-brand d-flex align-items-center" href="{{ route('accueil') }}">
-                <img src="{{ $parametre?->getFirstMediaUrl('logo_header') ?: asset('frontend/img/logo.png') }}"
-                    alt="Logo {{ $parametre?->nom_projet ?? 'MaxiSujets' }}" class="logo-animate">
-            </a>
+        <nav class="navbar navbar-expand-lg" aria-label="Navigation principale">
+            <div class="container">
+                <a class="navbar-brand" href="{{ route('accueil') }}">
+                    <img src="{{ $parametre?->getFirstMediaUrl('logo_header') ?: asset('frontend/img/logo.png') }}"
+                        alt="{{ $parametre?->nom_projet ?? 'MaxiSujets' }} — accueil">
+                </a>
 
-            <!-- Hamburger menu -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
-                <div class="hamburger-icon">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </button>
-            <div class="collapse navbar-collapse" id="mainNavbar">
-                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('accueil') ? 'active' : '' }}" href="{{ route('accueil') }}">Accueil</a>
-                    </li>
-                    <!-- Catégories -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {{ request()->routeIs('sujet.front.*') && request('categorie') ? 'active' : '' }}"
-                            href="#" id="catDropdown" role="button" data-bs-toggle="dropdown">
-                            Catégories
-                        </a>
-                        <ul class="dropdown-menu">
-                            @foreach ($data_categories as $item)
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                    aria-controls="mainNavbar" aria-expanded="false" aria-label="Ouvrir le menu">
+                    <span class="hamburger-icon" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('accueil') ? 'active' : '' }}" href="{{ route('accueil') }}"
+                                @if (request()->routeIs('accueil')) aria-current="page" @endif>Accueil</a>
+                        </li>
+                        <!-- Sujets : une seule entrée pour le catalogue et ses catégories -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {{ request()->routeIs('sujet.front.*') ? 'active' : '' }}"
+                                href="{{ route('sujet.front.index') }}" id="sujetsDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Sujets
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="sujetsDropdown">
                                 <li>
-                                    <a class="dropdown-item {{ request('categorie') == $item->slug ? 'text-primary' : '' }}"
-                                        href="{{ route('sujet.front.index', ['categorie' => $item->slug]) }}">{{ $item->libelle }}</a>
+                                    <a class="dropdown-item {{ request()->routeIs('sujet.front.index') && !request('categorie') ? 'active' : '' }}"
+                                        href="{{ route('sujet.front.index') }}">
+                                        <i class="bi bi-collection me-2"></i>Tous les sujets
+                                    </a>
                                 </li>
-                            @endforeach
-                            <hr class="dropdown-divider">
-                            <li>
-                                <a class="dropdown-item" href="{{ route('sujet.front.index') }}">Tous les sujets</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('sujet.front.*') && !request('categorie') ? 'active' : '' }}"
-                            href="{{ route('sujet.front.index') }}">Liste des sujets</a>
-                    </li>
-
-                    <!-- Actualités -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {{ request()->routeIs(['actualites.*', 'astuces-conseils.*']) ? 'active' : '' }}"
-                            href="#" id="actualitesDropdown" role="button" data-bs-toggle="dropdown">
-                            Actualités & Conseils
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a class="dropdown-item {{ request()->routeIs('actualites.*') ? 'text-primary' : '' }}" href="{{ route('actualites.index') }}">
-                                    <i class="bi bi-newspaper me-2"></i>Actualités
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item {{ request()->routeIs('astuces-conseils.*') ? 'text-primary' : '' }}" href="{{ route('astuces-conseils.index') }}">
-                                    <i class="bi bi-lightbulb me-2"></i>Astuces & Conseils
-                                </a>
-                            </li>
-
-                        </ul>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}" href="{{ route('contact') }}">Contact</a>
-                    </li>
-
-                </ul>
-                <div class="d-flex align-items-center gap-1">
-                    <a href="{{ route('sujet.front.index') }}" class="navbar-search-icon d-none d-lg-inline-flex" title="Rechercher un sujet">
-                        <i class="bi bi-search"></i>
-                    </a>
-                    @guest
-                        <a href="{{ route('user.loginForm') }}" class="btn btn-outline-primary ms-2 me-2">Connexion</a>
-                        <a href="{{ route('user.registerForm') }}" class="btn btn-warning">S'inscrire</a>
-                    @else
-                        <div class="dropdown">
-                            <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center w-100"
-                                id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-circle me-2"></i>
-                                <span>{{ Auth::user()->username ?? Auth::user()->email }}</span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end w-100" aria-labelledby="userMenu">
-                                @if (Auth::user()->hasAnyRole(['administrateur', 'developpeur', 'superadmin']))
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Par catégorie</h6></li>
+                                @foreach ($data_categories as $item)
                                     <li>
-                                        <a class="dropdown-item" href="{{ route('dashboard.index') }}">
-                                            <i class="bi bi-shield-lock-fill me-2"></i> Espace Administration
+                                        <a class="dropdown-item {{ request('categorie') == $item->slug ? 'active' : '' }}"
+                                            href="{{ route('sujet.front.index', ['categorie' => $item->slug]) }}">{{ $item->libelle }}</a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('actualites.*') ? 'active' : '' }}" href="{{ route('actualites.index') }}"
+                                @if (request()->routeIs('actualites.*')) aria-current="page" @endif>Actualités</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('astuces-conseils.*') ? 'active' : '' }}" href="{{ route('astuces-conseils.index') }}"
+                                @if (request()->routeIs('astuces-conseils.*')) aria-current="page" @endif>Conseils</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}" href="{{ route('contact') }}"
+                                @if (request()->routeIs('contact')) aria-current="page" @endif>Contact</a>
+                        </li>
+                    </ul>
+
+                    {{-- Pas de recherche dans la barre sur le catalogue : la page a déjà son propre champ, deux champs identiques prêtaient à confusion --}}
+                    @unless (request()->routeIs('sujet.front.index'))
+                        <form class="nav-search" role="search" method="GET" action="{{ route('sujet.front.index') }}">
+                            <i class="bi bi-search" aria-hidden="true"></i>
+                            <input type="search" name="q" placeholder="Matière, niveau, code…" aria-label="Rechercher un sujet">
+                        </form>
+                    @endunless
+
+                    <div class="nav-actions">
+                        @guest
+                            <a href="{{ route('user.loginForm') }}" class="btn btn-outline-secondary">Connexion</a>
+                            <a href="{{ route('user.registerForm') }}" class="btn btn-warning">S'inscrire</a>
+                        @else
+                            @php $navPoints = (int) (Auth::user()->points ?? 0); @endphp
+                            <a href="{{ route('user.dashboard') }}" class="points-pill" title="Mon solde de points">
+                                <i class="bi bi-star-fill"></i> {{ $navPoints }}<span class="d-lg-none d-xl-inline">point{{ $navPoints > 1 ? 's' : '' }}</span>
+                            </a>
+                            <div class="dropdown">
+                                <button class="btn nav-user-toggle dropdown-toggle" type="button" id="userMenu"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="nav-avatar" aria-hidden="true">{{ Str::substr(Auth::user()->username ?? Auth::user()->email, 0, 1) }}</span>
+                                    <span class="nav-user-name">{{ Auth::user()->username ?? Auth::user()->email }}</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                                    @if (Auth::user()->hasAnyRole(['administrateur', 'developpeur', 'superadmin']))
+                                        <li>
+                                            <a class="dropdown-item" href="{{ route('dashboard.index') }}">
+                                                <i class="bi bi-shield-lock me-2"></i>Espace administration
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                    @endif
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('user.dashboard') }}">
+                                            <i class="bi bi-speedometer2 me-2"></i>Tableau de bord
                                         </a>
                                     </li>
                                     <li>
-                                        <hr class="dropdown-divider">
+                                        <a class="dropdown-item" href="{{ route('user.sujet.index') }}">
+                                            <i class="bi bi-files me-2"></i>Mes sujets
+                                        </a>
                                     </li>
-                                @endif
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('user.dashboard') }}">
-                                        <i class="bi bi-speedometer2 me-2"></i> Tableau de bord
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('user.dashboard') }}">
-                                        <i class="bi bi-person-circle me-2"></i>Mon profil
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('user.sujet.index') }}">
-                                        <i class="bi bi-file-earmark-plus me-2"></i> Mes sujets
-                                    </a>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li>
-                                    <form method="POST" action="{{ route('user.logout') }}">
-                                        @csrf
-                                        <button class="dropdown-item text-danger" type="submit">
-                                            <i class="bi bi-box-arrow-right me-2"></i> Déconnexion
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
-                    @endguest
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('user.sujet.create') }}">
+                                            <i class="bi bi-cloud-upload me-2"></i>Publier un sujet
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('user.dashboard') }}#section-profil">
+                                            <i class="bi bi-person me-2"></i>Mon profil
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form method="POST" action="{{ route('user.logout') }}">
+                                            @csrf
+                                            <button class="dropdown-item text-danger" type="submit">
+                                                <i class="bi bi-box-arrow-right me-2"></i>Déconnexion
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        @endguest
+                    </div>
                 </div>
             </div>
-        </div>
-    </nav>
-    <!-- End Navbar -->
+        </nav>
+    </header>
 
     <!-- Afficher les messages d'alerte -->
     @include('sweetalert::alert')
@@ -283,169 +280,126 @@
         ], fn($social) => !empty($social['url']));
     @endphp
 
-    <!-- Footer Moderne -->
-    <footer class="modern-footer mt-auto">
-        <!-- Footer Principal -->
+    <!-- Pied de page -->
+    <footer class="modern-footer">
         <div class="footer-main">
             <div class="container">
                 <div class="row g-4">
                     <!-- À propos -->
-                    <div class="col-lg-4 col-md-6">
-                        <div class="footer-section">
-                            <div class="footer-logo mb-3">
-                                <img src="{{ $footerLogo }}" alt="{{ $footerNom }}"
-                                    class="footer-logo-img">
-                                {{-- <span class="footer-brand-name">{{ $footerNom }}</span> --}}
+                    <div class="col-lg-4">
+                        <div class="footer-logo mb-3">
+                            <img src="{{ $footerLogo }}" alt="{{ $footerNom }}" class="footer-logo-img" loading="lazy">
+                        </div>
+                        <p class="footer-description">{{ Str::limit($footerDescription, 220) }}</p>
+                        <div class="footer-stats mb-3">
+                            <div class="stat-item">
+                                <i class="bi bi-file-earmark-text"></i>
+                                <span>{{ number_format($footer_stats['sujets'] ?? 0, 0, ',', ' ') }} sujets</span>
                             </div>
-                            <p class="footer-description">
-                                {{ $footerDescription }}
-                            </p>
-                            <div class="footer-stats">
-                                <div class="stat-item">
-                                    <i class="bi bi-file-earmark-text"></i>
-                                    <span>{{ number_format($footer_stats['sujets'] ?? 0) }} sujets</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i class="bi bi-people"></i>
-                                    <span>{{ number_format($footer_stats['membres'] ?? 0) }} membres</span>
-                                </div>
+                            <div class="stat-item">
+                                <i class="bi bi-people"></i>
+                                <span>{{ number_format($footer_stats['membres'] ?? 0, 0, ',', ' ') }} membres</span>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Navigation -->
-                    <div class="col-lg-2 col-md-6">
-                        <div class="footer-section">
-                            <h5 class="footer-title">Navigation</h5>
-                            <ul class="footer-links">
-                                <li><a href="{{ route('accueil') }}"><i class="bi bi-house"></i> Accueil</a></li>
-                                <li><a href="{{ route('sujet.front.index') }}"><i class="bi bi-files"></i>
-                                        Documents</a></li>
-                                <li><a href="{{ route('actualites.index') }}"><i class="bi bi-newspaper"></i>
-                                        Actualités</a></li>
-                                <li><a href="{{ route('astuces-conseils.index') }}"><i class="bi bi-lightbulb"></i>
-                                        Conseils</a></li>
-                                <li><a href="{{ route('contact') }}"><i class="bi bi-envelope"></i> Contact</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Catégories Populaires -->
-                    <div class="col-lg-2 col-md-6">
-                        <div class="footer-section">
-                            <h5 class="footer-title">Catégories</h5>
-                            <ul class="footer-links">
-                                @foreach ($data_categories->take(4) as $category)
-                                    <li><a
-                                            href="{{ route('sujet.front.index', ['categorie' => $category->slug]) }}">{{ $category->libelle }}</a>
-                                    </li>
-                                @endforeach
-                                <li><a href="{{ route('sujet.front.index') }}"><strong>Voir tout <i
-                                                class="bi bi-arrow-right"></i></strong></a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Contact & Support -->
-                    <div class="col-lg-4 col-md-6">
-                        <div class="footer-section">
-                            <h5 class="footer-title">Contact & Support</h5>
-                            <div class="footer-contact">
-                                <div class="contact-item">
-                                    <i class="bi bi-envelope-fill"></i>
-                                    <div>
-                                        <strong>Email</strong>
-                                        <a href="mailto:{{ $footerEmail }}">{{ $footerEmail }}</a>
-                                    </div>
-                                </div>
-                                <div class="contact-item">
-                                    <i class="bi bi-telephone-fill"></i>
-                                    <div>
-                                        <strong>Téléphone</strong>
-                                        <a href="tel:{{ preg_replace('/\s+/', '', $footerTel) }}">{{ $footerTel }}</a>
-                                    </div>
-                                </div>
-                                <div class="contact-item">
-                                    <i class="bi bi-geo-alt-fill"></i>
-                                    <div>
-                                        <strong>Adresse</strong>
-                                        <span>{{ $footerAdresse }}</span>
-                                    </div>
-                                </div>
-                                <div class="contact-item">
-                                    <i class="bi bi-clock-fill"></i>
-                                    <div>
-                                        <strong>Horaires</strong>
-                                        <span>{{ $footerHoraires }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Footer Réseaux Sociaux -->
-        <div class="footer-social">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <h6 class="mb-3 mb-md-0">Suivez-nous sur les réseaux sociaux</h6>
-                    </div>
-                    <div class="col-md-6">
                         <div class="social-links">
-                            <a href="https://wa.me/{{ $footerWhatsapp }}" class="social-link whatsapp" title="WhatsApp" target="_blank" rel="noopener">
+                            <a href="https://wa.me/{{ $footerWhatsapp }}" class="social-link whatsapp" title="WhatsApp" aria-label="WhatsApp" target="_blank" rel="noopener">
                                 <i class="bi bi-whatsapp"></i>
                             </a>
-                            <a href="mailto:{{ $footerEmail }}" class="social-link email" title="Email">
-                                <i class="bi bi-envelope-fill"></i>
+                            <a href="mailto:{{ $footerEmail }}" class="social-link email" title="Email" aria-label="Email">
+                                <i class="bi bi-envelope"></i>
                             </a>
                             @foreach ($footerSocials as $key => $social)
-                                <a href="{{ $social['url'] }}" class="social-link {{ $key }}" title="{{ ucfirst($key) }}" target="_blank" rel="noopener">
+                                <a href="{{ $social['url'] }}" class="social-link {{ $key }}" title="{{ ucfirst($key) }}" aria-label="{{ ucfirst($key) }}" target="_blank" rel="noopener">
                                     <i class="bi {{ $social['icon'] }}"></i>
                                 </a>
                             @endforeach
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Footer Bottom -->
-        <div class="footer-bottom">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <p class="mb-0">
-                            &copy; {{ date('Y') }} <strong>{{ $footerNom }}</strong>. Tous droits réservés.
-                        </p>
+                    <!-- Navigation -->
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <h2 class="footer-title">Navigation</h2>
+                        <ul class="footer-links">
+                            <li><a href="{{ route('accueil') }}">Accueil</a></li>
+                            <li><a href="{{ route('sujet.front.index') }}">Tous les sujets</a></li>
+                            <li><a href="{{ route('actualites.index') }}">Actualités</a></li>
+                            <li><a href="{{ route('astuces-conseils.index') }}">Conseils</a></li>
+                            <li><a href="{{ route('contact') }}">Contact</a></li>
+                        </ul>
                     </div>
-                    <div class="col-md-6">
-                        <div class="footer-bottom-links">
-                            <a href="{{ route('confidentialite') }}">Politique de confidentialité</a>
-                            <a href="{{ route('cgu') }}">Conditions d'utilisation</a>
+
+                    <!-- Catégories -->
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <h2 class="footer-title">Catégories</h2>
+                        <ul class="footer-links">
+                            @foreach ($data_categories->take(5) as $category)
+                                <li><a href="{{ route('sujet.front.index', ['categorie' => $category->slug]) }}">{{ $category->libelle }}</a></li>
+                            @endforeach
+                        </ul>
+                    </div>
+
+                    <!-- Contact -->
+                    <div class="col-md-4 col-lg-4">
+                        <h2 class="footer-title">Contact</h2>
+                        <div class="footer-contact">
+                            <div class="contact-item">
+                                <i class="bi bi-envelope"></i>
+                                <div>
+                                    <strong>Email</strong>
+                                    <a href="mailto:{{ $footerEmail }}">{{ $footerEmail }}</a>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="bi bi-telephone"></i>
+                                <div>
+                                    <strong>Téléphone</strong>
+                                    <a href="tel:{{ preg_replace('/\s+/', '', $footerTel) }}">{{ $footerTel }}</a>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="bi bi-geo-alt"></i>
+                                <div>
+                                    <strong>Adresse</strong>
+                                    <span>{{ $footerAdresse }}</span>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="bi bi-clock"></i>
+                                <div>
+                                    <strong>Horaires</strong>
+                                    <span>{{ $footerHoraires }}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="footer-bottom">
+            <div class="container footer-bottom-inner">
+                <p class="mb-0">&copy; {{ date('Y') }} <strong>{{ $footerNom }}</strong>. Tous droits réservés.</p>
+                <div class="footer-bottom-links">
+                    <a href="{{ route('confidentialite') }}">Politique de confidentialité</a>
+                    <a href="{{ route('cgu') }}">Conditions d'utilisation</a>
+                </div>
+            </div>
+        </div>
     </footer>
 
-    <!-- Boutons Flottants -->
-    <!-- Bouton Back to Top -->
-    <button id="backToTop" class="back-to-top-btn" title="Retour en haut">
+    <!-- Boutons flottants -->
+    <button id="backToTop" class="back-to-top-btn" type="button" title="Retour en haut" aria-label="Retour en haut">
         <i class="bi bi-arrow-up"></i>
     </button>
 
-    <!-- Bouton WhatsApp Flottant -->
     <div class="whatsapp-float">
         <a href="https://wa.me/{{ $footerWhatsapp }}?text=Bonjour,%20j'ai%20besoin%20d'aide%20avec%20{{ urlencode($footerNom) }}"
-            target="_blank" class="whatsapp-btn" title="Contactez-nous sur WhatsApp">
+            target="_blank" rel="noopener" class="whatsapp-btn" title="Contactez-nous sur WhatsApp" aria-label="Contactez-nous sur WhatsApp">
             <i class="bi bi-whatsapp"></i>
             <span class="whatsapp-text">Besoin d'aide ?</span>
         </a>
     </div>
+
 
     @guest
         <!-- Modal "connexion requise" partagée (aperçus réservés aux connectés) : placée en fin de <body>
@@ -474,10 +428,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Script d'animations navbar -->
-    <script src="{{ asset('frontend/js/navbar-animations.js') }}"></script>
-
-    <!-- Bandeau infos flash : fermeture (mémorisée pour la session) + rotation + décalage de la navbar fixe -->
+    <!-- Bandeau infos flash : fermeture (mémorisée pour la session) + rotation des annonces -->
     <script>
         (function () {
             const banner = document.getElementById('infoFlashBanner');
@@ -488,16 +439,9 @@
                 return;
             }
 
-            function majDecalage() {
-                document.documentElement.style.setProperty('--info-flash-height', banner.offsetHeight + 'px');
-            }
-            majDecalage();
-            window.addEventListener('resize', majDecalage);
-
             banner.addEventListener('click', function (e) {
                 if (!e.target.closest('.info-flash-close')) return;
                 banner.remove();
-                document.documentElement.style.setProperty('--info-flash-height', '0px');
                 sessionStorage.setItem('infoFlashClosed', '1');
             });
 
@@ -556,23 +500,15 @@
         })();
     </script>
 
-    <!-- Scripts d'améliorations pour la page d'accueil -->
-    @if (Route::currentRouteName() === 'accueil')
-        <script src="{{ asset('frontend/js/home-enhancements.js') }}"></script>
-        <script src="{{ asset('frontend/js/modern-animations.js') }}"></script>
-    @endif
-
     @stack('scripts')
 
     <script>
-        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        // Validation Bootstrap : bloque l'envoi des formulaires .needs-validation invalides
         (function() {
             'use strict'
 
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
             var forms = document.querySelectorAll('.needs-validation')
 
-            // Loop over them and prevent submission
             Array.prototype.slice.call(forms)
                 .forEach(function(form) {
                     form.addEventListener('submit', function(event) {
@@ -586,82 +522,34 @@
                 })
         })()
 
-        // === SCRIPT BOUTON BACK TO TOP ===
+        // Libellé accessible du bouton menu + bouton "retour en haut" (visible après 600px de défilement)
         document.addEventListener('DOMContentLoaded', function() {
-            const backToTopBtn = document.getElementById('backToTop');
-
-            // Afficher/Masquer le bouton selon le scroll
-            function toggleBackToTop() {
-                if (window.pageYOffset > 300) {
-                    backToTopBtn.classList.add('show');
-                } else {
-                    backToTopBtn.classList.remove('show');
-                }
+            const menu = document.getElementById('mainNavbar');
+            const toggler = document.querySelector('.navbar-toggler');
+            if (menu && toggler) {
+                menu.addEventListener('show.bs.collapse', () => toggler.setAttribute('aria-label', 'Fermer le menu'));
+                menu.addEventListener('hide.bs.collapse', () => toggler.setAttribute('aria-label', 'Ouvrir le menu'));
             }
 
-            // Event listener pour le scroll
-            window.addEventListener('scroll', toggleBackToTop);
+            // Listes d'étiquettes repliables (niveaux d'un cycle, matières)
+            document.addEventListener('click', function (e) {
+                const toggle = e.target.closest('[data-tag-toggle]');
+                if (!toggle) return;
+                const list = toggle.previousElementSibling;
+                const collapsed = list.classList.toggle('is-collapsed');
+                toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+                toggle.textContent = collapsed ? toggle.dataset.labelMore : toggle.dataset.labelLess;
+            });
 
-            // Event listener pour le clic du bouton
+            const backToTopBtn = document.getElementById('backToTop');
+            if (!backToTopBtn) return;
+
+            window.addEventListener('scroll', function() {
+                backToTopBtn.classList.toggle('show', window.scrollY > 600);
+            }, { passive: true });
+
             backToTopBtn.addEventListener('click', function() {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            });
-
-            // Animation d'entrée des éléments du footer
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver(function(entries) {
-                entries.forEach(function(entry) {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
-
-            // Observer les sections du footer
-            const footerSections = document.querySelectorAll('.footer-section');
-            footerSections.forEach(function(section) {
-                section.style.opacity = '0';
-                section.style.transform = 'translateY(30px)';
-                section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(section);
-            });
-
-            // Animation des liens sociaux au hover
-            const socialLinks = document.querySelectorAll('.social-link');
-            socialLinks.forEach(function(link) {
-                link.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-3px) scale(1.1)';
-                });
-
-                link.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0) scale(1)';
-                });
-            });
-
-            // Animation des statistiques
-            const statItems = document.querySelectorAll('.stat-item');
-            let delay = 0;
-            statItems.forEach(function(item) {
-                setTimeout(function() {
-                    item.style.opacity = '1';
-                    item.style.transform = 'translateX(0)';
-                }, delay);
-                delay += 200;
-            });
-
-            // Style initial pour les statistiques
-            statItems.forEach(function(item) {
-                item.style.opacity = '0';
-                item.style.transform = 'translateX(-20px)';
-                item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         });
     </script>

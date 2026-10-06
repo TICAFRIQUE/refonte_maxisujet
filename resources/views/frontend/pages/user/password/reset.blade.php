@@ -1,24 +1,11 @@
 @extends('frontend.layouts.front_app')
 
 @section('content')
-<style>
-    .auth-card {
-        border: 1px solid var(--ms-border-subtle);
-        border-radius: var(--ms-radius-lg);
-        box-shadow: var(--ms-shadow-rest);
-        overflow: hidden;
-    }
-
-    .auth-header {
-        background: var(--ms-orange);
-        padding: 1.75rem 1.5rem;
-    }
-</style>
-<div class="container mb-5">
+<div class="container">
     <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
         @include('frontend.components.retour')
-    <nav aria-label="breadcrumb" class="mb-0 flex-grow-1">
-        <ol class="breadcrumb bg-light rounded p-3">
+    <nav aria-label="Fil d'Ariane" class="mb-0 flex-grow-1 min-w-0">
+        <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('accueil') }}"><i class="bi bi-house-door"></i> Accueil</a></li>
             <li class="breadcrumb-item active" aria-current="page">Réinitialiser le mot de passe</li>
         </ol>
@@ -28,7 +15,7 @@
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-5">
             <div class="card auth-card">
-                <div class="card-header auth-header text-white text-center">
+                <div class="card-header auth-header">
                     <h4 class="mb-0">Réinitialiser le mot de passe</h4>
                 </div>
                 <div class="card-body p-4">

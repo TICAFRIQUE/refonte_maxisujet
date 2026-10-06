@@ -25,10 +25,10 @@
         <!-- Breadcrumb moderne -->
         <div class="d-flex align-items-center gap-3 mb-3 mt-3 flex-wrap">
             @include('frontend.components.retour')
-        <nav aria-label="breadcrumb" class="mb-0 flex-grow-1">
+        <nav aria-label="Fil d'Ariane" class="mb-0 flex-grow-1 min-w-0">
             <ol class="breadcrumb bg-light rounded-pill shadow-sm px-3 py-2 mb-0 small">
                 <li class="breadcrumb-item">
-                    <a href="{{ route('user.dashboard') }}" class="text-primary text-decoration-none">
+                    <a href="{{ route('user.dashboard') }}">
                         <i class="bi bi-speedometer2 me-1"></i>Mon espace
                     </a>
                 </li>

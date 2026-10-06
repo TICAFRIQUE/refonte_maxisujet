@@ -53,9 +53,9 @@
         <!-- Breadcrumb -->
         <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
             @include('frontend.components.retour')
-        <nav aria-label="breadcrumb" class="mb-0 flex-grow-1">
-            <ol class="breadcrumb bg-light rounded p-3 mb-0">
-                <li class="breadcrumb-item"><a href="{{ route('accueil') }}" class="text-decoration-none"><i class="bi bi-house-door"></i> Accueil</a></li>
+        <nav aria-label="Fil d'Ariane" class="mb-0 flex-grow-1 min-w-0">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('accueil') }}"><i class="bi bi-house-door"></i> Accueil</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Tableau de bord</li>
             </ol>
         </nav>
@@ -80,7 +80,7 @@
 
         <!-- Statistiques -->
         <div class="row g-3 mb-4">
-            <div class="col-md-4">
+            <div class="col-sm-4">
                 <div class="card h-100">
                     <div class="card-body text-center p-3">
                         <div class="dash-stat-icon mb-2 mx-auto" style="background: var(--ms-blue-light);">
@@ -91,7 +91,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-sm-4">
                 <div class="card h-100">
                     <div class="card-body text-center p-3">
                         <div class="dash-stat-icon mb-2 mx-auto" style="background: var(--ms-orange-light);">
@@ -102,7 +102,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-sm-4">
                 <div class="card h-100">
                     <div class="card-body text-center p-3">
                         <div class="dash-stat-icon mb-2 mx-auto" style="background: #fff4e0;">

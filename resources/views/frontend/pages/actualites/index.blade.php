@@ -8,10 +8,10 @@
     <div class="container">
         <!-- Breadcrumb -->
         <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
-        <nav aria-label="breadcrumb" class="mb-0 flex-grow-1">
+        <nav aria-label="Fil d'Ariane" class="mb-0 flex-grow-1 min-w-0">
             @include('frontend.components.retour')
 
-            <ol class="breadcrumb bg-light rounded p-3">
+            <ol class="breadcrumb">
                 <li class="breadcrumb-item">
                     <a href="{{ route('accueil') }}">
                         <i class="bi bi-house-door"></i> Accueil
